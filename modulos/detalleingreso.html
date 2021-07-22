@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .impEtiquetas{
+                display: none;
+                visibility: hidden;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                background: white;
+                text-align: center;
+                top: 0px;
+                left: 0px;
+                zoom:120%;
+            }
+            .content-Etiquetas{
+                margin-left: 179px;
+                margin-left: 245px;
+                width: 200px;
+                color: black;
+            }
+            .etiquetasItem{
+                display:block;
+                margin-top: 20px;
+                margin-bottom: 59px;
+                margin-bottom: 28px;
+
+            }
+            .content-Etiquetas .etiquetasItem:last-child{
+                margin-bottom: 0px; 
+            }
+            #idImp{
+                font-size: 6px;
+                padding: 0px;
+                zoom: 200%;
+            }
+            #PrecioImp{
+                font-size: 6px;
+                padding: 0px;
+                zoom: 200%;
+            }
+            #ModeloImp{
+                font-size: 6px;
+                padding: 0px;
+                zoom: 200%;
+            }
+            @media print{
+                @page {
+                    size: landscape;
+                    margin: 0;
+                }
+                .impEtiquetas{
+                    border: 2px solid black;
+                    visibility: visible;
+                    page-break-after: auto;
+                    display: block;
+                }
+                .preload,
+                .tabla,
+                .botones{
+                    visibility:  hidden;
+                }
+                .formulario{
+                    display: none;                }
+            }
+            .loading{
+                display: none;
+                position: absolute;
+                bottom: -5px;
+                right: 62px;
+                background: #bd1e1e;
+                background: #2962FF;
+                border: 10px solid #2962FF;
+            }
+            .cl-input{
+                position: relative;
+            }
+            .cl-mensajeout:after{
+                font-size: 13px;
+                color: rgba(107, 116, 121, 0.52);
+                background-color: rgba(199, 204, 206, 0.4);
+                content: "?";
+                position: absolute;
+                right: 4px;
+                top: 5px;
+                border-radius: 50%;
+                z-index: 1;
+                border: 1px solid rgba(147, 163, 171, 0.24);
+                padding: 0px 4px;
+                font-family: "helvetica";
+                text-align: center;
+            }
+            .cl-mensaje{
+                display: none;
+                background-color: rgb(28, 206, 213);
+                color: white;
+                font-size: 14px;
+                position: absolute;
+                right: 0px;
+                top: 40px;
+                padding: 6px 12px;
+                border-radius: 6px;
+                z-index: 10;
+                width: 250px;
+                text-align: center;
+            }
+            .cl-mensaje:before{
+                content: "";
+                width: 0px;
+                height: 0px;
+                border-top: 0px solid transparent;
+                border-right: 10px solid transparent;
+                border-left: 10px solid transparent;
+                border-bottom: 14px solid rgb(28, 206, 213);
+                position: absolute;
+                top: -8px;
+                right: 13px;
+            }
+            .dinero{
+                padding-right: 38px !important;
+                width: 118px !important;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 7px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="atras" style="display: none;">
+                <button onclick="location.href = 'ingreso.html';" class="icon-atras"></button>
+            </div>
+            <input type="hidden" value="" name="action" id="action">
+            <input type="hidden" id="estuche" name="estuche">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <label for="Proveedor">Proveedor</label>
+                        <div class="select-triangulo">
+                            <select id="Proveedor" name="Proveedor">
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="doc">Documento</label>
+                        <div class="select-triangulo">
+                            <select id="doc" name="Documento">
+                                <option value="Factura">Factura</option>
+                                <option value="Nota_Pedido">Nota Pedido</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td colspan="1">
+                        <label for="numDoc">Nro.</label>
+                        <input type="text" id="numDoc" name="numDoc"/>
+                    </td >
+                    <td colspan="1" style="width: 103px;">
+                        <label for="fec">Fecha</label>
+                        <input type="text" id="fec" name="fec" disabled="" style="text-align: center;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-xs">
+                        <label for="cod">Codigo</label>
+                        <input type="hidden" id="edit"/>
+                        <!--input type="hidden" id="idp" name="idp"/-->
+                        <input type="text" id="cod" name="cod" disabled=""/>
+                    </td>
+                    <td style="width: 362px">
+                        <label for="marca">Marca</label>
+                        <div class="cl-input">
+                            <input type="text" id="marca" name="marca" class="carac" list="car1" autocomplete="off">
+                            <div class="cl-mensajeout" onmouseover="abrirMensajeMarca()" onmouseout="cerrarMensajeMarca()"></div>
+                            <div id="mensajeMarca" class="cl-mensaje">Ingresar el nombre de la marca de la montura o armazón. Ejemplo: RAYBAN POLARIZADO</div>
+                        </div>
+                        <datalist id="car1"></datalist>
+                    </td>
+                    <td>
+                        <label for="modelo">Modelo</label>
+                        <div class="cl-input">
+                            <input type="text" id="modelo" name="modelo" class="carac" list="car1" autocomplete="off"/>
+                            <div class="cl-mensajeout" onmouseover="abrirMensajeModelo()" onmouseout="cerrarMensajeModelo()"></div>
+                            <div id="mensajeModelo" class="cl-mensaje">Ingresar el código del modelo de la montura o armazón. Ejemplo: RYB017</div>
+                        </div>
+                        <datalist id="car1"></datalist>
+                    </td>
+                    <td>
+                        <label for="tipo">Tipo</label>
+                        <div class="select-triangulo">
+                            <select id="tipo" name="tipo">
+                                <option>AL AIRE</option>
+                                <option>SEMI AL AIRE</option>
+                                <option>ARO COMPLETO</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        <label for="color">Color</label>
+                        <input type="text" id="color" name="color"  >
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="comentario">Comentario</label>
+                        <input type="text" id="comentario" name="comentario">
+                    </td>
+                    <td >
+                        <label for="costo" style="margin-left: 2px">Costo</label>
+                        <div class="cl-input">
+                            <input type="text" id="costo" name="costo" style="/*width: 90px;margin-left: 2px;margin-top: 0px;*/"  class="atr money dinero"/>
+                            <div class="cl-mensajeout" onmouseover="abrirMensajeCosto()" onmouseout="cerrarMensajeCosto()"></div>
+                            <div id="mensajeCosto" class="cl-mensaje">Ingresar el costo de la montura o armazón. Ejemplo: 60.00</div>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="venta" style="margin-left: 2px">Precio de Venta</label>
+                        <div class="cl-input">
+                            <input type="text" id="venta" name="venta" style="/*width: 90px;margin-left: 2px;margin-top: 0px;*/"  class="atr money dinero"/>
+                            <div class="cl-mensajeout" onmouseover="abrirMensajeVenta()" onmouseout="cerrarMensajeVenta()"></div>
+                            <div id="mensajeVenta" class="cl-mensaje">Ingresar el Precio de Venta al Público. Ejemplo: 180.00</div>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="tope" style="margin-left: 2px">Precio Mínimo</label>
+                        <div class="cl-input">
+                            <input type="text" id="tope" name="tope" style="/*width: 90px;margin-left: 2px;margin-top: 0px;*/"  class="atr money dinero"/>
+                            <div class="cl-mensajeout" onmouseover="abrirMensajeDesc()" onmouseout="cerrarMensajeDesc()"></div>
+                            <div id="mensajeDesc" class="cl-mensaje">Ingresar el monto mínimo a vender la montura o armazón. Ejemplo: 160.00</div>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="cant" style="color: #00BCD4;margin-left: 2px">Cantidad</label>
+                        <input type="text" id="cant" name="cant" style="border-color:#00BCD4;/*width: 90px;margin-left: 2px;margin-top: -2px;*/" value="1" class="atr"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="botones" style="height: 70px">
+                <div class="msg">mensaje</div>
+                <button id="add" class="icon-agregar">Agregar</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColSM">Cod</td>
+                        <td>Marca</td>
+                        <td class="ColM">Modelo</td>          
+                        <td class="ColM">Tipo</td>
+                        <!--td class="ColFS">Talla</td-->
+                        <!--td class="ColFS">Color</td-->
+                        <td class="ColFS">Costo</td>
+                        <td class="ColFS">Venta</td>
+                        <!--td class="ColFS">Margen</td-->
+                        <td class="ColFS">P. Min.</td>
+                        <!--td class="ColXS">*</td-->
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <div class="botones">
+            <div class="loading"></div>
+            <button type="button" onclick="Imprimir();" id="btni" class="icon-imprimir" style="display: none; background: #BCBCBC;color:white ">Etiqueta</button>
+            <!--button onclick="location.href = 'detalleingreso.html';" type="button" class="icon-nuevo">Nuevo</button-->
+            <button type="button" onclick="save();" id="btnS" class="icon-guardar cl-guardar1">Guardar</button>
+        </div>
+        <div class="impEtiquetas">
+            <div class="content-Etiquetas">
+                <!--div id="CodImp"></div>
+                <div class="etiquetasItem">
+                    <div id="bcTarget" style="margin: 0px auto;width: 200px"></div>
+                    <label id="idImp"></label>
+                    <label id="PrecioImp"></label>
+                    <label id="ModeloImp"></label>
+                </div-->
+
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script src="../js/barcode.min.js"></script>
+        <script>
+            function abrirMensajeMarca(){
+                document.getElementById('mensajeMarca').style.display = "block";
+            }
+            function cerrarMensajeMarca(){
+                document.getElementById('mensajeMarca').style.display = "none";
+            }
+            function abrirMensajeModelo(){
+                document.getElementById('mensajeModelo').style.display = "block";
+            }
+            function cerrarMensajeModelo(){
+                document.getElementById('mensajeModelo').style.display = "none";
+            }
+            function abrirMensajeCosto(){
+                document.getElementById('mensajeCosto').style.display = "block";
+            }
+            function cerrarMensajeCosto(){
+                document.getElementById('mensajeCosto').style.display = "none";
+            }
+            function abrirMensajeVenta(){
+                document.getElementById('mensajeVenta').style.display = "block";
+            }
+            function cerrarMensajeVenta(){
+                document.getElementById('mensajeVenta').style.display = "none";
+            }
+            function abrirMensajeDesc(){
+                document.getElementById('mensajeDesc').style.display = "block";
+            }
+            function cerrarMensajeDesc(){
+                document.getElementById('mensajeDesc').style.display = "none";
+            }
+            
+                var isDisabled = false;
+                function Imprimir() {
+                    //w = new ActiveXObject("WScript.Shell");
+                    //w.run('notepad.exe');
+                    //return true;M0001234
+                    $('#btnS').mouseover(function () {
+                        alert('dd');
+                        $('.loading').css(' background', '#bd1e1e;');
+                        $('.loading').css(' border-color', '#bd1e1e;');
+                    });
+                    $('#btnS').mouseout(function () {
+                        $('.loading').css(' background', '#2196FF;');
+                        $('.loading').css(' border-color', '#2196FF;');
+                    });
+                    $('.content-Etiquetas').html('');
+                    var string;
+                    for (var i = 0; i < listaProductos.length; i++) {
+                        string = '<div class="etiquetasItem">';
+                        string += '<table><tr><td class=\"ColMS ch atr\">' + (i+1) + '</td><td>';
+                        string += '<div id="bcTarget" class="item-' + i + '" style="margin: 0px auto;width: 200px"></div>';
+                        string += '</td><td style="width:0px">&nbsp;</td><td><div id="bcDatos">';
+                        //string += '</td><td style="width:150px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="bcDatos">';
+                        //string += '<label id="idImp">M' + parseInt((listaProductos[i][0]).substring(1, (listaProductos[i][0]).length)) + '</label>';
+                        //string += '<label id="PrecioImp">' + listaProductos[i][8] + '</label>';
+                        //string += '<label id="ModeloImp">S/.' + (listaProductos[i][2]).substring(0, 4) + '</label>';
+                        string += '<label id="idImp">' + listaProductos[i][0] + '</label>';
+                        string += '<label id="PrecioImp">' + listaProductos[i][2] + '</label>';
+                        string += '<label id="ModeloImp">S/.' + listaProductos[i][8] + '</label>';
+                        string += '</div></td></tr></table></div>';
+                        $('.content-Etiquetas').append(string);
+                        //$('.item-' + i).barcode(listaProductos[i][0], "code128");
+                        $('.item-' + i).barcode(toCode2(listaProductos[i][0]), "code128");
+                    }
+                    window.print();
+                }
+                var inicio;
+                getCodigo();
+                function toCode(data) {
+                    var cod2 = data + "";
+                    var s2 = cod2.length;
+                    cod2 = parseInt(cod2);
+                    var ncod = 'M';
+                    for (var i = 0; i < (7 - (s2 + 1)); i++) {
+                        ncod += '0';
+                    }
+                    cod2 = ncod + cod2;
+                    return cod2;
+                }
+                function toCode2(ccod) {
+                    ccod = ccod.substring(1, ccod.length);
+                    ccod = parseInt(ccod);
+                    var s2 = ("" + ccod).length;
+                    var ncod = '';
+                    for (var i = 0; i < (7 - (s2 + 0)); i++) {
+                        ncod += '0';
+                    }
+                    ccod = ncod + ccod;
+                    return ccod;
+                }
+                function getCodigo() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/parametrosCRL.php',
+                        data: {action: 'get', id: 1},
+                        success: function (data) {
+                            if (data != "no") {
+                                var param = JSON.parse(data);
+                                var cod = param[2];
+                                var s = cod.length;
+                                cod = parseInt(cod) + 1;
+                                inicio = cod;
+                                var ncod = 'M';
+                                for (var i = 0; i < (7 - (s + 1)); i++) {
+                                    ncod += '0';
+                                }
+                                cod = ncod + cod;
+                                $('#cod').val(cod);
+                                $('#marca').focus();
+                            } else {
+                                msgError("Error!, porfavor intentelo otra vez", "red");
+                            }
+                        },
+                        error: function () {
+                            msgError("Error del Sistema.", "red");
+                        }
+                    });
+                }
+                var listaProductos = [];
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/proveedorCRL.php',
+                    data: {action: 'list'},
+                    success: function (data) {
+                        var proveedores = JSON.parse(data);
+                        var string = '<option value=\'a\'>Seleccione...</option>';
+                        for (var i = 0; i < proveedores.length; i++) {
+                            string += '<option value=\'' + proveedores[i][0] + '\'>' + proveedores[i][1] + '</option>';
+                        }
+                        $('#Proveedor').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+                
+                $('#fec').val(fecha());
+                listarProductos();
+                $('#cant').focusout(function () {
+                    if ($('#cant').val() == "") {
+                    }
+                    else {
+                        $('#cant').val(toInt($('#cant').val()));
+                    }
+                });
+                var ingreso = $_GET('idingreso');
+                if (ingreso != undefined) {
+                    //$('#cant').css('margin-top', '-1px');
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ingresoCRL.php',
+                        data: {action: 'getingreso', id: ingreso},
+                        success: function (data) {
+                            var ing = JSON.parse(data);
+                            $('#Proveedor').val(ing[3]);
+                            $('#doc').val(ing[6]);
+                            $('#numDoc').val(ing[7]);
+                            $('#fec').val(ing[1]);
+                        },
+                        error: function () {
+                        }
+                    });
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ingresoCRL.php',
+                        data: {action: 'listDetalle', id: ingreso},
+                        success: function (data) {
+                            listaProductos = JSON.parse(data);
+                            listarProductos();
+                        },
+                        error: function () {
+                        }
+                    });
+                    //---
+                    $('#Proveedor').attr('disabled', "");
+                    $('#doc').attr('disabled', "");
+                    $('#numDoc').attr('disabled', "");
+                    $('#cod').attr('disabled', "");
+                    $('#idp').attr('disabled', "");
+                    $('#prod').attr('disabled', "");
+                    $('#costo').attr('disabled', "");
+                    $('#pxm').attr('disabled', "");
+                    $('#pxp').attr('disabled', "");
+                    $('#pvp').attr('disabled', "");
+                    $('#tope').attr('disabled', "");
+                    $('#cant').attr('disabled', "");
+                    $('#btnS').attr('style', "display:none;");
+                    $('#add').attr('style', "display:none;");
+                    $('.icon-nuevo').attr('style', "display:none;");
+                    $('.atras').removeAttr('style');
+                    //---
+                }
+                $('#cant').keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        agregar();
+                    }
+                });
+                $('#add').click(function () {
+                    agregar();
+                });
+                function removeList(num) {
+                    if (confirm('Desea retirar el producto de la lista?')) {
+                        listaProductos.splice(num, 1);
+                        listarProductos();
+                    }
+                }
+                function listarProductos() {
+                    var aux = listaProductos;
+                    var string = '';
+                    for (var i = 0; i < aux.length; i++) {
+                        if (ingreso != undefined) {
+                            string += '<tr ><td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                       <td class=\"ColSM\">' + aux[i][0] + '</td>\n\
+                                       <td>' + aux[i][1] + '</td>\n\\n\
+                                       <td class="ColM">' + aux[i][2] + '</td>\n\
+                                       <td class="ColM">' + aux[i][3] + '</td>\n\
+                                       <td class="ColFS atr">' + aux[i][7] + '</td>\n\
+                                       <td class="ColFS atr">' + aux[i][8] + '</td>\n\
+                                       <td class="ColFS atr">' + aux[i][9] + '</td>\n\
+                                       <!\-\-td class="ColXS"\-\-></td>\n\
+                                       </tr>';
+                        } else {
+                            string += '<tr onclick=\"editCant(\'' + i + '\',event);\"><td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                       <td class=\"ColSM\">' + aux[i][0] + '</td>\n\
+                                       <td>' + aux[i][1] + '</td>\n\\n\
+                                       <td class="ColM">' + aux[i][2] + '</td>\n\
+                                       <td class="ColM">' + aux[i][3] + '</td>\n\
+                                       <td class="ColFS atr">' + aux[i][7] + '</td>\n\
+                                       <td class="ColFS atr">' + aux[i][8] + '</td>\n\
+                                       <td class="ColFS atr">' + aux[i][9] + '</td>\n\
+                                       <!\-\-td class="ColXS"><button class=\"icon-cerrar\" id=\"btnAcciones\" onclick=\"removeList(' + i + ');\"></button></td \-\->\n\
+                                       </tr>';
+                        }
+                    }
+                    for (var i = 0; i < (6 - aux.length); i++) {
+                        string += '<tr><td class=\"ColMS atr ch\"></td>\n\
+                                   <td class=\"ColSM\">&nbsp;</td>\n\
+                                   <td></td>\n\\n\
+                                   <td class="ColM"></td>\n\
+                                   <td class="ColM"></td>\n\
+                                   <td class="ColFS atr"></td>\n\
+                                   <td class="ColFS atr"></td>\n\
+                                   <td class="ColFS atr"></td>\n\
+                                   <!\-\-td class="ColXS"></td\-\->\n\
+                                   </tr>';
+                    }
+                    $('#data').html(string);
+                    formatoTabla('245px');
+                    $("#data").animate({scrollTop: $('#data')[0].scrollHeight}, 1000);
+                }
+                function editCant(pos, event) {
+                    if (!isDisabled) {
+                        var tag; //event.srcElement.tagName || e
+                        if (event.srcElement) {
+                            tag = event.srcElement.tagName;
+                        }
+                        else if (event.target) {
+                            tag = event.target.tagName;
+                        }
+                        if (tag != "BUTTON") {
+                            $('#cant').attr("disabled", "");
+                            $('#edit').val(pos);
+                            $('#cod').val(listaProductos[pos][0]);
+                            $('#marca').val(listaProductos[pos][1]);
+                            $('#modelo').val(listaProductos[pos][2]);
+                            $('#tipo').val(listaProductos[pos][3]);
+                            $('#color').val(listaProductos[pos][4]);
+                            $('#estuche').val(listaProductos[pos][5]);
+                            $('#comentario').val(listaProductos[pos][6]);
+                            $('#costo').val(listaProductos[pos][7]);
+                            $('#venta').val(listaProductos[pos][8]);
+                            $('#tope').val(listaProductos[pos][9]);
+                            $('#cant').val(listaProductos[pos][10]);
+                        }
+                    }
+                }
+                function limpiar() {
+                    $('#cod').val(toCode(inicio));
+                    //$('#marca').val('');
+                    $('#modelo').val('');
+                    $('#tipo').val('');
+                    $('#color').val('');
+                    $('#estuche').val('');
+                    $('#comentario').val('');
+                    $('#costo').val('');
+                    $('#venta').val('');
+                    $('#tope').val('');
+                    $('#cant').val('');
+                    $('#marca').focus();
+                }
+                function agregar() {
+                    var codigo = $('#cod').val();
+                    var marca = $('#marca').val();
+                    var modelo = $('#modelo').val();
+                    var tipo = $('#tipo').val();
+                    //var talla = $('#talla').val();
+                    //var puente = $('#puente').val();
+                    //var procedencia = $('#procedencia').val();
+                    var color = $('#color').val();
+                    var estuche = $('#estuche').val();
+                    var comentario = $('#comentario').val();
+                    var costo = $('#costo').val();
+                    //var margen = $('#margen').val();
+                    var venta = $('#venta').val();
+                    var tope = $('#tope').val();
+                    var cant = $('#cant').val();
+                    var edit = $('#edit').val();
+
+                    cant = toInt(cant);
+                    if (marca == "") {
+                        msgError("Debe agregar un marca!!", "orange");
+                        $('#cod').focus();
+                    } else if (isNaN(costo)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#costo').val('');
+                        $('#costo').focus();
+                    } else if (isNaN(venta)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#pxm').val('');
+                        $('#pxm').focus();
+                    } else if (isNaN(tope)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#pxp').val('');
+                        $('#pxp').focus();
+                    } else if (isNaN(cant)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#pvp').val('');
+                        $('#pvp').focus();
+                    } else if (costo <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#costo').val('');
+                        $('#costo').focus();
+                    } else if (venta <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#pxm').val('');
+                        $('#pxm').focus();
+                    } else if (tope < 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#tope').val('');
+                        $('#tope').focus();
+                    } else if (cant <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#cant').val('');
+                        $('#cant').focus();
+                    } else if (cant == "") {
+                        msgError("Debe agregar una cantidad", "orange");
+                        $('#cant').focus();
+                    } else {
+                        if (edit != "") {
+                            var temp = [codigo, marca, modelo, tipo, color, estuche, comentario, costo, venta, tope, "1"];
+                            //edit = -1;
+                            //for (var i = 0; i < listaProductos.length; i++) {
+                            //    if (listaProductos[i][0] == codigo) {
+                            //        edit = i;
+                            //    }
+                            //}
+                            //if (edit != -1) {
+                            listaProductos[edit] = temp;
+                            //}
+                            $('#edit').val('');
+                            $('#cant').removeAttr("disabled");
+                        } else {
+                            for (var i = 0; i < cant; i++) {
+                                codigo = toCode(inicio);
+                                /*for (var i = 0; i < listaProductos.length; i++) {
+                                 if (listaProductos[i][0] == codigo) {
+                                 edit = i;
+                                 }
+                                 }*/
+                                var temp = [codigo, marca, modelo, tipo, color, estuche, comentario, costo, venta, tope, "1"];
+                                /*if (edit === "/") {
+                                 } else if (edit !== "") {
+                                 listaProductos[edit] = temp;
+                                 } else {*/
+                                listaProductos.push(temp);
+                                /*}*/
+                                inicio++;
+                            }
+                        }
+                        $('#cod').val(toCode(inicio));
+                        listarProductos();
+                        limpiar();
+                        //$('.msg').css("display", "none");
+                    }
+                }
+                function save() {
+                    $('.loading').css('display', 'block');
+                    var idP = $('#Proveedor').val();
+                    var doc = $('#doc').val();
+                    var numDoc = $('#numDoc').val();
+                    if (idP == "a" || doc == "" || numDoc == "" || listaProductos.length <= 0) {
+                        msgError("Complete todos los datos", "orange");
+                    } else {
+                        if (confirm('Desea Guardar?')) {
+                            var fechas = fecha();
+                            var horas = hora();
+                            var productos = JSON.stringify(listaProductos);
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/ingresoCRL.php',
+                                data: {action: 'insert', fecha: fechas, hora: horas, id: idP, doc: doc, numDoc: numDoc, productos: productos, inicio: inicio},
+                                success: function () {
+                                    $('#add').attr("disabled", "");
+                                    $('#add').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                    $('#btnS').attr("disabled", "");
+                                    $('#btnS').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                    //$('#btni').removeAttr("style");
+                                    //$('#btni').removeAttr("disabled");
+                                    isDisabled = true;
+                                    $('#marca').val('');
+                                    //window.parent.closeModal();
+                                    $('.loading').css('display', 'none');
+                                },
+                                error: function () {
+                                    $('.loading').css('display', 'none');
+                                }
+                            });
+                        }
+                    }
+
+                }
+                $('.money').focusout(function () {
+                    var mon = $(this).val();
+                    if (mon != "" && mon != " " && !isNaN(mon)) {
+                        $(this).val(toDouble(mon));
+                    } else {
+                        $(this).val('0.00');
+                    }
+                });
+                $('#marca').focusout(function () {
+                    $('#marca').val($('#marca').val().toUpperCase());
+                });
+                $('#modelo').focusout(function () {
+                    $('#modelo').val($('#modelo').val().toUpperCase());
+                });
+                $('#color').focusout(function () {
+                    $('#color').val($('#color').val().toUpperCase());
+                });
+                $('#comentario').focusout(function () {
+                    $('#comentario').val($('#comentario').val().toUpperCase());
+                });
+                $('#data').css('height', '167px');
+                $('.datatable').css('margin-top', '10px');
+                $('#costo').focusin(function () {
+                    $('#costo').val($('#costo').val());
+                    $('#costo').select();
+                });
+                $('#venta').focusin(function () {
+                    $('#venta').val($('#venta').val());
+                    $('#venta').select();
+                });
+                $('#tope').focusin(function () {
+                    $('#tope').val($('#tope').val());
+                    $('#tope').select();
+                });
+                estoyEnUnIframe();
+        </script>
+    </body>
+</html>

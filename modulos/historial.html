@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .loading{
+                display: none;
+                position: absolute;
+                bottom: -2px;
+                left: 156px;
+                background: #2962FF;
+                border: 5px solid #2962FF;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="header-inventario">
+                <div class="filtro" style="width: 100%;">
+                    <table>
+                        <tr style="height: 70px;">
+                            <td style="width: 30%">
+                                <label for="cod">Paciente</label>
+                                <input type="text" id="cod" name="cod"/>
+                            </td>
+                            <td style="width: 7%"><button type="button" class="icon-buscar" id="find" onclick="find();" style="  margin-top: 35px !important;"></button>
+                            <div id="cargando" class="loading" style="position: absolute; left: 298px !important; bottom: 0px !important;"></div>
+                            </td>
+                            <td style="width: 44%">
+                                
+                            </td>
+                            <td style="width: 10%">
+                                <label for="cod" >Fecha</label>
+                                <input type="date" id="fecha" name="fecha" class="cl-edad" autocomplete="off" style="width: 160px !important; height: 20px;">
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td>Paciente</td>
+                        <td class="ColOH2">Fecha</td>
+                        <td class="ColOH2">Hora</td>
+                        <td class="ColWP">Edad</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                                limpiarList();
+                                
+                                $('#fecha').val(fechaG());
+                                $('#fecha').change(function (){
+                                    loadByFecha();
+                                });
+                                
+                                loadByFecha();
+                                function loadByFecha() {
+                                    document.getElementById('cargando').style.display="block";
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/medicionCRL.php',
+                                        data: {action: 'listByFecha', fecha: toFecha($('#fecha').val())},
+                                        success: function (data) {
+                                            var client = JSON.parse(data);
+                                            var string = '';
+                                            for (var i = 0; i < client.length; i++) {
+                                                string += '<tr onclick=\"getClie(\'' + client[i][0] + '\');\">\n\
+                                                       <td class="ColMS atr ch">' + (i + 1) + '</td>\n\
+                                                       <td>' + client[i][1] + ' ' + client[i][2] + '</td>\n\
+                                                       <td class="ColOH2">' + client[i][3] + '</td>\n\
+                                                       <td class="ColOH2">' + client[i][9] + '</td>\n\
+                                                       <td class="ColWP">' + '-' + '</td>\n\
+                                                       </tr>';
+                                            }
+                                            for (var i = 0; i < (15 - client.length); i++) {
+                                                string += '<tr>\n\
+                                        <td class="ColMS atr ch"></td>\n\
+                                        <td></td>\n\
+                                        <td class="ColOH2">&nbsp;</td>\n\
+                                        <td class="ColOH2"></td>\n\
+                                        <td class="ColWP"></td>\n\
+                                        </tr>';
+                                            }
+                                            $('#data').html(string);
+                                            formatoTabla('410px');
+                                            document.getElementById('cargando').style.display="none";
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                            document.getElementById('cargando').style.display="none";
+                                            
+                                        }
+                                    });
+                                }
+                                //loadall();
+                                $('#cod').focus();
+                                function limpiarList() {
+                                    var string = '';
+                                    for (var i = 0; i < 15; i++) {
+                                        string += '<tr>\n\
+                                        <td class="ColMS atr ch"></td>\n\
+                                        <td></td>\n\
+                                        <td class="ColOH2">&nbsp;</td>\n\
+                                        <td class="ColOH2"></td>\n\
+                                        <td class="ColWP"></td>\n\
+                                        </tr>';
+                                    }
+                                    $('#data').html(string);
+                                    formatoTabla('410px');
+                                }
+                                function loadall() {
+                                    $(".loading").css('display', 'block');
+                                    $.ajax({
+                                        type: 'POST',
+                                        
+                                        url: '../crl/medicionCRL.php',
+                                        data: {action: 'list'},
+                                        success: function (data) {
+                                            var client = JSON.parse(data);
+                                            var string = '';
+                                            for (var i = 0; i < client.length; i++) {
+                                                string += '<tr onclick=\"getClie(\'' + client[i][0] + '\');\">\n\
+                                                       <td class="ColMS atr ch">' + (i + 1) + '</td>\n\
+                                                       <td>' + client[i][1] + ' ' + client[i][2] + '</td>\n\
+                                                       <td class="ColOH2">' + client[i][3] + '</td>\n\
+                                                       <td class="ColOH2">' + client[i][9] + '</td>\n\
+                                                       <td class="ColWP">' + '-' + '</td>\n\
+                                                       </tr>';
+                                            }
+                                            for (var i = 0; i < (15 - client.length); i++) {
+                                                string += '<tr>\n\
+                                        <td class="ColMS atr ch"></td>\n\
+                                        <td></td>\n\
+                                        <td class="ColOH2">&nbsp;</td>\n\
+                                        <td class="ColOH2"></td>\n\
+                                        <td class="ColWP"></td>\n\
+                                        </tr>';
+                                            }
+                                            $('#data').html(string);
+                                            formatoTabla('410px');
+                                            $(".loading").css('display', 'none');
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                            $(".loading").css('display', 'none');
+                                        }
+                                    });
+                                }
+                                function getClie(id) {
+                                    var time = new Date().getTime();
+                                    location.href = 'medicion.html?med=' + id + '&time=' + time;
+                                    $(".modalbox").css("height","682px");
+                                }
+                                function calcularEdad(fecha){
+                                    if(fecha!='0000-00-00'){
+                                        fecha = toFecha(fecha);
+
+                                        var fechaActual = new Date();
+                                        var diaActual = fechaActual.getDate();
+                                        var mmActual = fechaActual.getMonth() + 1;
+                                        var yyyyActual = fechaActual.getFullYear();
+                                        FechaNac = fecha.split("/");
+                                        var diaCumple = FechaNac[0];
+                                        var mmCumple = FechaNac[1];
+                                        var yyyyCumple = FechaNac[2];
+
+                                        //retiramos el primer cero de la izquierda
+                                        if (mmCumple.substr(0,1) == 0) {
+                                        mmCumple= mmCumple.substring(1, 2);
+                                        }
+                                        //retiramos el primer cero de la izquierda
+                                        if (diaCumple.substr(0, 1) == 0) {
+                                        diaCumple = diaCumple.substring(1, 2);
+                                        }
+                                        var edad = yyyyActual - yyyyCumple;
+
+                                        //validamos si el mes de cumpleaños es menor al actual
+                                        //o si el mes de cumpleaños es igual al actual
+                                        //y el dia actual es menor al del nacimiento
+                                        //De ser asi, se resta un año
+                                        if ((mmActual < mmCumple) || (mmActual == mmCumple && diaActual < diaCumple)) {
+                                        edad--;
+                                        }
+                                        return edad;
+                                    }else{
+                                        return 0;
+                                    }
+                                }
+                                function find() {
+                                    $(".loading").css('display', 'block');
+                                    var cod = $("#cod").val();
+                                    $("#cod").val($("#cod").val().toUpperCase());
+                                    if (cod == "") {
+                                        loadall();
+                                    } else {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '../crl/medicionCRL.php',
+                                            data: {action: 'find', path: cod},
+                                            success: function (data) {
+                                                var client = JSON.parse(data);
+                                                var string = '';
+                                                for (var i = 0; i < client.length; i++) {
+                                                    
+                                                    string += '<tr onclick=\"getClie(\'' + client[i][0] + '\');\">\n\
+                                                       <td class="ColMS atr ch">' + (i + 1) + '</td>\n\
+                                                       <td>' + client[i][1] + ' ' + client[i][2] + '</td>\n\
+                                                       <td class="ColOH2">' + client[i][3] + '</td>\n\
+                                                       <td class="ColOH2">' + client[i][9] + '</td>\n\
+                                                       <td class="ColWP">' + '-' + '</td>\n\
+                                                       </tr>';
+                                                }
+                                                for (var i = 0; i < (15 - client.length); i++) {
+                                                    string += '<tr>\n\
+                                        <td class="ColMS atr ch"></td>\n\
+                                        <td></td>\n\
+                                        <td class="ColOH2">&nbsp;</td>\n\
+                                        <td class="ColOH2"></td>\n\
+                                        <td class="ColWP"></td>\n\
+                                        </tr>';
+                                                }
+                                                $('#data').html(string);
+                                                formatoTabla('410px');
+                                            },
+                                            error: function () {
+                                                msgError("Error del Sistema.", "red");
+                                            }
+                                        });
+                                    }
+                                    $(".loading").css('display', 'none');
+                                }
+                                $("#cod").keyup(function (e) {
+                                    if (e.keyCode == 13) {
+                                        find();
+                                    } else {
+                                        limpiarList();
+                                    }
+                                    formatoTabla('410px');
+                                });
+                                $('#data').css('height', '417px');
+                                estoyEnUnIframe();
+        </script>
+    </body>
+</html>

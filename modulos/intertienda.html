@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .loading{
+                display: none;
+                position: absolute;
+                bottom: -2px;
+                left: 128px;
+                height: 34px;
+            }
+        </style>
+    </head>
+    <body class="modal" style="margin-top:10px;" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="header-inventario">
+                <div class="filtro">
+                    <table>
+                        <tr style="height: 70px;">
+                            <td style="width: 150px">
+                                <label for="cod">Modelo</label>
+                                <input type="text" id="cod" name="cod" style="display: block; width: 120px; padding-right: 40px;"/>
+                            </td>
+                            <td style="width: 60px"><button type="button" class="icon-buscar" id="find" onclick="loadInventario();"></button></td>
+                            <td><label id="contRow"></label></td>
+                        </tr>
+                    </table>
+                    <div class="loading"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColOH2">Modelo</td> 
+                        <td class="ColMMM">Codigo</td>
+                        <!-- td>ID</td -->
+                        <td class="ColMA">Marca</td>
+                        <td class="ColOH2">Tipo</td> 
+                        <td class="ColM">Color</td> 
+                        <td>Venta</td> 
+                        <td>PM</td> 
+                        <td class="ColOH2">Tienda</td>  
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+
+                </tbody>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                                limpiarList();
+                                //categoria = $('#carac option:selected').text();
+                                function limpiarList() {
+                                    var string = '';
+                                    for (var i = 0; i < 12; i++) {
+                                        string += "<tr><td class=\"ColMS ch\"></td>\n\
+                                        <td class=\"ColOH2\"></td>\n\
+                                        <td class=\"ColMMM\"></td>\n\
+                                        <td class=\"ColMA\">&nbsp;</td>\n\
+                                        <td class=\"ColOH2\"></td>\n\
+                                        <td class=\"ColM\"></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td class=\"ColOH2\"></td>\n\
+                                        </tr>";
+                                    }
+                                    $('#data').scrollTop(0);
+                                    $('#data').html(string);
+                                    $('#contRow').text('');
+                                    formatoTabla('64px');
+                                }
+                                function loadInventario() {
+                                    var cod = $("#cod").val();
+                                    $("#cod").val($("#cod").val().toUpperCase());
+                                    if (cod != '') {
+                                        $(".loading").css('display', 'block');
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '../crl/monturasCRL.php',
+                                            data: {action: 'listMulti', modelo: cod},
+                                            success: function (data) {
+                                                var productos = JSON.parse(data);
+                                                var string = '';
+                                                for (var i = 0; i < productos.length; i++) {
+                                                    string += '<tr><td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                    <td  class=\"ColOH2\">' + productos[i][2] + '</td>\n\
+                                                    <td class=\"ColMMM\">' + productos[i][0] + '</td>\n\
+                                                    <td class=\"ColMA\">' + productos[i][1] + '</td>\n\
+                                                    <td  class=\"ColOH2\">' + productos[i][3] + '</td>\n\
+                                                    <td  class=\"ColM\">' + productos[i][4] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][7] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][8] + '</td>\n\
+                                                    <td  class=\"ColOH2\">' + productos[i][9] + '</td>\n\
+                                                    </tr>';
+                                                }
+                                                for (var i = 0; i < (12 - productos.length); i++) {
+                                                    string += "<tr><td class=\"ColMS ch\"></td>\n\
+                                                    <td class=\"ColOH2\"></td>\n\
+                                                    <td class=\"ColMMM\"></td>\n\
+                                                    <td class=\"ColMA\">&nbsp;</td>\n\
+                                                    <td class=\"ColOH2\"></td>\n\
+                                                    <td class=\"ColM\"></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td class=\"ColOH2\"></td>\n\
+                                                    </tr>";
+                                                }
+                                                $('#data').scrollTop(0);
+                                                $('#data').html(string);
+                                                $('#contRow').text('Encontrados: ' + productos.length);
+                                                formatoTabla('64px');
+                                                $(".loading").css('display', 'none');
+                                            },
+                                            error: function () {
+                                                $(".loading").css('display', 'none');
+                                            }
+                                        });
+                                    }
+                                    $("#cod").select();
+                                }
+                                $("#cod").focusin(function () {
+                                    $("#cod").val('');
+                                });
+                                $("#cod").keyup(function (e) {
+                                    if (e.keyCode == 13) {
+                                        loadInventario();
+                                    } else {
+                                        limpiarList();
+                                    }
+                                    formatoTabla('64px');
+                                });
+                                $('#data').css('height', '333px');
+                                $('#find').css('margin-top', '37px');
+                                //estoyEnUnIframe();
+        </script>
+    </body>
+</html>

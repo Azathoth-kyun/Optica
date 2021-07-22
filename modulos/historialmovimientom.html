@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .detvendido{
+                color: white;
+                padding: 5px 8px;
+                background: #00BCD4;
+                border-radius: 30px;
+                margin-right: 5px;
+            }
+            .impEtiquetas{
+                display: none;
+                visibility: hidden;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: white;
+                text-align: center;
+                top: 0px;
+                left: 0px;
+                zoom:70%;
+            }
+            .content-Etiquetas{
+                margin: 0px 0 0 50px;
+                width: 200px;
+                color: black;
+            }
+            .etiquetasItem{
+                display:block;
+                margin-top: 30px;
+            }
+            #idImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            #PrecioImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            #ModeloImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            @media print{
+                @page {
+                    size: A4 portrait;
+                    size: landscape;
+                    margin: 0;
+                }
+                .impEtiquetas{
+                    border: 2px solid black;
+                    visibility: visible;
+                    page-break-after: auto;
+                    display: block;
+                }  
+                .tabla{visibility: hidden;}
+            }
+            .estados{
+                display: none;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <!--form id="frmMonturas"-->
+            <input type="hidden" value="" name="action" id="action">
+            <!--input type="hidden" id="id" name="id" /-->
+            <table>
+                <tr>
+                    <td>
+                        <label for="codigo">Codigo</label>
+                        <input type="text" id="codigo" name="codigo"/>
+                        <button id="buscarmont" name="buscarmont" style="margin-top: 30px;position: absolute; top: 17px; left: 213px;" class="icon-buscar"></button>
+                        <div id="cargando" class="loadone" style="display: none;position: absolute; left: 258px; top: 46px;"></div>
+                    </td>
+                    <td colspan="2">
+                        <input type="text" id="non" name="non" style="visibility: hidden" disabled="" readonly=""/>
+                    </td>
+                    <td>
+                        <label for="costo" style="color: #FFAB00;">Precio Compra</label>
+                        <input type="text" id="costo" name="costo" style="border-color: #FFAB00"  class="money" disabled="" readonly=""/>
+                    </td>
+                    <td >
+                        <label for="precio" style="color: #00BCD4">Precio Venta</label>
+                        <input type="text" id="precio" name="precio" style="border-color: #00BCD4" class="money" disabled="" readonly=""/>
+                    </td>
+                    <td >
+                        <label for="precio" style="color: #FF5722;">Precio Mínimo</label>
+                        <input type="text" id="preciomin" name="preciomin" style="border-color: #FF5722;" class="money" disabled="" readonly=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" name="marca" disabled="" readonly=""/>
+                    </td>
+                    <td colspan="4">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" name="modelo" disabled="" readonly=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <label for="mov"></label>
+                        <div class="msg"  style="top:145px;  left: 10px;text-align: left;">Este es un mensaje de prueba</div>
+                        <div id="vendidomontura" title="" style="position: absolute;right: 7px;top: 153px;color: #00BCD4 ;width: 640px;text-align: right;"></div>
+                    </td>
+                </tr>
+            </table>
+            <!--/form-->
+        </div>
+        <div class="tabla" style="margin-top: 20px;">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS"></td>
+                        <td class="ColSM">Codigo</td>
+                        <td class="ColSM">Fecha</td>
+                        <td class="ColSM">Hora</td>
+                        <td>Indicador</td>
+                        <td>Comentario</td>
+                        <td>Ubicación</td>
+                    </tr>
+                </thead>
+                <tbody id="data" style="height: 250px;">
+                </tbody>
+            </table>
+        </div>
+        <div class="impEtiquetas">
+            <div class="content-Etiquetas">
+                <div class="etiquetasItem">
+                    <table>
+                        <tr>
+                            <td>
+                                <div id="bcTarget" style="margin: 0px auto;width: 200px"></div>
+                            </td>
+                            <td style="width:150px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div id="bcDatos">
+                                    <label id="idImp"></label>
+                                    <label id="PrecioImp"></label>
+                                    <label id="ModeloImp"></label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script src="../js/barcode.min.js"></script>
+        <script>
+                    window.parent.resizeModal(826, 520);
+                    
+                    var string = "";
+                    for (var i = 0; i < 9; i++) {
+                        string += '<tr><td class=\"ColMS ch\"></td>\n\
+                        <td class=\"ColSM\">&nbsp;</td>\n\
+                        <td class="ColSM"></td>\n\
+                        <td class="ColSM"></td>\n\
+                        <td></td>\n\
+                        <td></td>\n\
+                        <td></td>\n\
+                        </tr>';
+                    }
+                    $('#data').html(string);
+                    formatoTabla('152px');
+
+                    //var idmontura = $_GET('idmontura');
+                    $('#buscarmont').click(function (e) {
+                        var cod = $("#codigo").val();
+                        var id = "";
+                        if (!isNaN(cod)) {
+                            id = cod;
+                            var s = cod.length;
+                            var ncod = 'M';
+                            for (var i = 0; i < (7 - (s + 1)); i++) {
+                                ncod += '0';
+                            }
+                            cod = ncod + cod;
+                            id=cod;
+                        } else {
+                            id = cod.substring(1, cod.length);
+                            id = parseInt(id);
+                        }
+                        document.getElementById('cargando').style.display="block";
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/monturasCRL.php',
+                            data: {action: 'getByIdMontura', id: cod},
+                            success: function (data) {
+                                if (data != "null") {
+                                    var monturas = JSON.parse(data);
+                                    //location.href = 'detallemonturas.html?idmontura=' + monturas[0];
+                                    
+                                    getMontura(monturas[0]);
+                                    loadUsers(monturas[0]);
+                                } else {
+                                    $('#vendidomontura').attr("title", "");
+                                    $('#vendidomontura').html("");
+                                    msgError("Montura no encontrada.", "orange");
+                                    $("#codigo").select();
+                                    $("#codigo").focus();
+                                    document.getElementById('cargando').style.display="none";
+                                    
+                                    $('#codigo').val('');
+                                    $('#costo').val('');
+                                    $('#tope').val('');
+                                    $('#marca').val('');
+                                    $('#precio').val('');
+                                    $('#preciomin').val('');
+                                    $('#color').val('');
+                                    $('#modelo').val('');
+                                    $('#tipo').val('');
+                                    $('#estuche').val('');
+                                    $('#comentario').val('');
+                                    
+                                    var string = "";
+                                    for (var i = 0; i < 9; i++) {
+                                        string += '<tr><td class=\"ColMS ch\"></td>\n\
+                                        <td class=\"ColSM\">&nbsp;</td>\n\
+                                        <td class="ColSM"></td>\n\
+                                        <td class="ColSM"></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        </tr>';
+                                    }
+                                    $('#data').html(string);
+                                    formatoTabla('152px');
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    });
+                    $('#codigo').focusin(function () {
+                        $('#codigo').val('');
+                    });
+                    $('#codigo').keyup(function (e) {
+                        if (e.keyCode == 13) {
+                            var cod = $("#codigo").val();
+                            var id = "";
+                            if (!isNaN(cod)) {
+                                id = cod;
+                                var s = cod.length;
+                                var ncod = 'M';
+                                for (var i = 0; i < (7 - (s + 1)); i++) {
+                                    ncod += '0';
+                                }
+                                cod = ncod + cod;
+                                id=cod;
+                            } else {
+                                id = cod.substring(1, cod.length);
+                                id = parseInt(id);
+                            }
+                            
+                            document.getElementById('cargando').style.display="block";
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/monturasCRL.php',
+                                data: {action: 'getByIdMontura', id: cod},
+                                success: function (data) {
+                                    if (data != "null") {
+                                        var monturas = JSON.parse(data);
+                                        //location.href = 'detallemonturas.html?idmontura=' + monturas[0];
+
+                                        getMontura(monturas[0]);
+                                        loadUsers(monturas[0]);
+                                    } else {
+                                        $('#vendidomontura').attr("title", "");
+                                        $('#vendidomontura').html("");
+                                        msgError("Montura no encontrada.", "orange");
+                                        $("#codigo").select();
+                                        $("#codigo").focus();
+                                        document.getElementById('cargando').style.display="none";
+                                        
+                                        $('#codigo').val('');
+                                        $('#costo').val('');
+                                        $('#tope').val('');
+                                        $('#marca').val('');
+                                        $('#precio').val('');
+                                        $('#preciomin').val('');
+                                        $('#color').val('');
+                                        $('#modelo').val('');
+                                        $('#tipo').val('');
+                                        $('#estuche').val('');
+                                        $('#comentario').val('');
+                                        
+                                        var string = "";
+                                        for (var i = 0; i < 9; i++) {
+                                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                                            <td class=\"ColSM\">&nbsp;</td>\n\
+                                            <td class="ColSM"></td>\n\
+                                            <td class="ColSM"></td>\n\
+                                            <td></td>\n\
+                                            <td></td>\n\
+                                            <td></td>\n\
+                                            </tr>';
+                                        }
+                                        
+                                        $('#data').html(string);
+                                        formatoTabla('152px');
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    });
+                    
+                    
+                    function getMontura(idmontura) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/monturasCRL.php',
+                            data: {action: 'getMonturasById', codigo: idmontura},
+                            success: function (data) {
+                                if (data != 'null') {
+                                    var montura = JSON.parse(data);
+                                    //alert((montura[15] + "") != 'null');
+                                    $('#action').val('upd');
+                                    $('#codigo').val(montura[0]);
+                                    $('#costo').val(montura[11]);
+                                    $('#marca').val(montura[1]);
+                                    $('#precio').val(montura[12]);
+                                    $('#preciomin').val(montura[16]);
+                                    $('#modelo').val(montura[2]);
+                                    
+                                    //$("#bcTarget").barcode(montura[0], "code128");
+                                    //$('#idImp').text(montura[0]);
+                                    //$('#PrecioImp').text(montura[2]);
+                                    //$('#ModeloImp').text("S/." + montura[12]);
+                                    
+                                    if (montura[13] + "" != "null") {
+                                        var npaciente=montura.paciente;
+                                        if(npaciente.length>21){
+                                            npaciente = npaciente.substring(0, 21)+"...";
+                                        }
+                                        $('#vendidomontura').attr("title", "VENDIDO - "+montura.fv+" - "+montura.hv+" - "+montura.tienda+" - "+montura.paciente);
+                                        $('#vendidomontura').html("<span class='detvendido'>VENDIDO</span><span class='detvendido'>"+montura.fv+" "+montura.hv+"</span><span class='detvendido'>"+montura.tienda+"</span><span class='detvendido' style='white-space:nowrap;overflow:hidden;white-space:nowrap;text-overflow: ellipsis;'>"+npaciente+"</span>");
+                                        
+                                    }else{
+                                        $('#vendidomontura').html("<span class='detvendido'>NO VENDIDO</span>");
+                                    }
+                                    $('#Marca').focus();
+                                    $('.estados').css('display', 'block');
+                                } else {
+                                    $('#vendidomontura').attr("title", "");
+                                    $('#vendidomontura').html("");
+                                    $('#codigo').val('');
+                                    msgError("Montura no Encontrada.", "orange");
+                                    $('.estados').css('display', 'none');
+                                }
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                                $('.estados').css('display', 'none');
+                            }
+                        });
+                    }
+                    
+                    function loadUsers(idmontura) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/historialmovimientoCRL.php',
+                            data: {action: 'listHistorialByIdMontura', idmonturas: idmontura},
+                            success: function (data) {
+                                console.log(data);
+                                var users = JSON.parse(data);
+                                console.log(users);
+                                var string = '';
+                                for (var i = 0; i < users.length; i++) {
+                                    string += '<tr onclick=\"getUser(\'' + users[i].idhistorial + '\');\">\n\
+                                                <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                <td class="ColSM">' + users[i].idmonturas + '</td>\n\
+                                                <td class="ColSM">' + toFecha(users[i].fecha) + '</td>\n\
+                                                <td class="ColSM">' + users[i].hora + '</td>\n\
+                                                <td>' + users[i].indicador + '</td>\n\
+                                                <td>' + users[i].comentario + '</td>\n\
+                                                <td>' + users[i].tienda + '</td></tr>';
+                                }
+                                for (var i = 0; i < (9 - users.length); i++) {
+                                    string += '<tr><td class=\"ColMS ch\"></td>\n\
+                        <td class=\"ColSM\">&nbsp;</td>\n\
+                        <td class="ColSM"></td>\n\
+                        <td class="ColSM"></td>\n\
+                        <td></td>\n\
+                        <td></td>\n\
+                        <td></td>\n\
+                        </tr>';
+                                }
+                                console.log(string);
+                                $('#data').html(string);
+                                formatoTabla('152px');
+                                document.getElementById('cargando').style.display="none";
+                            },
+                            error: function () {
+                                msgError("Error del Sistema", "#F77474");
+                                document.getElementById('cargando').style.display="none";
+                            }
+                        });
+                        formatoTabla('152px');
+                    }
+                    
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

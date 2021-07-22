@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            #estados{
+                margin-bottom: -30px;
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="overflow: hidden;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div>
+            <table style="width: 280px; margin-left: 20px;">
+                <tr>
+                    <td>
+                        <label for="venta">Código de Venta</label>
+                        <input type="text" id="venta" name="venta"/>
+                    </td>
+                    <td>
+                        <button style="margin-top: 33px;position: relative;top: -3px;" class="icon-buscar" onclick="irVenta();"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="botones">
+                            <div class="msg"  style="top:0px;  right: 0px;text-align: left;">Este es un mensaje de prueba</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                            var prod = $_GET('t');
+                            $('#venta').focusin(function () {
+                                $('#venta').val('');
+                            });
+                            $('#venta').keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    var cod = $("#venta").val();
+                                    var id = "";
+                                    if (!isNaN(cod)) {
+                                        id = cod;
+                                        var s = cod.length;
+                                        var ncod = 'V';
+                                        for (var i = 0; i < (9 - (s + 1)); i++) {
+                                            ncod += '0';
+                                        }
+                                        cod = ncod + cod;
+                                    } else {
+                                        id = cod.substring(1, cod.length);
+                                        id = parseInt(id);
+                                    }
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/ventaCRL.php',
+                                        data: {action: 'getByIdVenta', id: id},
+                                        success: function (data) {
+                                            if (data != "null") {
+                                                var ventas = JSON.parse(data);
+                                                location.href = 'ventas.html?idventa=' + ventas[0] + '&tienda=' + ventas[1] + '&cod=' + cod;
+                                            } else {
+                                                msgError("venta no encontrada.", "orange");
+                                                $("#venta").select();
+                                                $("#venta").focus();
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            });
+                            function irVenta() {
+                                var cod = $("#venta").val();
+                                var id = "";
+                                if (!isNaN(cod)) {
+                                    id = cod;
+                                    var s = cod.length;
+                                    var ncod = 'V';
+                                    for (var i = 0; i < (9 - (s + 1)); i++) {
+                                        ncod += '0';
+                                    }
+                                    cod = ncod + cod;
+                                } else {
+                                    id = cod.substring(1, cod.length);
+                                    id = parseInt(id);
+                                }
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/ventaCRL.php',
+                                    data: {action: 'getByIdVenta', id: id},
+                                    success: function (data) {
+                                        if (data != "null") {
+                                            var ventas = JSON.parse(data);
+                                            location.href = 'ventas.html?idventa=' + ventas[0] + '&tienda=' + ventas[1] + '&cod=' + cod;
+                                        } else {
+                                            msgError("venta no encontrada.", "orange");
+                                            $("#venta").select();
+                                            $("#venta").focus();
+                                        }
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            }
+                            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

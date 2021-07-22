@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .impEtiquetas{
+                //display: none;
+                visibility: hidden;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: white;
+                text-align: center;
+                top: 0px;
+                left: 0px;
+                //zoom:70%;
+            }
+            .content-Etiquetas{
+                margin: 0px 0 0 50px;
+                width: 200px;
+                color: black;
+            }
+            .etiquetasItem{
+                display:block;
+                margin-top: 30px;
+            }
+            #idImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            #PrecioImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            #ModeloImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            @media print{
+                @page {
+                    //size: A4 portrait;
+                    size: landscape;
+                    margin: 0;
+                }
+                .impEtiquetas{
+                    //border: 2px solid black;
+                    visibility: visible;
+                    page-break-after: auto;
+                    //display: block;
+                }  
+                .tabla{visibility: hidden;}
+            }
+            .estados{
+                display: none;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <!--form id="frmMonturas"-->
+            <input type="hidden" value="" name="action" id="action">
+            <!--input type="hidden" id="id" name="id" /-->
+            <table>
+                <tr>
+                    <td>
+                        <label for="codigo">Codigo</label>
+                        <input type="text" id="codigo" name="codigo" disabled="" readonly=""/>
+                    </td>
+                    <td colspan="2">
+                        <input type="text" id="non" name="non" style="visibility: hidden" disabled="" readonly=""/>
+                    </td>
+                    <td>
+                        <label for="costo" style="color: #FFAB00;">Precio Compra</label>
+                        <input type="text" id="costo" name="costo" style="border-color: #FFAB00"  class="money" disabled="" readonly=""/>
+                    </td>
+                    <td >
+                        <label for="precio" style="color: #00BCD4">Precio Venta</label>
+                        <input type="text" id="precio" name="precio" style="border-color: #00BCD4" class="money" disabled="" readonly=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" name="marca" disabled="" readonly=""/>
+                    </td>
+                    <td colspan="3">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" name="modelo" disabled="" readonly=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <label for="ingreso">Fecha de Ingreso</label>
+                        <input type="text" id="ingreso" name="ingreso" disabled="" readonly=""/>
+                    </td>
+                    <td colspan="3">
+                        <label for="tiend">Tienda</label>
+                        <select id="tiend" name="tiend" disabled="" readonly="">
+                        </select>
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        <label for="vendido" style="color: #FF5722; display: none;" id="lblvendido">Vendido</label>
+                        <label for="novendido" style="color: #00BCD4; display: none;" id="lblnovendido">No vendido</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <label for="cliente">Cliente</label>
+                        <input type="text" id="cliente" name="cliente" disabled="" readonly=""/>
+                    </td>
+                    <td colspan="3">
+                        <label for="fechaventa">Fecha de Venta</label>
+                        <input type="text" id="fechaventa" name="fechaventa" disabled="" readonly=""/>
+                    </td>
+                </tr>
+                
+            </table>
+            <!--/form-->
+        </div>
+        <div class="impEtiquetas">
+            <div class="content-Etiquetas">
+                <div class="etiquetasItem">
+                    <table>
+                        <tr>
+                            <td>
+                                <div id="bcTarget" style="margin: 0px auto;width: 200px"></div>
+                            </td>
+                            <td style="width:150px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div id="bcDatos">
+                                    <label id="idImp"></label>
+                                    <label id="PrecioImp"></label>
+                                    <label id="ModeloImp"></label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script src="../js/barcode.min.js"></script>
+        <script>
+                    window.parent.resizeModal(800, 350);
+                    var idmontura = $_GET('idmontura');
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/tiendasCRL.php',
+                        data: {action: 'list'},
+                        success: function (data) {
+                            var tienda = JSON.parse(data);
+                            //var string = '<option value=\"0\">Seleccione...</option>';
+                            var string = '';
+                            for (var i = 0; i < tienda.length; i++) {
+                                string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                            }
+                            $('#tiend').html(string);
+                            $('#tiend').val('');
+                        },
+                        error: function () {
+                        }
+                    });
+                    
+                    getMontura();
+                    function getMontura() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/monturasCRL.php',
+                            data: {action: 'getMonturasById', codigo: idmontura},
+                            success: function (data) {
+                                if (data != 'null') {
+                                    var montura = JSON.parse(data);
+                                    //alert((montura[15] + "") != 'null');
+                                    $('#action').val('upd');
+                                    $('#codigo').val(montura[0]);
+                                    $('#costo').val(montura[11]);
+                                    $('#tope').val(montura[16]);
+                                    $('#marca').val(montura[1]);
+                                    $('#precio').val(montura[12]);
+                                    //$('#talla').val(montura[4]);
+                                    //$('#puente').val(montura[5]);
+                                    //$('#cod').val(montura[6]);
+                                    //$('#procedencia').val(montura[7]);
+                                    $('#color').val(montura[8]);
+                                    $('#modelo').val(montura[2]);
+                                    $('#tipo').val(montura[3]);
+                                    $('#estuche').val(montura[9]);
+                                    $('#comentario').val(montura[10]);
+                                    $('#tiend').val(montura[18]);
+                                    $('#ingreso').val(montura[21]+" "+montura[22]);
+                                    
+                                    if(montura[23]>0){
+                                        $('#cliente').val(montura[24]);
+                                        $('#fechaventa').val(montura[25]+" "+montura[26]);
+                                        document.getElementById("lblvendido").style.display = "block";
+                                    }else{
+                                        document.getElementById("lblnovendido").style.display = "block";
+                                    }
+                                    
+                                    $("#bcTarget").barcode(montura[0], "code128");
+                                    $('#idImp').text(montura[0]);
+                                    $('#PrecioImp').text(montura[2]);
+                                    $('#ModeloImp').text("S/." + montura[12]);
+                                    $('.estados').html('Disponible');
+                                    if (montura[18] == '1') {
+                                        $('#tiend').attr("disabled", "");
+                                    }
+                                    if (montura[15] + "" != "null") {
+                                        $('input').attr("disabled", "");
+                                        $('select').attr("disabled", "");
+                                        $('#codigo').removeAttr("disabled");
+                                        $('.icon-guardar').attr("disabled", "");
+                                        $('.icon-guardar').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                        $('.estados').html('En movimiento');
+                                    } else if (montura[13] + "" != "null") {
+                                        $('input').attr("disabled", "");
+                                        $('select').attr("disabled", "");
+                                        $('#codigo').removeAttr("disabled");
+                                        $('.icon-guardar').attr("disabled", "");
+                                        $('.icon-guardar').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                        $('.estados').html('Vendido');
+                                    }
+                                    $('#comp').val(montura[19] + " - " + montura[20]);
+                                    $('#Marca').focus();
+                                    $('.estados').css('display', 'block');
+                                } else {
+                                    $('#codigo').val('');
+                                    msgError("Montura no Encontrada.", "orange");
+                                    $('.estados').css('display', 'none');
+                                }
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                                $('.estados').css('display', 'none');
+                            }
+                        });
+                    }
+                    
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

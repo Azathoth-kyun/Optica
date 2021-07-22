@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    <style>
+        .tabs {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 300px;
+            background: #F5F5F5;
+            height: 100%;
+        }
+
+        .tabs input[type='radio'] {
+            position: absolute;
+            z-index: 1000;
+            width: 120px;
+            height: 40px;
+            left: 0px;
+            top: 0px;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            cursor: pointer;
+        }
+
+        .tabs input[type='radio']#tab-2 {
+            left: 120px;
+        }
+
+        .tabs .labels {
+            background: #E6E8E8;
+            line-height: 40px;
+            position: relative;
+            padding: 0 20px;
+            float: left;
+            width: 110px;
+            color: #6C818C !important;
+            text-align: center;
+            box-shadow: inset 0px -3px 26px #D6D6D6;
+        }
+
+        .tabs input[type='radio']:hover+.labels {
+            background: #F5F5F5;
+        }
+
+        .tabs input[type='radio']:checked+.labels {
+            background: #F5F5F5;
+            z-index: 6;
+            box-shadow: none;
+        }
+
+        .clear-shadow {
+            clear: both;
+        }
+
+        .content {
+            background: #FFAB00;
+            position: relative;
+            z-index: 5;
+        }
+
+        .content .divc {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0;
+            width: 100%;
+            transition: opacity linear 0.1s;
+        }
+
+        .tabs input[type='radio'].tab-selector-1:checked~.content .content-1,
+        .tabs input[type='radio'].tab-selector-2:checked~.content .content-2 {
+            z-index: 100;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            transition: opacity ease-out 0.2s 0.1s;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-button {
+            width: 8px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: gainsboro;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: gray;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, .6);
+        }
+
+        ::-webkit-scrollbar-thumb:window-inactive {
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .mfind {
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .mfind .icon-buscar {
+            margin-left: -2px;
+            cursor: pointer;
+        }
+
+        #buscar {
+            height: 21px;
+            border: none !important;
+            padding: 10px 60px 10px 10px;
+            width: calc(100% - 112px);
+        }
+
+        .content-2 .add-ls {
+            height: 358px;
+        }
+
+        .content-2 .add-cont {
+            background: #FFFFFF;
+        }
+
+        .NonC {
+            background: transparent !important;
+        }
+
+        #btnTotal {
+            display: inline-block;
+            width: 98px;
+            color: white;
+            text-align: center;
+            border-radius: 8px 0px 0px 8px;
+            cursor: pointer;
+        }
+
+        #btnFaltantes {
+            display: inline-block;
+            width: 98px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            margin-left: -4px;
+        }
+
+        #btnVerificadas {
+            display: inline-block;
+            width: 98px;
+            color: white;
+            text-align: center;
+            border-radius: 0px 8px 8px 0px;
+            cursor: pointer;
+            margin-left: -4px;
+        }
+
+        .btnSelect {
+            background: #6C818C;
+        }
+
+        .btnUnSelect {
+            background: #ABBBC3;
+        }
+
+        .btnSelectVer {
+            background: #ABBBC3;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+            }
+
+            body {
+                background: #fff;
+                color: #000;
+
+            }
+
+            .botones,
+            .tabs,
+            .modalbox,
+            .formulario,
+            .header-inventario,
+            .datatable thead {
+                display: none !important;
+            }
+
+            .inv-Repo {
+                position: relative !important;
+                top: 7px;
+                padding-bottom: 30px;
+            }
+
+            .cont-dad {
+                position: static !important;
+                right: 305px;
+                width: 100% !important;
+                top: 55px;
+            }
+
+            .ch {
+                background: #123268 !important;
+            }
+
+            .datatable {
+                border-collapse: collapse;
+                border-spacing: 0;
+                /*page-break-inside: avoid;*/
+            }
+
+            .datatable tbody {
+                display: table;
+                page-break-inside: auto;
+            }
+
+            .datatable tr {
+                border: 1px solid #ccc;
+                display: table-row-group;
+            }
+
+            .ch {
+                color: black;
+            }
+
+            .colorHeader {
+                -webkit-print-color-adjust: exact;
+                -moz-print-color-adjust: exact;
+                color: white;
+                background-color: rgba(30, 136, 229, 0.45) !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="modal" onload="cargando();">
+    <div>
+        <div class="cont-dad" style="position: absolute;right: 50px !important;width: 607px;top: 25px;">
+            <div class="preload">
+                <img src="../img/cargando.gif" class="preload-img">
+            </div>
+            <div class="formulario">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="tiend">Seleccione vendedor:</label>
+                            <div class="select-triangulo">
+                            <select id="listre" name="listre">
+                            </select>
+                            </div>
+                        </td>
+                        <td>
+                            <label for="tiempo">Periodo</label>
+                            <div class="select-triangulo">
+                                <select id="tiempo" name="tiempo" onchange="cambiarTiempo($(this).val())"
+                                    style="width: 120px">
+                                    <option value="MM">Mensual</option>
+                                    <option value="YY" selected="">Anual</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td id="rowMes" style="display: none;">
+                            <label for="mes">Mes</label>
+                            <div class="select-triangulo">
+                                <select id="mes" name="mes" onchange="cambiar($(this).val(), 'm')"
+                                    sstyle="width: 120px">
+                                    <option value="00" selected>Elija...</option>
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <label for="año">Año</label>
+                            <div class="select-triangulo">
+                                <select id="año" name="año" onchange="cambiar($(this).val(), 'a')" style="width: 120px">
+                                    <option value="01">2016</option>
+                                    <option value="02">2017</option>
+                                    <option value="03">2018</option>
+                                    <option value="04">2019</option>
+                                    <option value="05">2020</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="icon-buscar" onclick="buscar();" style="margin-top: 35px;"></button>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div id="cargando" class="loadone" style="display: none;position: absolute; left: 47%; top: 40%;"></div>
+            <input type="hidden" id="fechageth" name="fechageth">
+            <input type="hidden" id="horageth" name="horageth">
+            <div class="tabla">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <td class="ColMS" style="width: 34px">Item</td>
+                            <td style="width: 60px;">Fecha</td>
+                            <td style="width: 300px;">Código de Venta</td>
+                            <!--td class="ColOH">marca</td-->
+                            <td class="ColMM" style="width: 80px;">Generado</td>
+                        </tr>
+                    </thead>
+                    <tbody id="data">
+                    </tbody>
+                </table>
+            </div>
+            <div class="botones">
+                <div id="totalTotal" class="add-item mfind" style="float: left; margin-top: 15px;">
+                <label class="add-nom NonC" style="width: 45px;">Total:</label>
+                <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                <div class="add-cont" style="background: #FFFFFF">
+                    <label id="txtGTotaldown" style="color:#1A55DA !important">0</label>
+                </div>
+                </div>
+                <div class="msg" style="left: 155px; top: 8px;">mensaje</div>
+                <button type="button" onclick="imprimirTotal();" id="btnSTotal" class="icon-imprimir cl-guardar1"
+                    style="float: right;display: block; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Imprimir</button>
+            </div>
+        </div>
+    </div>
+    <div class="bloqueo">
+        <div class="advertenciaMainContant">
+            <div class="titleMainCpontent">
+                <p class="titleAdvertencia">Advertencia</p>
+            </div>
+            <div class="contenidoMain">
+                <p class="textMainAlert">el código ingresado no es válido</p>
+                <p class="textDescription">Por favor, verificar el código <br /> y vuelva a ingresarlo</p>
+                <a href="#" class="btnAceptar" onclick="$('.bloqueo').css('display', 'none');
+                            $('#buscar').focus();">Aceptar</a>
+
+                <figure class="imgAdvertenciaContent">
+                    <img src="../img/icoAdvertencia2.svg" class="imgAdvertencia">
+                </figure>
+            </div>
+        </div>
+    </div>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        $.ajax({
+            type: 'POST',
+            url: '../crl/tiendasCRL.php',
+            data: { action: 'getTrabajadores' },
+            success: function (data) {
+                var vendedor = JSON.parse(data);
+                console.log(vendedor);
+                var string = '<option value=\"0\">Seleccione...</option>';
+                for (var i = 0; i < vendedor.length; i++) {
+                    var aux=i+1;
+                    string += '<option value=\"' + vendedor[i].vendedor + '\">' + vendedor[i].vendedor + '</option>';;
+                }
+                $('#listre').html(string);
+            },
+            error: function () {
+            }
+        });
+        function cambiarTiempo(a) {
+            oTiempo = a;
+            if (a == "MM") {
+                $('#rowMes').removeAttr('style');
+                oMes = (new Date).getMonth() + 1;
+                if (oMes < 10) {
+                    oMes = '0' + oMes;
+                }
+                cambiar(oMes, 'm');
+                $('#mes').val(oMes);
+            } else {
+                $('#rowMes').attr("style", 'display:none');
+                cambiar(oAño, 'a');
+            }
+        }
+        function cambiar(auxValor, auxTipo) {
+            //var auxMensaje='';
+            if (auxTipo == 't') {
+                oTienda = auxValor;
+            }
+            else if (auxTipo == 'm') {
+                oMes = auxValor;
+            }
+            else if (auxTipo == 'a') {
+                oAño = auxValor;
+            }
+        }//fin funcion
+        function buscar() {
+            var marquita = $('#listre').val();
+            var anio = $("#año option:selected").text();
+            var mes = $("#mes option:selected").val();
+            var string = '';
+            if (mes == "00") {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/tiendasCRL.php',
+                    data: { action: 'WorkersYear', anio: anio, marquita: marquita },
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var total = 0;
+                        console.log(data);
+                        for (var i=0; i<lista.length; i++){
+                            string += '<tr>\n\
+                                    <td  class=\"ColMS atr ch\" style="width: 34px">' + (i + 1) + '</td>\n\
+                                    <td style="width: 60px;">' + lista[i][0]+ '</td>\n\
+                                    <td style="width: 300px;">' + lista[i][1]+ '</td>\n\
+                                    <td class="ColMM" style="width: 80px;">' + lista[i][2] + '</td>\n\
+                                    </tr>';
+                        }
+                        for(var k = 0; k < lista.length; k++){
+                            total= parseInt(total) + parseInt(lista[k][2]);
+                        }
+                        $('#data').html(string);
+                        $('#txtGTotaldown').text(total);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            else {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/tiendasCRL.php',
+                    data: { action: 'WorkersMonth', anio: anio, marquita: marquita, mes: mes },
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var total = 0;
+                        console.log(data);
+                        for (var i=0; i<lista.length; i++){
+                            string += '<tr>\n\
+                                    <td  class=\"ColMS atr ch\" style="width: 34px">' + (i + 1) + '</td>\n\
+                                    <td style="width: 60px;">' + lista[i][0]+ '</td>\n\
+                                    <td style="width: 300px;">' + lista[i][1]+ '</td>\n\
+                                    <td class="ColMM" style="width: 80px;">' + lista[i][2] + '</td>\n\
+                                    </tr>';
+                        }
+                        for(var k = 0; k < lista.length; k++){
+                            total= parseInt(total) + parseInt(lista[k][2]);
+                        }
+                        $('#data').html(string);
+                        $('#txtGTotaldown').text(total);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+        function imprimirTotal() {
+            var marquita = $('#listre').val();
+                            if($('#data').html()!=""){
+                                var cadena = "<tr style='border:0'><td colspan='4'>LISTA DE VENTAS POR VENDEDOR: "+ marquita+ "</td> </tr>\n\
+                                        <tr style='border:0'><td colspan='4'>ÓPTICA OPTICENTER"+"</td></tr>\n\
+                                        <tr class=\"colorHeader\">\n\
+                                       <td  class=\"ColMS\">#</td>\n\
+                                       <td>Fecha</td>\n\
+                                       <td>Producto</td>\n\
+                                       <td class=\"ColMM\">Ingreso</td></tr>";
+                                var string = $('#data').html();
+                                string = cadena + string;
+                                $('#data').html(string);
+                                //formatoTabla('390px');
+                                window.print();
+                                buscar();
+                            }else{
+                                msgError("No hay datos para impresión", "#FFAA0F");
+                            }
+                        }
+        $('#data').css('height', '400px');
+        estoyEnUnIframe();
+    </script>
+</body>
+
+</html>

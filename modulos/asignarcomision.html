@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    <style>
+        .impEtiquetas {
+            display: none;
+            visibility: hidden;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            background: white;
+            text-align: center;
+            top: 0px;
+            left: 0px;
+            zoom: 70%;
+        }
+
+        .content-Etiquetas {
+            margin: 0px 0 0 50px;
+            width: 200px;
+            color: black;
+        }
+
+        .etiquetasItem {
+            display: block;
+            margin-top: 30px;
+        }
+
+        #idImp {
+            font-size: 6px;
+            padding: 0px;
+        }
+
+        #PrecioImp {
+            font-size: 6px;
+            padding: 0px;
+        }
+
+        #ModeloImp {
+            font-size: 6px;
+            padding: 0px;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                size: landscape;
+                margin: 0;
+            }
+
+            .impEtiquetas {
+                border: 2px solid black;
+                visibility: visible;
+                page-break-after: auto;
+                display: block;
+            }
+
+            .tabla {
+                visibility: hidden;
+            }
+        }
+
+        .estados {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="modal" onload="cargando();">
+    <div class="formulario">
+        <input type="hidden" value="" name="action" id="action">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <label for="cod">Codigo</label>
+                        <input type="text" id="cod" name="cod">
+                    </td>
+                    <td class="ColXXXX" style="width: 430px;">
+                        <label for="desc">Descripcion</label>
+                        <input type="text" id="desc" name="desc" disabled="">
+                    </td>
+                    <td>
+                        <label for="costo">Costo</label>
+                        <input type="text" id="costo" name="costo" class="money" disabled="">
+                    </td>
+                    <td>
+                        <label for="venta">Precio de Venta</label>
+                        <input type="text" id="venta" name="venta" class="money" disabled="">
+                    </td>
+                    <td>
+                        <label for="tope">Comisión</label>
+                        <input type="text" id="comision" name="comision" class="money">
+                    </td>
+                    <td>
+                        <button type="button" style="margin-top: 35px;" class="icon-buscar" onclick="Buscar();"></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="botones">
+            <div class="msg">mensaje</div>
+            <!--button type="button" onclick="Limpiar()" class="icon-nuevo">Nuevo</button-->
+            <button type="button" onclick="guardar();" class="icon-guardar">Guardar</button>
+        </div>
+    </div>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/barcode.min.js"></script>
+    <script>
+        function Buscar() {
+            var cod = $("#cod").val();
+            var id = "";
+
+            if (cod != "") {
+                id = cod;
+                if (id.startsWith("M") == true) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/monturasCRL.php',
+                        data: { action: 'getByIdMontura2', id: id },
+                        success: function (data) {
+                            console.log(data);
+                            console.log("VACIO");
+                            if (data != "null") {
+                                var monturas = JSON.parse(data);
+                                $('#desc').val(monturas[0][2]);
+                                $('#costo').val(monturas[0][0]);
+                                $('#venta').val(monturas[0][1]);
+                            } else {
+                                msgError("Producto no encontrado.", "orange");
+                                $("#cod").select();
+                                $("#cod").focus();
+                            }
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+                else if (id.startsWith("P") == true) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/productosCRL.php',
+                        data: { action: 'getByIdProducto1', id: id },
+                        success: function (data) {
+                            console.log(data);
+                            if (data != "null") {
+                                var producto = JSON.parse(data);
+                                $('#desc').val(producto[0][1]);
+                                $('#costo').val(producto[0][2]);
+                                $('#venta').val(producto[0][3]);
+                            } else {
+                                msgError("Producto no encontrado.", "orange");
+                                $("#cod").select();
+                                $("#cod").focus();
+                            }
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+                else{
+                    msgError("Producto no encontrado.", "orange");
+                    $("#cod").select();
+                    $("#cod").focus();
+                }
+            }
+            else{
+                msgError("Producto no encontrado.", "orange");
+                    $("#cod").select();
+                    $("#cod").focus();
+            }
+        }
+        function guardar(){
+            var cod = $("#cod").val();
+            var comision = $("#comision").val();
+            var id = "";
+            var commit;
+            if (cod != "" && comision != "") {
+                id = cod;
+                commit = parseFloat(comision);
+                console.log(commit);
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/productosCRL.php',
+                    data: { action: 'postearComision', id: id, comision: commit},
+                    success: function($data){
+                        if($data=="OK"){
+                            console.log("EXITO!!!");
+                            alert("Cambios Guardados!");
+                        }
+                    },
+                    error: function(){
+                        console.log("FRACASO TOTAL, NADA HACES BIEN :(");
+                    }
+                })
+            }
+            else{
+                msgError("Campo vacío.", "orange");
+                    $("#cod").select();
+                    $("#cod").focus();
+            }
+        }
+        estoyEnUnIframe();
+    </script>
+</body>
+
+</html>

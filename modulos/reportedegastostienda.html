@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .ef{
+                text-align: center;
+                color: white;
+                background:#FF9800;
+            }
+            .tt{
+                text-align: center;
+                color: white;
+                background: #00BCD4;
+            }
+            .ta{
+                text-align: center;
+                color: white;
+                background:  #4CAF50;
+            }
+            .ccc{
+                text-align: center !important;
+            }
+            #fecl{
+                border-left: 1px solid rgba(0,0,0,0.2);
+                padding-left: 16px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmSearch">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="tienda" name="tienda" />
+                <table>
+                    <tr>
+                        <td style="width: 160px; display: none;">
+                            <label for="periodo">Periodo</label>
+                            <div class="select-triangulo">
+                                <select id="periodo" name="periodo" onchange="cambiarPeriodo()" style="width: 120px">
+                                    <option value="DD" selected="">Diario</option>
+                                    <option value="MM">Mensual</option>
+                                    <option value="YY">Anual</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td id="rowDia" style="display: table-cell; width: 3px;">
+                            <label for="fec">Fecha</label>
+                            <input type="date" id="fec" name="fec" style="height: 21px; width: 133px;text-align: center">
+                        </td>
+                        <td id="rowAnio" style="display: none; width: 3px;"> 
+                            <label for="anio">Año</label>
+                            <div class="select-triangulo">
+                                <select id="anio" name="anio" style="width: 120px">
+                                </select>
+                            </div>
+                        </td>
+                        <td id="rowMes" style="display: none; width: 3px;"> 
+                            <label for="mes">Mes</label>
+                            <div class="select-triangulo">
+                                <select id="mes" name="mes" style="width: 120px">
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td style="width: 20px;">
+                            <button id="buscargastos" onclick="buscarGastos(); return false" style="height: 34px;  width: 34px !important; margin-top: 30px;" class="icon-buscar"></button>
+                        </td>
+                        <td>
+                            <div id="cargando" class="loadone" style="margin-top: 25px; display: none;"></div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <br/>
+        <div class="tabla">
+            <table class="datatable" style="margin-top: 0px !important">
+                <thead>
+                    <tr>
+                        <td class="ColMS">#</td>
+                        <td>Tipo Gasto</td>
+                        <td>Monto</td>
+                        <td>Descripción</td>
+                        <td>Observación</td>
+                        <td>Fecha</td>
+                        <td>Tienda</td>
+                        <td>Usuario</td>
+                    </tr>
+                </thead>
+                <tbody id="data" class="BigTbody">
+                </tbody>
+            </table>
+            <table>
+                <tr>
+                    <td>
+                        <label for="te">Total Gastos</label>
+                        <input type="text" id="total" name="total"  disabled="" style="text-align: center;color: #FF9800;font-size: 25px;"/>
+                    </td>
+                    <td>
+                        <label for="te">Total Ingresos </label>
+                        <input type="text" id="totalIngresos" name="totalIngresos"  disabled="" style="text-align: center;color: #FF9800;font-size: 25px;"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            $.ajax({
+                type: 'POST',
+                url: '../crl/tiendasCRL.php',
+                data: {action: 'getTiendaByUsuario'},
+                success: function (data) {
+                    var users = JSON.parse(data);
+                    $('#tienda').val(users[0]);
+                },
+                error: function () {
+                }
+            });
+            
+            $('#fec').val(fechaG());
+            var f = new Date();
+            var anio = f.getFullYear();
+            
+            var string = '';
+            string += '<option value=\"' + (anio) + '\" selected="">' + (anio) + '</option>';
+            string += '<option value=\"' + (anio - 1) + '\">' + (anio - 1) + '</option>';
+            string += '<option value=\"' + (anio - 2) + '\">' + (anio - 2) + '</option>';
+            string += '<option value=\"' + (anio - 3) + '\">' + (anio - 3) + '</option>';
+            string += '<option value=\"' + (anio - 4) + '\">' + (anio - 4) + '</option>';
+            string += '<option value=\"' + (anio - 5) + '\">' + (anio - 5) + '</option>';
+            $('#anio').html(string);
+            
+            function cambiarPeriodo(){
+                if($('#periodo').val() == 'DD'){
+                    $('#rowDia').attr("style", 'display: table-cell; width: 3px;');
+                    $('#rowMes').attr("style", 'display: none; width: 159px;');
+                    $('#rowAnio').attr("style", 'display: none; width: 159px;');
+                }
+                else if($('#periodo').val() == 'MM'){
+                    $('#rowDia').attr("style", 'display: none; width: 3px;');
+                    $('#rowMes').attr("style", 'display: table-cell; width: 159px;');
+                    $('#rowAnio').attr("style", 'display: table-cell; width: 159px;');
+                }
+                else if($('#periodo').val() == 'YY'){
+                    $('#rowDia').attr("style", 'display: none; width: 3px;');
+                    $('#rowMes').attr("style", 'display: none; width: 159px;');
+                    $('#rowAnio').attr("style", 'display: table-cell; width: 159px;');
+                }
+            }
+            
+            $.ajax({
+                type: 'POST',
+                url: '../crl/tiendasCRL.php',
+                data: {action: 'list'},
+                success: function (data) {
+                    var tienda = JSON.parse(data);
+                    var string1 = '<option value=\"0\" selected="">TODAS</option>';
+                    for (var i = 0; i < tienda.length; i++) {
+                        string1 += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                    }
+                    $('#tienda').html(string1);
+                    buscarGastos();
+                },
+                error: function () {
+                }
+            });
+            var totali=0;
+            var totalg=0;
+            function buscarGastos(){
+                document.getElementById('cargando').style.display = "block";
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: $('#frmSearch').serialize()+'&action=listDetalleGastosByParametros',
+                    success: function (data) {
+                        imprimirListaDatos(data);
+                        
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/ventaCRL.php',
+                            data: $('#frmSearch').serialize()+'&action=TotalIngresosByFecha&fecv='+toFecha($('#fec').val()),
+                            success: function (data) {
+                                var totalingresos=0;
+                                var lista = JSON.parse(data);
+                                var tote=0;
+                                var tott=0;
+                                
+                                if(lista[0].totale==null){
+                                    tote=0;
+                                }else{
+                                    tote=parseFloat(lista[0].totale);
+                                }
+                                if(lista[0].totalt==null){
+                                    tott=0;
+                                }else{
+                                    tott=parseFloat(lista[0].totalt);
+                                }
+                                
+                                totalingresos = tote + tott;
+                                //for (var i = 0; i < lista.length; i++) {
+                                    //totalingresos = totalingresos + parseFloat(lista[i].efectivo) + parseFloat(lista[i].tarjeta);
+                                //}
+                                totali=totalingresos.toFixed(2);
+                                $('#totalIngresos').val(totali);
+                                
+                                //$('#totalUtilidades').val((totali-totalg).toFixed(2));
+                                
+                                document.getElementById('cargando').style.display = "none";
+                            },
+                            error: function () {
+                                msgError("Error del Sistema", "#F77474");
+                                document.getElementById('cargando').style.display = "none";
+                            }
+                        });
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                        document.getElementById('cargando').style.display = "none";
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function imprimirListaDatos(data){
+                var totalgastos=0;
+                var lista = JSON.parse(data);
+                var string = '';
+                var c =0;
+                for (var i = 0; i < lista.length; i++) {
+                    if(lista[i].tipouserpago == 'tienda'){
+                        
+                        string += '<tr onclick=\"getUser(\'' + lista[i].idgasto + '\');\">\n\
+                                    <td class=\"ColMS atr ch\">' + (c + 1) + '</td>\n\
+                                    <td><center>' + lista[i].categoria + '</center></td>\n\
+                                    <td><center>' + lista[i].monto + '</center></td>\n\
+                                    <td><center>' + lista[i].descripcion + '</center></td>\n\
+                                    <td><center>' + lista[i].observacion + '</center></td>\n\
+                                    <td><center>' + lista[i].fecha + '</center></td>\n\
+                                    <td><center>' + lista[i].tienda + '</center></td>\n\
+                                    <td><center>' + lista[i].usuario + '</center></td>\n\
+                                    </tr>';
+                        c++;            
+                        totalgastos = totalgastos + parseFloat(lista[i].monto);
+                    }
+                }
+                for (var i = 0; i < (10 - c); i++) {
+                    string += '<tr><td class=\"ColMS ch\"></td>\n\
+        <td>&nbsp;</td>\n\
+        <td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+                }
+                $('#data').html(string);
+                formatoTabla('152px');
+                totalg=totalgastos.toFixed(2);
+                $('#total').val(totalg);
+            }
+            
+            function getUser(id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: {action: 'getDetalleGasto', id: id},
+                    success: function (data) {
+                        if (data != "no") {
+                            var users = JSON.parse(data);
+                            
+                            $('#id').val(users[0].idgasto);
+                            $('#categoria').val(users[0].idcategoria);
+                            $('#monto').val(users[0].monto);
+                            $('#descripcion').val(users[0].descripcion);
+                            $('#observacion').val(users[0].observacion);
+                        } else {
+                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                        }
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+            }
+            
+            $('#data').css('height', '290px');
+            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

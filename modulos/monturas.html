@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .impEtiquetas{
+                display: none;
+                visibility: hidden;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: white;
+                text-align: center;
+                top: 0px;
+                left: 0px;
+                zoom:70%;
+            }
+            .content-Etiquetas{
+                margin: 0px 0 0 50px;
+                width: 200px;
+                color: black;
+            }
+            .etiquetasItem{
+                display:block;
+                margin-top: 30px;
+            }
+            #idImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            #PrecioImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            #ModeloImp{
+                font-size: 6px;
+                padding: 0px;
+            }
+            @media print{
+                @page {
+                    size: A4 portrait;
+                    size: landscape;
+                    margin: 0;
+                }
+                .impEtiquetas{
+                    border: 2px solid black;
+                    visibility: visible;
+                    page-break-after: auto;
+                    display: block;
+                }  
+                .tabla{visibility: hidden;}
+            }
+            .estados{
+                display: none;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <!--form id="frmMonturas"-->
+            <input type="hidden" value="" name="action" id="action">
+            <!--input type="hidden" id="id" name="id" /-->
+            <table>
+                <tr>
+                    <td>
+                        <label for="codigo">Codigo</label>
+                        <input type="text" id="codigo" name="codigo"/>
+                    </td>
+                    <td colspan="2">
+                        <input type="text" id="non" name="non" style="visibility: hidden"/>
+                    </td>
+                    <td>
+                        <label for="costo" style="color: #FFAB00;">Precio Compra</label>
+                        <input type="text" id="costo" name="costo" style="border-color: #FFAB00"  class="money"/>
+                    </td>
+                    <td>
+                        <label for="tope" style="color: #FF5722;">Precio Mínimo</label>
+                        <input type="text" id="tope" name="tope" style="border-color: #FF5722"  class="money"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" name="marca" />
+                    </td>
+                    <td >
+                        <label for="precio" style="color: #00BCD4">Precio de Venta</label>
+                        <input type="text" id="precio" name="precio" style="border-color: #00BCD4" class="money" />
+                    </td>
+                </tr>
+                <tr>
+                    <!--td>
+                        <label for="talla">Talla</label>
+                        <input type="text" id="talla" name="talla" />
+                    </td>
+                    <td>
+                        <label for="puente">Puente</label>
+                        <input type="text" id="puente" name="puente" />
+                    </td>
+                    <td>
+                        <label for="cod">Codigo</label>
+                        <input type="text" id="cod" name="cod" />
+                    </td>
+                    <td>
+                        <label for="procedencia">Procedencia</label>
+                        <input type="text" id="procedencia" name="procedencia" />
+                    </td-->
+
+                    <td colspan="3">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" name="modelo" />
+                    </td>
+                    <td>
+                        <label for="tipo">Tipo</label>
+                        <div class="select-triangulo">
+                            <select id="tipo" name="tipo">
+                                <option>AL AIRE</option>
+                                <option>SEMI AL AIRE</option>
+                                <option>ARO COMPLETO</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="color">Color</label>
+                        <input type="text" id="color" name="color" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <label for="comentario">Comentario</label>
+                        <input type="text" id="comentario" name="comentario" />
+                    </td>
+                    <td style="width: 195px;">
+                        <label for="tiend">Tienda</label>
+                        <div class="select-triangulo">
+                            <select id="tiend" name="tiend" disabled="">
+                            </select>
+                        </div>
+                    </td>
+                    <td style="width: 195px;">
+                        <label for="comp">Comprobante</label>
+                        <input type="text" id="comp" name="comp" disabled="" readonly=""/>
+                    </td>
+                </tr>
+            </table>
+            <div class="botones">
+                <div class="estados"></div>
+                <div class="msg">mensaje</div>
+                <button type="button" onclick="guardar();" class="icon-guardar">Modificar</button>
+                <button type="button" onclick="window.print();" class="icon-imprimir" style="display: none;">Etiquetas</button>
+            </div>
+            <!--/form-->
+        </div>
+        <div class="impEtiquetas">
+            <div class="content-Etiquetas">
+                <div class="etiquetasItem">
+                    <table>
+                        <tr>
+                            <td>
+                                <div id="bcTarget" style="margin: 0px auto;width: 200px"></div>
+                            </td>
+                            <td style="width:150px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div id="bcDatos">
+                                    <label id="idImp"></label>
+                                    <label id="PrecioImp"></label>
+                                    <label id="ModeloImp"></label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script src="../js/barcode.min.js"></script>
+        <script>
+            
+            $('#costo').focusout(function (){
+                if(parseFloat($('#costo').val())<0){
+                    msgError("El precio de compra no puede ser negativo.", "orange");
+                    $('#costo').focus();
+                    $('#costo').select();
+                }
+            });
+            $('#tope').focusout(function (){
+                if(parseFloat($('#tope').val())<0){
+                    msgError("El precio mínimo no puede ser negativo.", "orange");
+                    $('#tope').focus();
+                    $('#tope').select();
+                }
+            });
+            $('#precio').focusout(function (){
+                if(parseFloat($('#precio').val())<0){
+                    msgError("El precio de venta no puede ser negativo.", "orange");
+                    $('#precio').focus();
+                    $('#precio').select();
+                }
+            });
+            
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/tiendasCRL.php',
+                        data: {action: 'listarTiendasSelect'},
+                        success: function (data) {
+                            var tienda = JSON.parse(data);
+                            //var string = '<option value=\"0\">Seleccione...</option>';
+                            var string = '';
+                            for (var i = 0; i < tienda.length; i++) {
+                                string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                            }
+                            $('#tiend').html(string);
+                            $('#tiend').val('');
+                            $('#tiend').attr("disabled", "");
+                        },
+                        error: function () {
+                        }
+                    });
+                    function toBarCode(texto) {
+                        var lcStart = String.fromCharCode(104 + 32);
+                        var lcStop = String.fromCharCode(106 + 32);
+                        var lnCheckSum = lcStart.charCodeAt(0) - 32;
+                        var lcRet = texto;
+                        var arText;
+                        var lnLong = lcRet.length;
+                        for (var i = 0; i < lnLong; i++) {
+                            var lnAsc = (lcRet.substring(i, (i + 1))).charCodeAt(0) - 32;
+                            if (!(lnAsc >= 0 && lnAsc <= 99)) {
+                                arText = lcRet.split("");
+                                arText[i] = String.fromCharCode(32);
+                                var tlcRet = "";
+                                for (var j = 0; j < arText.length; j++) {
+                                    tlcRet = tlcRet + "" + arText[j];
+                                }
+                                lcRet = tlcRet;
+                                lnAsc = (lcRet.substring(i, (i + 1))).charCodeAt(0) - 32;
+                            }
+                            lnCheckSum = lnCheckSum + (lnAsc * i);
+                        }
+                        var aa = lnCheckSum % 103;
+                        aa = aa + 32;
+                        var lcCheck = String.fromCharCode(aa);
+                        lcRet = lcStart + lcRet + lcCheck + lcStop;
+                        return lcRet;
+                    }
+                    function getMontura() {
+                        var cod = $("#codigo").val();
+                        if (!isNaN(cod)) {
+                            var s = cod.length;
+                            var ncod = 'M';
+                            for (var i = 0; i < (7 - (s + 1)); i++) {
+                                ncod += '0';
+                            }
+                            cod = ncod + cod;
+                        }
+                        $('#codigo').val(cod);
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/monturasCRL.php',
+                            data: {action: 'get', codigo: cod},
+                            success: function (data) {
+                                if (data != 'null') {
+                                    var montura = JSON.parse(data);
+                                    //alert((montura[15] + "") != 'null');
+                                    $('#action').val('upd');
+                                    $('#codigo').val(montura[0]);
+                                    $('#costo').val(montura[11]);
+                                    $('#tope').val(montura[16]);
+                                    $('#marca').val(montura[1]);
+                                    $('#precio').val(montura[12]);
+                                    //$('#talla').val(montura[4]);
+                                    //$('#puente').val(montura[5]);
+                                    //$('#cod').val(montura[6]);
+                                    //$('#procedencia').val(montura[7]);
+                                    $('#color').val(montura[8]);
+                                    $('#modelo').val(montura[2]);
+                                    $('#tipo').val(montura[3]);
+                                    $('#comentario').val(montura[10]);
+                                    $('#tiend').val(montura[18]);
+
+                                    $("#bcTarget").barcode(montura[0], "code128");
+                                    $('#idImp').text(montura[0]);
+                                    $('#PrecioImp').text(montura[2]);
+                                    $('#ModeloImp').text("S/." + montura[12]);
+                                    $('.estados').html('Disponible');
+                                    if (montura[18] == '1') {
+                                        $('#tiend').attr("disabled", "");
+                                    }
+                                    if (montura[15] + "" != "null") {
+                                        $('input').attr("disabled", "");
+                                        $('select').attr("disabled", "");
+                                        $('#codigo').removeAttr("disabled");
+                                        $('.icon-guardar').attr("disabled", "");
+                                        $('.icon-guardar').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                        $('.estados').html('En movimiento');
+                                    } else if (montura[13] + "" != "null") {
+                                        $('input').attr("disabled", "");
+                                        $('select').attr("disabled", "");
+                                        $('#codigo').removeAttr("disabled");
+                                        $('.icon-guardar').attr("disabled", "");
+                                        $('.icon-guardar').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                        $('.estados').html('Vendido');
+                                    }
+                                    $('#comp').val(montura[19] + " - " + montura[20]);
+                                    $('#Marca').focus();
+                                    $('.estados').css('display', 'block');
+                                } else {
+                                    $('#codigo').val('');
+                                    msgError("Montura no Encontrada.", "orange");
+                                    $('.estados').css('display', 'none');
+                                }
+                                $('#tiend').attr("disabled", "");
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                                $('.estados').css('display', 'none');
+                            }
+                        });
+                    }
+                    function Limpiar() {
+                        $('input').removeAttr("disabled");
+                        $('select').removeAttr("disabled");
+                        $('.icon-guardar').removeAttr("disabled");
+                        $('.icon-guardar').removeAttr('style');
+                        $('.estados').html('');
+                        $('.estados').css('display', 'none');
+                        $('#action').val('');
+                        $('#codigo').val('');
+                        $('#costo').val('');
+                        $('#tope').val('');
+                        $('#marca').val('');
+                        $('#precio').val('');
+                        $('#tiend').val('');
+                        //$('#talla').val('');
+                        //$('#puente').val('');
+                        //$('#cod').val('');
+                        //$('#procedencia').val('');
+                        $('#color').val('');
+                        $('#modelo').val('');
+                        $('#tipo').val('');
+                        $('#comentario').val('');
+                        $("#bcTarget").html("");
+                        $('#idImp').text("");
+                        $('#PrecioImp').text("");
+                        $('#ModeloImp').text("");
+                        $('#comp').val('');
+                    }
+                    $('#codigo').keyup(function (e) {
+                        if (e.keyCode == 13) {
+                            getMontura();
+                            $('#marca').focus();
+                        }
+                    });
+                    $('#codigo').focusin(function () {
+                        $('#codigo').select();
+                        Limpiar();
+                    });
+                    function guardar() {
+                        
+                        if(parseFloat($('#costo').val())<0){
+                            msgError("El precio de compra no puede ser negativo.", "orange");
+                            $('#costo').focus();
+                        }
+                        else if(parseFloat($('#tope').val())<0){
+                            msgError("El precio mínimo no puede ser negativo.", "orange");
+                            $('#tope').focus();
+                        }
+                        else if(parseFloat($('#precio').val())<0){
+                            msgError("El precio de venta no puede ser negativo.", "orange");
+                            $('#precio').focus();
+                        }
+                        else if ($('#marca').val() == "") {
+                            msgError("Complete los datos", "orange");
+                            $('#marca').focus();
+                        } else {
+                            if (confirm('Desea guardar?')) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/monturasCRL.php',
+                                    data: {action: $('#action').val(),
+                                        id: $('#codigo').val(),
+                                        costo: $('#costo').val(),
+                                        tope: $('#tope').val(),
+                                        marca: $('#marca').val(),
+                                        precio: $('#precio').val(),
+                                        talla: "",
+                                        puente: "",
+                                        codigo: "",
+                                        procedencia: "",
+                                        color: $('#color').val(),
+                                        modelo: $('#modelo').val(),
+                                        tipo: $('#tipo').val(),
+                                        comentario: $('#comentario').val(),
+                                        tienda: $('#tiend').val()},
+                                    success: function (data) {
+                                        //alert(data);
+                                        if (data == "OK") {
+                                            Limpiar()
+                                            msgError("Exito!,  Montura Actualizado.", "green");
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "red");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema.", "red");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    $('.money').focusout(function () {
+                        var mon = $(this).val();
+                        if (mon != "" && mon != " " && !isNaN(mon)) {
+                            $(this).val(toDouble(mon));
+                        } else {
+                            $(this).val('0.00');
+                        }
+                    });
+                    $('#marca').focusout(function () {
+                        var val = $('#marca').val().toUpperCase();
+                        $('#marca').val(val);
+                    });
+                    $('#modelo').focusout(function () {
+                        $('#modelo').val($('#modelo').val().toUpperCase());
+                    });
+                    $('#color').focusout(function () {
+                        $('#color').val($('#color').val().toUpperCase());
+                    });
+                    $('#comentario').focusout(function () {
+                        $('#comentario').val($('#comentario').val().toUpperCase());
+                    });
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

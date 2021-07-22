@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        
+        <style>
+            /* Checkmark style starts */
+            @-moz-keyframes dothabottomcheck {
+              0% {
+                height: 0;
+              }
+              100% {
+                height: 10px;
+              }
+            }
+            @-webkit-keyframes dothabottomcheck {
+              0% {
+                height: 0;
+              }
+              100% {
+                height: 10px;
+              }
+            }
+            @keyframes dothabottomcheck {
+              0% {
+                height: 0;
+              }
+              100% {
+                height: 10px;
+              }
+            }
+            @keyframes dothatopcheck {
+              0% {
+                height: 0;
+              }
+              50% {
+                height: 0;
+              }
+              100% {
+                height: 24px;
+              }
+            }
+            @-webkit-keyframes dothatopcheck {
+              0% {
+                height: 0;
+              }
+              50% {
+                height: 0;
+              }
+              100% {
+                height: 24px;
+              }
+            }
+            @-moz-keyframes dothatopcheck {
+              0% {
+                height: 0;
+              }
+              50% {
+                height: 0;
+              }
+              100% {
+                height: 24px;
+              }
+            }
+            input[type=checkbox] {
+              display: none;
+            }
+
+            .check-box {
+              height: 20px;
+              width: 20px;
+              background-color: transparent;
+              border: 2px solid #000;
+              border-radius: 5px;
+              position: relative;
+              display: inline-block;
+              -moz-box-sizing: border-box;
+              -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+              -moz-transition: border-color ease 0.2s;
+              -o-transition: border-color ease 0.2s;
+              -webkit-transition: border-color ease 0.2s;
+              transition: border-color ease 0.2s;
+              cursor: pointer;
+            }
+            .check-box::before, .check-box::after {
+              -moz-box-sizing: border-box;
+              -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+              position: absolute;
+              height: 0;
+              width: 4px;
+              background-color: #34b93d;
+              display: inline-block;
+              -moz-transform-origin: left top;
+              -ms-transform-origin: left top;
+              -o-transform-origin: left top;
+              -webkit-transform-origin: left top;
+              transform-origin: left top;
+              border-radius: 5px;
+              content: ' ';
+              -webkit-transition: opacity ease .5;
+              -moz-transition: opacity ease .5;
+              transition: opacity ease .5;
+            }
+            .check-box::before {
+              top: 14.4px;
+              left: 8.2px;
+              box-shadow: 0 0 0 1px #ECECEC;
+              -moz-transform: rotate(-135deg);
+              -ms-transform: rotate(-135deg);
+              -o-transform: rotate(-135deg);
+              -webkit-transform: rotate(-135deg);
+              transform: rotate(-135deg);
+            }
+            .check-box::after {
+              top: 7.4px;
+              left: 1px;
+              -moz-transform: rotate(-45deg);
+              -ms-transform: rotate(-45deg);
+              -o-transform: rotate(-45deg);
+              -webkit-transform: rotate(-45deg);
+              transform: rotate(-45deg);
+            }
+
+            input[type=checkbox]:checked + .check-box,
+            .check-box.checked {
+              border-color: #34b93d;
+            }
+            input[type=checkbox]:checked + .check-box::after,
+            .check-box.checked::after {
+              height: 10px;
+              -moz-animation: dothabottomcheck 0.2s ease 0s forwards;
+              -o-animation: dothabottomcheck 0.2s ease 0s forwards;
+              -webkit-animation: dothabottomcheck 0.2s ease 0s forwards;
+              animation: dothabottomcheck 0.2s ease 0s forwards;
+            }
+            input[type=checkbox]:checked + .check-box::before,
+            .check-box.checked::before {
+              height: 24px;
+              -moz-animation: dothatopcheck 0.4s ease 0s forwards;
+              -o-animation: dothatopcheck 0.4s ease 0s forwards;
+              -webkit-animation: dothatopcheck 0.4s ease 0s forwards;
+              animation: dothatopcheck 0.4s ease 0s forwards;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmUser">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="id" name="id" />
+                <table>
+                    <tr>
+                        <td>
+                            <label for="tipo">Tipo</label>
+                            <div class="select-triangulo">
+                                <select  id="tipo" name="tipo">
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <label for="categoria">Categoria</label>
+                            <input type="text" id="categoria" name="categoria"/>
+                        </td>
+                        <td>
+                            <label for="tipo">Estado</label>
+                            <div class="select-triangulo">
+                                <input type="hidden" id="estado" name="estado" value="1">
+                                <select  id="estados" name="estados">
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td style="width: 135px;">
+                            <div style="position: relative;">
+                                <label for="tipo" style="position: absolute;margin-left: 5px;top: -30px;">Sólo administrador</label>
+                                <input type="checkbox" id="cbtest" name="cbtest"/>
+                                <label for="cbtest" class="check-box" style="position: absolute;top: 3px;left: 40%;"></label>
+                                <label style="position: absolute;top: 0px;left: 25px;"></label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg">mensaje</div>
+                    <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                    <button type="submit" class="icon-guardar">Guardar</button>
+                </div>
+            </form>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">#</td>
+                        <td>Tipo</td>
+                        <td style="width: 300px;">Categoría</td>
+                        <td>Estado</td>
+                        <td>Visualización</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                    
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            loadUsers();
+            $.ajax({
+                type: 'POST',
+                url: '../crl/gastosCRL.php',
+                data: {action: 'listTipoGasto'},
+                success: function (data) {
+                    var lista = JSON.parse(data);
+                    var string = '<option value=\"0\">Seleccione...</option>';
+                    for (var i = 0; i < lista.length; i++) {
+                        string += '<option value=\"' + lista[i][0] + '\">' + lista[i][1] + '</option>';
+                    }
+                    $('#tipo').html(string);
+                },
+                error: function () {
+                }
+            });
+            
+            function loadUsers() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: {action: 'listCategoriaGasto'},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            var estado="";
+                            var permiso="";
+                            if(lista[i].estado==1){
+                                estado="Activo";
+                            }else{
+                                estado="Inactivo";
+                            }
+                            if(lista[i].soloadmin==1){
+                                permiso="Sólo administrador";
+                            }else{
+                                permiso="Todos";
+                            }
+                            string += '<tr onclick=\"getUser(\'' + lista[i].idcategoria + '\');\">\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td>' + lista[i].tipogasto + '</td>\n\
+                                        <td style="width: 300px;">' + lista[i].categoria + '</td>\n\\n\
+                                        <td>' + estado + '</td>\n\
+                                        <td>' + permiso + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (8 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td>&nbsp;</td>\n\
+                <td></td><td></td><td></td></tr>';
+                        }
+                        $('#data').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getUser(id) {
+                document.getElementById('estados').disabled =false;
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: {action: 'getcategoriagasto', id: id},
+                    success: function (data) {
+                        if (data != "no") {
+                            $('#id').val('');
+                            $('#tipo').val(0);
+                            $('#categoria').val('');
+                            $('#estado').val(1);
+                            document.getElementById('cbtest').checked=0;
+                            $('.msg').css("display", "none");
+                            $('#tipo').focus();
+                            var users = JSON.parse(data);
+                            $('#id').val(users[0]);
+                            $('#tipo').val(users[1]);
+                            $('#categoria').val(users[2]);
+                            $('#estado').val(users[3]);
+                            if(users[4]==1){
+                                document.getElementById('cbtest').checked=1;
+                            }else{
+                                document.getElementById('cbtest').checked=0;
+                            }
+                        } else {
+                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                        }
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+            }
+            function Limpiar() {
+                document.getElementById('estados').disabled =true;
+                $('#id').val('');
+                $('#tipo').val(0);
+                $('#categoria').val('');
+                $('#estado').val(1);
+                document.getElementById('cbtest').checked=0;
+                $('.msg').css("display", "none");
+                $('#tipo').focus();
+            }
+            
+            if ($('#id').val() == ""){
+                document.getElementById('estados').disabled =true;
+            }else{
+                document.getElementById('estados').disabled =false;
+            }
+            
+            $('#estados').change(function () {
+                $('#estado').val($('#estados').val());
+            });
+            
+            $(function () {
+                $('#frmUser').submit(function (event) {
+                    event.preventDefault();
+                    if ($('#categoria').val() == "" || $('#tipo').val() == "0") {
+                        msgError("Complete todos los datos", "#FFAA0F");
+                        $('#categoria').focus();
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            if ($('#id').val() == "") {
+                                $('#action').val('insertCategoriaGasto');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/gastosCRL.php',
+                                    data: $('#frmUser').serialize(),
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Categoría creada", "#94D613");
+                                            $('#id').val('');
+                                            $('#tipo').val(0);
+                                            $('#categoria').val('');
+                                            $('#estado').val(1);
+                                            document.getElementById('cbtest').checked=0;
+                                            $('#tipo').focus();
+                                            loadUsers();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            else {
+                                $('#action').val('updateCategoriaGasto');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/gastosCRL.php',
+                                    data: $('#frmUser').serialize(),
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Categoría Actualizada", "#94D613");
+                                            $('#id').val('');
+                                            $('#tipo').val(0);
+                                            $('#categoria').val('');
+                                            $('#estado').val(1);
+                                            document.getElementById('cbtest').checked=0;
+                                            $('#tipo').focus();
+                                            loadUsers();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+            $('#data').css('height', '225px');
+            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        
+        <style>
+            /* Checkmark style starts */
+            @-moz-keyframes dothabottomcheck {
+              0% {
+                height: 0;
+              }
+              100% {
+                height: 10px;
+              }
+            }
+            @-webkit-keyframes dothabottomcheck {
+              0% {
+                height: 0;
+              }
+              100% {
+                height: 10px;
+              }
+            }
+            @keyframes dothabottomcheck {
+              0% {
+                height: 0;
+              }
+              100% {
+                height: 10px;
+              }
+            }
+            @keyframes dothatopcheck {
+              0% {
+                height: 0;
+              }
+              50% {
+                height: 0;
+              }
+              100% {
+                height: 24px;
+              }
+            }
+            @-webkit-keyframes dothatopcheck {
+              0% {
+                height: 0;
+              }
+              50% {
+                height: 0;
+              }
+              100% {
+                height: 24px;
+              }
+            }
+            @-moz-keyframes dothatopcheck {
+              0% {
+                height: 0;
+              }
+              50% {
+                height: 0;
+              }
+              100% {
+                height: 24px;
+              }
+            }
+            input[type=checkbox] {
+              display: none;
+            }
+
+            .check-box {
+              height: 20px;
+              width: 20px;
+              background-color: transparent;
+              border: 2px solid #000;
+              border-radius: 5px;
+              position: relative;
+              display: inline-block;
+              -moz-box-sizing: border-box;
+              -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+              -moz-transition: border-color ease 0.2s;
+              -o-transition: border-color ease 0.2s;
+              -webkit-transition: border-color ease 0.2s;
+              transition: border-color ease 0.2s;
+              cursor: pointer;
+            }
+            .check-box::before, .check-box::after {
+              -moz-box-sizing: border-box;
+              -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+              position: absolute;
+              height: 0;
+              width: 4px;
+              background-color: #34b93d;
+              display: inline-block;
+              -moz-transform-origin: left top;
+              -ms-transform-origin: left top;
+              -o-transform-origin: left top;
+              -webkit-transform-origin: left top;
+              transform-origin: left top;
+              border-radius: 5px;
+              content: ' ';
+              -webkit-transition: opacity ease .5;
+              -moz-transition: opacity ease .5;
+              transition: opacity ease .5;
+            }
+            .check-box::before {
+              top: 14.4px;
+              left: 8.2px;
+              box-shadow: 0 0 0 1px #ECECEC;
+              -moz-transform: rotate(-135deg);
+              -ms-transform: rotate(-135deg);
+              -o-transform: rotate(-135deg);
+              -webkit-transform: rotate(-135deg);
+              transform: rotate(-135deg);
+            }
+            .check-box::after {
+              top: 7.4px;
+              left: 1px;
+              -moz-transform: rotate(-45deg);
+              -ms-transform: rotate(-45deg);
+              -o-transform: rotate(-45deg);
+              -webkit-transform: rotate(-45deg);
+              transform: rotate(-45deg);
+            }
+
+            input[type=checkbox]:checked + .check-box,
+            .check-box.checked {
+              border-color: #34b93d;
+            }
+            input[type=checkbox]:checked + .check-box::after,
+            .check-box.checked::after {
+              height: 10px;
+              -moz-animation: dothabottomcheck 0.2s ease 0s forwards;
+              -o-animation: dothabottomcheck 0.2s ease 0s forwards;
+              -webkit-animation: dothabottomcheck 0.2s ease 0s forwards;
+              animation: dothabottomcheck 0.2s ease 0s forwards;
+            }
+            input[type=checkbox]:checked + .check-box::before,
+            .check-box.checked::before {
+              height: 24px;
+              -moz-animation: dothatopcheck 0.4s ease 0s forwards;
+              -o-animation: dothatopcheck 0.4s ease 0s forwards;
+              -webkit-animation: dothatopcheck 0.4s ease 0s forwards;
+              animation: dothatopcheck 0.4s ease 0s forwards;
+            }
+        </style>
+        <style>
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+        </style>
+        <style>
+
+            .tabs {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                width: 300px;
+                background: #F5F5F5;
+                height: 100%;
+            }
+            .tabs input[type='radio'] {
+                position: absolute;
+                z-index: 1000;
+                width: 120px;
+                height: 40px;
+                left: 0px;
+                top: 0px;
+                opacity: 0;
+                filter: alpha(opacity=0);
+                cursor: pointer;
+            }
+            .tabs input[type='radio']#tab-2{
+                left: 120px;
+            }
+            .tabs .labels {
+                background: #E6E8E8;
+                line-height: 40px;
+                position: relative;
+                padding: 0 20px;
+                float: left;
+                width: 110px;
+                color: #6C818C !important;
+                text-align: center;
+                box-shadow: inset 0px -3px 26px #D6D6D6;
+            }
+
+            .tabs input[type='radio']:hover + .labels  {
+                background: #F5F5F5;
+            }
+            .tabs input[type='radio']:checked + .labels  {
+                background: #F5F5F5;
+                z-index: 6;
+                box-shadow: none;
+            }
+
+            .clear-shadow {
+                clear: both;
+            }
+
+            .content {
+                background:#FFAB00;
+                position: relative;
+                z-index: 5;
+            }
+
+            .content .divc {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                opacity: 0;
+                width: 100%;
+                transition: opacity linear 0.1s;
+            }
+
+            .tabs input[type='radio'].tab-selector-1:checked ~ .content .content-1,
+            .tabs input[type='radio'].tab-selector-2:checked ~ .content .content-2{
+                z-index: 100;
+                filter: alpha(opacity=100);
+                opacity: 1;
+                transition: opacity ease-out 0.2s 0.1s;
+            }
+
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+            .mfind{
+                margin-left: 10px;
+                position: relative;
+            }
+            .mfind .icon-buscar{
+                margin-left: -2px;
+                cursor: pointer;
+            }
+            #buscar{
+                height: 21px;
+                border: none !important;
+                padding: 10px 60px 10px 10px;
+                width: calc(100% - 112px);
+            }
+            .content-2 .add-ls{
+                height: 358px;
+            }
+            .content-2 .add-cont{
+                background: #FFFFFF;
+            }
+            .NonC{
+                background: transparent !important;
+            }
+            #btnLaboratorio{
+                display: inline-block;
+                width: 98px;
+                color: white;
+                text-align: center;
+                border-radius: 8px 0px 0px 8px;
+                cursor: pointer;
+            }
+            #btnProducto{
+                display: inline-block;
+                width: 98px;
+                color: white;
+                text-align: center;
+                cursor: pointer;
+                margin-left: -4px;
+            }
+            #btnDetalle{
+                display: inline-block;
+                width: 98px;
+                color: white;
+                text-align: center;
+                border-radius: 0px 8px 8px 0px;
+                cursor: pointer;
+                margin-left: -4px;
+            }
+            .btnSelect{
+                background: #6C818C;
+            }
+            .btnUnSelect{
+                background: #ABBBC3;
+            }
+            .btnSelectVer{
+                background: #ABBBC3;
+            }
+            @media print{
+                @page {
+                    size: A4 portrait;
+                }
+                body { 
+                    background: #fff; 
+                    color: #000; 
+
+                }
+
+                .botones,
+                .tabs,
+                .modalbox,
+                .formulario,
+                .header-inventario,
+                .datatable thead{
+                    display: none !important;
+                }
+                
+                .inv-Repo{
+                    position: relative !important;
+                    top:7px;
+                    padding-bottom: 30px;
+                }
+                .cont-dad{
+                    position: static !important;
+                    right: 305px;
+                    width: 100% !important;
+                    top: 55px;
+                }
+                .ch{
+                    background: #123268 !important;
+                }
+                .datatable { 
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    /*page-break-inside: avoid;*/
+                }
+                .datatable tbody{
+                    display: table;
+                    page-break-inside: auto;
+                }
+                .datatable tr{
+                    border:1px solid #ccc;
+                    display: table-row-group;
+                }
+                .ch{
+                    color: black;
+                }
+                .colorHeader{
+                    -webkit-print-color-adjust: exact;
+                    -moz-print-color-adjust: exact;
+                    color: white;
+                    background-color: rgba(30, 136, 229, 0.45) !important;
+                }
+            }
+        </style>
+        <style>
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div>
+            <div style="position: absolute; top: 10px; right: 27%; width: 294px; height: 30px; border-radius: 8px;">
+                <div id="blocklabel" style="position: absolute; width: 293px; height: 31px; display: none;"></div>
+                <label id="btnLaboratorio" class="btnSelect">Laboratorios</label>
+                <label id="btnProducto" class="btnUnSelect">Productos</label>
+                <label id="btnDetalle" class="btnUnSelect">Detalle</label>
+            </div>
+            <div id="divLaboratorio" style="position: absolute;top: 40px; width: 97%;">
+                <div class="formulario">
+                    <form id="frmLaboratorio">
+                        <input type="hidden" id="idlaboratorio" name="idlaboratorio" >
+                        <table>
+                            <tr>
+                                <td style="width: 550px;">
+                                    <label for="laboratorio">Laboratorio</label>
+                                    <input type="text" id="laboratorio" name="laboratorio">
+                                </td>
+                                <td style="width: 135px;">
+                                    <div style="position: relative; margin-left: 10px">
+                                        <label for="tipo" style="position: absolute;top: -30px;">Estado</label>
+                                        <input type="checkbox" id="cbtest1" name="cbtest1">
+                                        <label for="cbtest1" class="check-box" style="position: absolute;top: 3px;"></label>
+                                        <label style="position: absolute;top: 0px;left: 25px;">Activo</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="botones">
+                            <div class="msg">mensaje</div>
+                            <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                            <button type="submit" class="icon-guardar">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="tabla">
+                    <table class="datatable">
+                        <thead>
+                            <tr>
+                                <td class="ColMS">#</td>
+                                <td class="ColXXX">Laboratorio</td>
+                                <td>Estado</td>
+                            </tr>
+                        </thead>
+                        <tbody id="data">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="divProducto" style="position: absolute;top: 40px; width: 97%; display: none;">
+                <div class="formulario">
+                    <form id="frmProducto">
+                        <input type="hidden" id="idproducto" name="idproducto" >
+                        <table>
+                            <tr>
+                                <td style="width: 200px;">
+                                    <label for="idlaboratoriop">Laboratorio</label>
+                                    <div class="select-triangulo">
+                                        <select id="idlaboratoriop" name="idlaboratoriop">
+                                        </select>
+                                    </div>
+                                </td>
+                                <td style="width: 350px;">
+                                    <label for="producto">Producto</label>
+                                    <input type="text" id="producto" name="producto">
+                                </td>
+                                <td style="width: 135px;">
+                                    <div style="position: relative; margin-left: 5px">
+                                        <label for="tipo" style="position: absolute;top: -30px;">Estado</label>
+                                        <input type="checkbox" id="cbtest2" name="cbtest2">
+                                        <label for="cbtest2" class="check-box" style="position: absolute;top: 3px;"></label>
+                                        <label style="position: absolute;top: 0px;left: 25px;">Activo</label>
+                                    </div>
+                                    <div style="position: relative; margin-left: 70px">
+                                        <label for="tipo" style="position: absolute;top: -30px;">Comisión</label>
+                                        <input type="checkbox" id="cbtest5" name="cbtest5">
+                                        <label for="cbtest5" class="check-box" style="position: absolute;top: 3px;"></label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="botones">
+                            <div class="msg">mensaje</div>
+                            <button onclick="LimpiarP();" type="button" class="icon-nuevo">Nuevo</button>
+                            <button type="submit" class="icon-guardar">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="tabla">
+                    <table class="datatable">
+                        <thead>
+                            <tr>
+                                <td class="ColMS">#</td>
+                                <td class="ColXXX">Producto</td>
+                                <td>Estado</td>
+                            </tr>
+                        </thead>
+                        <tbody id="dataP">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="divDetalle" style="position: absolute;top: 40px; width: 97%; display: none;">
+                <div class="formulario">
+                    <form id="frmDetalle">
+                        <input type="hidden" id="iddetalle" name="iddetalle" >
+                        <table>
+                            <tr>
+                                <td style="width: 200px;">
+                                    <label for="idlaboratoriod">Laboratorio</label>
+                                    <div class="select-triangulo">
+                                        <select id="idlaboratoriod" name="idlaboratoriod">
+                                        </select>
+                                    </div>
+                                </td>
+                                <td style="width: 350px;" colspan="2">
+                                    <label for="idproductod">Producto</label>
+                                    <div class="select-triangulo">
+                                        <select id="idproductod" name="idproductod">
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label for="detalle">Detalle Producto</label>
+                                    <input type="text" id="detalle" name="detalle">
+                                </td>
+                                <td style="width: 135px;">
+                                    <div style="position: relative; margin-left: 10px">
+                                        <label for="tipo" style="position: absolute;top: -30px;">Estado</label>
+                                        <input type="checkbox" id="cbtest3" name="cbtest3">
+                                        <label for="cbtest3" class="check-box" style="position: absolute;top: 3px;"></label>
+                                        <label style="position: absolute;top: 0px;left: 25px;">Activo</label>
+                                    </div>
+                                    <div style="position: relative; margin-left: 80px">
+                                        <label for="tipo" style="position: absolute;top: -30px;">Comisión</label>
+                                        <input type="checkbox" id="cbtest4" name="cbtest4">
+                                        <label for="cbtest4" class="check-box" style="position: absolute;top: 3px;"></label>
+                                        <label style="position: absolute;top: 0px;left: 25px;">Activo</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="botones">
+                            <div class="msg">mensaje</div>
+                            <button onclick="LimpiarD();" type="button" class="icon-nuevo">Nuevo</button>
+                            <button type="submit" class="icon-guardar">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="tabla">
+                    <table class="datatable">
+                        <thead>
+                            <tr>
+                                <td class="ColMS">#</td>
+                                <td class="ColXXX">Detalle</td>
+                                <td>Estado</td>
+                            </tr>
+                        </thead>
+                        <tbody id="dataD">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            $('#btnLaboratorio').click(function () {
+                document.getElementById('divLaboratorio').style.display = "block";
+                document.getElementById('divProducto').style.display = "none";
+                document.getElementById('divDetalle').style.display = "none";
+
+                var estado = $('#btnLaboratorio').attr('class');
+                if (estado == 'btnUnSelect') {
+                    $('#btnLaboratorio').attr('class', 'btnSelect');
+                    $('#btnProducto').attr('class', 'btnUnSelect');
+                    $('#btnDetalle').attr('class', 'btnUnSelect');
+                }
+            });
+            $('#btnProducto').click(function () {
+                document.getElementById('divLaboratorio').style.display = "none";
+                document.getElementById('divProducto').style.display = "block";
+                document.getElementById('divDetalle').style.display = "none";
+
+                var estado = $('#btnProducto').attr('class');
+                if (estado == 'btnUnSelect') {
+                    $('#btnLaboratorio').attr('class', 'btnUnSelect');
+                    $('#btnProducto').attr('class', 'btnSelect');
+                    $('#btnDetalle').attr('class', 'btnUnSelect');
+                }
+            });
+            $('#btnDetalle').click(function () {
+                document.getElementById('divLaboratorio').style.display = "none";
+                document.getElementById('divProducto').style.display = "none";
+                document.getElementById('divDetalle').style.display = "block";
+
+                var estado = $('#btnDetalle').attr('class');
+                if (estado == 'btnUnSelect') {
+                    $('#btnLaboratorio').attr('class', 'btnUnSelect');
+                    $('#btnProducto').attr('class', 'btnUnSelect');
+                    $('#btnDetalle').attr('class', 'btnSelect');
+                }
+            });
+            
+            document.getElementById('cbtest1').checked=1;
+            document.getElementById('cbtest2').checked=1;
+            document.getElementById('cbtest3').checked=1;
+            document.getElementById('cbtest4').checked=1;
+            document.getElementById('cbtest5').checked=1;
+            
+            loadLaboratorios();
+            
+            function loadLaboratorios() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/laboratorioCRL.php',
+                    data: {action: 'listLaboratorios'},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            var estado="";
+                            if(lista[i].estado==1){
+                                estado="Activo";
+                            }else{
+                                estado="Inactivo";
+                            }
+                            string += '<tr onclick=\"getLab(\'' + lista[i].idprodlab + '\',\'' + lista[i].prodlab + '\',\'' + lista[i].estado + '\');\">\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td class="ColXXX">' + lista[i].prodlab + '</td>\n\
+                                        <td>' + estado + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (8 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td class="ColXXX">&nbsp;</td>\n\
+                <td></td></tr>';
+                        }
+                        $('#data').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getLab(idlab, prodlab, estado) {
+                $('#idlaboratorio').val(idlab);
+                $('#laboratorio').val(prodlab);
+                if(estado==1){
+                    document.getElementById('cbtest1').checked=1;
+                }else{
+                    document.getElementById('cbtest1').checked=0;
+                }
+            }
+            function Limpiar() {
+                $('#idlaboratorio').val('');
+                $('#laboratorio').val('');
+                document.getElementById('cbtest1').checked=1;
+            }
+            
+            $(function () {
+                $('#frmLaboratorio').submit(function (event) {
+                    event.preventDefault();
+                    var estado=0;
+                    if(document.getElementById('cbtest1').checked==1){
+                        estado=1;
+                    }
+                    
+                    if ($('#laboratorio').val()=="") {
+                        msgError("Complete todos los datos", "#FFAA0F");
+                        $('#laboratorio').focus();
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            if ($('#idlaboratorio').val() == "") {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/laboratorioCRL.php',
+                                    data: {action: 'saveLaboratorio', laboratorio: $('#laboratorio').val(),  estado: estado},
+                                    success: function (data) {
+                                        var resultado = JSON.parse(data);
+                                        if (resultado.resultado == "OK") {
+                                            msgError("Exito!, Laboratorio guardado", "#94D613");
+                                            $('#idlaboratorio').val('');
+                                            $('#laboratorio').val('');
+                                            document.getElementById('cbtest1').checked=1;
+                                            $('#laboratorio').focus();
+                                            loadLaboratorios();
+                                            loadSelectLabs();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            else {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/laboratorioCRL.php',
+                                    data: {action: 'updateLaboratorio', idprodlab: $('#idlaboratorio').val(), laboratorio: $('#laboratorio').val(),  estado: estado},
+                                    success: function (data) {
+                                        var resultado = JSON.parse(data);
+                                        if (resultado.resultado == "OK") {
+                                            msgError("Exito!, Laboratorio Actualizado", "#94D613");
+                                            $('#idlaboratorio').val('');
+                                            $('#laboratorio').val('');
+                                            document.getElementById('cbtest1').checked=1;
+                                            $('#laboratorio').focus();
+                                            loadLaboratorios();
+                                            loadSelectLabs();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+            
+            loadSelectLabs();
+            function loadSelectLabs(){
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/laboratorioCRL.php',
+                    data: {action: 'listLaboratorios'},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '<option value=\"0\">Seleccione...</option>';
+                        for (var i = 0; i < lista.length; i++) {
+                            string += '<option value=\"' + lista[i].idprodlab + '\">' + lista[i].prodlab + '</option>';
+                        }
+                        $('#idlaboratoriop').html(string);
+                        $('#idlaboratoriod').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            
+            loadSelectProds();
+            function loadSelectProds(){
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/laboratorioCRL.php',
+                    data: {action: 'listProductos', padre: $('#idlaboratoriod').val()},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '<option value=\"0\">Seleccione...</option>';
+                        for (var i = 0; i < lista.length; i++) {
+                            string += '<option value=\"' + lista[i].idprodlab + '\">' + lista[i].prodlab + '</option>';
+                        }
+                        $('#idproductod').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            
+            $('#idlaboratoriod').change(function (){
+                loadSelectProds();
+                limpiarTabla();
+            });
+            limpiarTabla();
+            function limpiarTabla(){
+                var string="";
+                for (var i = 0; i < 8; i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td class="ColXXX">&nbsp;</td>\n\
+                <td></td></tr>';
+                }
+                $('#dataD').html(string);
+                formatoTabla('152px');
+            }
+            
+            $('#idlaboratoriop').change(function (){
+                loadProductos();
+            });
+            $('#idproductod').change(function (){
+                loadDetalle();
+            });
+            
+            function loadProductos() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/laboratorioCRL.php',
+                    data: {action: 'listProductos', padre: $('#idlaboratoriop').val()},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            var estado="";
+                            if(lista[i].estado==1){
+                                estado="Activo";
+                            }else{
+                                estado="Inactivo";
+                            }
+                            string += '<tr onclick=\"getProd(\'' + lista[i].idprodlab + '\',\'' + lista[i].prodlab + '\',\'' + lista[i].estado + '\',\'' + lista[i].padre + '\');\">\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td class="ColXXX">' + lista[i].prodlab + '</td>\n\
+                                        <td>' + estado + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (8 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td class="ColXXX">&nbsp;</td>\n\
+                <td></td></tr>';
+                        }
+                        $('#dataP').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getProd(idlab, prodlab, estado, idlabp) {
+                $('#idproducto').val(idlab);
+                $('#idlaboratoriop').val(idlabp);
+                $('#producto').val(prodlab);
+                if(estado==1){
+                    document.getElementById('cbtest2').checked=1;
+                }else{
+                    document.getElementById('cbtest2').checked=0;
+                }
+            }
+            function LimpiarP() {
+                $('#idproducto').val('');
+                $('#producto').val('');
+                document.getElementById('cbtest2').checked=1;
+            }
+            
+            $(function () {
+                $('#frmProducto').submit(function (event) {
+                    event.preventDefault();
+                    var estado=0;
+                    var comision=0;
+                    if(document.getElementById('cbtest2').checked==1){
+                        estado=1;
+                    }
+                    if(document.getElementById('cbtest5').checked==1){
+                        comision=1;
+                    }
+                    if ($('#producto').val()=="") {
+                        msgError("Complete todos los datos", "#FFAA0F");
+                        $('#producto').focus();
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            if ($('#idproducto').val() == "") {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/laboratorioCRL.php',
+                                    data: {action: 'saveProducto', producto: $('#producto').val(),  estado: estado, padre: $('#idlaboratoriop').val(), comision: comision},
+                                    success: function (data) {
+                                        var resultado = JSON.parse(data);
+                                        if (resultado.resultado == "OK") {
+                                            msgError("Exito!, Producto guardado", "#94D613");
+                                            $('#idproducto').val('');
+                                            $('#producto').val('');
+                                            document.getElementById('cbtest2').checked=1;
+                                            document.getElementById('cbtest5').checked=1;
+                                            $('#producto').focus();
+                                            loadProductos();
+                                            //loadSelectLabs();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            else {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/laboratorioCRL.php',
+                                    data: {action: 'updateProducto', idprodlab: $('#idproducto').val(), padre: $('#idlaboratoriop').val(), producto: $('#producto').val(),  estado: estado, comision: comision},
+                                    success: function (data) {
+                                        var resultado = JSON.parse(data);
+                                        if (resultado.resultado == "OK") {
+                                            msgError("Exito!, Laboratorio Actualizado", "#94D613");
+                                            $('#idproducto').val('');
+                                            $('#producto').val('');
+                                            document.getElementById('cbtest2').checked=1;
+                                            document.getElementById('cbtest5').checked=1;
+                                            $('#producto').focus();
+                                            loadProductos();
+                                            //loadSelectLabs();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+            
+            function loadDetalle() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/laboratorioCRL.php',
+                    data: {action: 'listDetalle', padre: $('#idproductod').val()},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            var estado="";
+                            if(lista[i].estado==1){
+                                estado="Activo";
+                            }else{
+                                estado="Inactivo";
+                            }
+                            string += '<tr onclick=\"getDet(\'' + lista[i].idprodlab + '\',\'' + lista[i].prodlab + '\',\'' + lista[i].estado + '\',\'' + lista[i].padre + '\',\'' + lista[i].padrel + '\');\">\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td class="ColXXX">' + lista[i].prodlab + '</td>\n\
+                                        <td>' + estado + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (8 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td class="ColXXX">&nbsp;</td>\n\
+                <td></td></tr>';
+                        }
+                        $('#dataD').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getDet(iddet, prodlab, estado, idprodd, idlabd) {
+                $('#iddetalle').val(iddet);
+                $('#idproductod').val(idprodd);
+                $('#idlaboratoriod').val(idlabd);
+                $('#detalle').val(prodlab);
+                if(estado==1){
+                    document.getElementById('cbtest3').checked=1;
+                }else{
+                    document.getElementById('cbtest3').checked=0;
+                }
+            }
+            function LimpiarD() {
+                $('#iddetalle').val('');
+                $('#detalle').val('');
+                document.getElementById('cbtest3').checked=1;
+            }
+            
+            $(function () {
+                $('#frmDetalle').submit(function (event) {
+                    event.preventDefault();
+                    var comision=0;
+                    var estado=0;
+                    if(document.getElementById('cbtest3').checked==1){
+                        estado=1;
+                    }
+                    if(document.getElementById('cbtest4').checked==1){
+                        comision=1;
+                    }
+                    if ($('#detalle').val()=="") {
+                        msgError("Complete todos los datos", "#FFAA0F");
+                        $('#detalle').focus();
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            if ($('#iddetalle').val() == "") {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/laboratorioCRL.php',
+                                    data: {action: 'saveDetalle', detalle: $('#detalle').val(),  estado: estado, padre: $('#idproductod').val(), comision: comision},
+                                    success: function (data) {
+                                        var resultado = JSON.parse(data);
+                                        if (resultado.resultado == "OK") {
+                                            msgError("Exito!, Detalle guardado", "#94D613");
+                                            $('#iddetalle').val('');
+                                            $('#detalle').val('');
+                                            document.getElementById('cbtest3').checked=1;
+                                            document.getElementById('cbtest4').checked=1;
+                                            $('#detalle').focus();
+                                            loadDetalle();
+                                            //loadSelectLabs();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            else {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/laboratorioCRL.php',
+                                    data: {action: 'updateDetalle', idprodlab: $('#iddetalle').val(), padre: $('#idproductod').val(), detalle: $('#detalle').val(),  estado: estado, comision: comision},
+                                    success: function (data) {
+                                        var resultado = JSON.parse(data);
+                                        if (resultado.resultado == "OK") {
+                                            msgError("Exito!, Laboratorio Actualizado", "#94D613");
+                                            $('#iddetalle').val('');
+                                            $('#detalle').val('');
+                                            document.getElementById('cbtest3').checked=1;
+                                            document.getElementById('cbtest4').checked=1;
+                                            $('#detalle').focus();
+                                            loadDetalle();
+                                            //loadSelectLabs();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+            
+            $('#data').css('height', '225px');
+            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

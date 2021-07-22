@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .ef{
+                text-align: center;
+                color: white;
+                background:#FF9800;
+            }
+            .tt{
+                text-align: center;
+                color: white;
+                background: #00BCD4;
+            }
+            .ta{
+                text-align: center;
+                color: white;
+                background:  #4CAF50;
+            }
+            .ccc{
+                text-align: center !important;
+            }
+            #fecl{
+                border-left: 1px solid rgba(0,0,0,0.2);
+                padding-left: 16px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+    <div style="overflow-x: scroll;">
+    <div id="panelcel" style="width: 1260px; position: relative; margin: 20px 0px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="botones">
+                <h2>Reporte Diario de Caja <span id="fecl"></span></h2>
+                <br>
+                <br>
+                
+                <div style="width: 220px;display: block;position: absolute;right: 200px;top:-17px;text-align: left;margin-right: 5px">
+                    <div id="cargando" class="loadone" style="display: block;position: absolute;top: 29px;left: -34px;"></div>
+                    <label for="tiend">Tienda</label>
+                    <div class="select-triangulo">
+                        <select id="tiend" name="tiend" style="height: 34px; width: 233px;text-align: center" onchange="cambiar()">
+                        </select>
+                    </div>
+                </div>
+                &nbsp;
+                <div style="display: block;position: absolute;right: 47px;top:-17px;text-align: left;">
+                    <label for="fec">Fecha</label>
+                    <input type="date" id="fec" name="fec" style="height: 21px; width: 133px;text-align: center" onchange="cambiar()">
+                </div>
+                <button onclick="reset();" style="display: inline-block ; height: 34px;  width: 34px !important;  padding: 5px 0px !important;position: absolute;right: 0px;top:-7px;" class="icon-buscar"></button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable" style="margin-top: 0px !important">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColSM">Codigo</td>
+                        <td class="ColSM">Fecha</td>
+                        <td class="ColSM">Hora</td>
+                        <td class="ColSM">Doctor</td>
+                        <td>Cliente</td>          
+                        <td class="ColSM" style="background: #E49014;">P. efectivo</td>
+                        <td class="ColSM" style="background: #57A05A;">P. tarjeta</td>
+                        <td class="ColSM">Tipo T</td>
+                        <td class="ColSM" style="background: #1CA8BA;">Total</td>
+                        <td class="ColSM">Estado</td>
+                        <td class="idCol"></td>
+                    </tr>
+                </thead>
+                <tbody id="data" class="BigTbody">
+                </tbody>
+            </table>
+            <table>
+                <tr>
+                    <td>
+                        <label for="te">Total Efectivo</label>
+                        <input type="text" id="te" name="te"  disabled="" style="text-align: center;color: #FF9800;font-size: 25px;"/>
+                    </td>
+                    <td>
+                        <label for="tr" style="margin-left: 10px;">Total Tarjeta</label>
+                        <input type="text" id="tr" name="tr" disabled="" style="margin-left: 10px;text-align: center;color: #4CAF50;font-size: 25px;"/>
+                    </td>
+                    <td>
+                        <label for="td" style="margin-left: 20px;">Total Dia</label>
+                        <input type="text" id="td" name="td"  disabled="" style="margin-left: 20px;text-align: center;color: #00BCD4;font-size: 25px;"/>
+                    </td>
+                    <td><button style="margin-left: 680px;margin-top: 13px;visibility: hidden" class="icon-imprimir">Imprimir</button></td>
+                </tr>
+            </table>
+            <div class="buscador" style="  width: 350px;  position: absolute;  bottom: 18px;  right: 0px;">
+                <input type="text" id="buscador" name="buscador" style="display: inline-block;width: 200px;  padding: 13px; border-radius: 5px;" placeholder="Apellidos y Nombres">
+                <button onclick="buscarPaciente();" style="display: inline-block ; height: 45px;  width: 45px !important;  padding: 5px 0px !important;" class="icon-buscar" data-tooltip="Busqueda por Apellido"></button>
+                <button onclick="ListarPendientes();" style="display: inline-block;  height: 45px;  width: 45px !important;  padding: 5px 0px !important;position: relative;top: 7px;" class="icon-tabla icon-pendiente" data-tooltip="Lista de Pendientes"></button>
+            </div>
+        </div>
+    </div>
+    </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    var prod = $_GET('t');
+                    var ctipo = 'todos';
+                    var ccriterio = '';
+                    function cargar() {
+                        document.getElementById('cargando').style.display = "block";
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: {action: 'listarTiendasSelect'},
+                            success: function (data) {
+                                var tienda = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < tienda.length; i++) {
+                                    if (tienda[i][0] != "1") {
+                                        string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                    }
+                                }
+                                $('#tiend').html(string);
+                                if (prod != '1') {
+                                    $('#tiend').attr('disabled', '');
+                                    $('#tiend').val(prod);
+                                }
+                                //alert($('#tiend').val());
+                                loadVentas(fechaG(), $('#tiend').val(), ctipo, ccriterio);
+                            },
+                            error: function () {
+                            }
+                        });
+                    }//ya
+                    cargar();
+                    $('#fec').val(fechaG());
+                    
+                    function codVenta(id) {
+                        var cod = id;
+                        var s = cod.length;
+                        var ncod = 'V';
+                        for (var i = 0; i < (9 - (s + 1)); i++) {
+                            ncod += '0';
+                        }
+                        cod = ncod + cod;
+                        return cod;
+                    }
+                    function loadVentas(fec, tienda, tipo, criterio) {
+                        console.log(tienda);
+                        document.getElementById('cargando').style.display = "block";
+                        //alert(tienda+" "+fec+" "+tipo+" "+criterio);
+                        $('#fecl').text(descFec(fec));
+                        fec = toFecha(fec);
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/ventaCRL.php',
+                            data: {action: 'listDia', fec: fec, tipo: tipo, criterio: criterio, tienda: tienda},
+                            success: function (data) {
+                                //alert(data);
+                                var tt = 0;
+                                var te = 0;
+                                var td = 0;
+                                var venta = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < venta.length; i++) {
+                                    var att = venta[i][6];
+                                    var ate = venta[i][5];
+                                    var atd = parseFloat(venta[i][6]) + parseFloat(venta[i][5]);
+                                    var ttar = venta[i][7];
+                                    var auxText = '';
+                                    if (att == "" || att == null) {
+                                        att = '0.00';
+                                    }
+                                    if (ate == "" || ate == null) {
+                                        ate = '0.00';
+                                    }
+                                    if (atd == "" || atd == null) {
+                                        atd = '0.00';
+                                    }
+                                    atd=toDouble(atd);
+                                    if (ttar == null) {
+                                        ttar = "";
+                                    }
+                                    var estado = venta[i][8];
+                                    var anul = '';
+                                    if (estado == 'anulado') {
+                                        anul = 'style="background: rgb(240, 158, 158) !important;color: rgb(169, 26, 26);"';
+                                    } else {
+                                        tt = parseFloat(tt) + parseFloat(att);
+                                        te = parseFloat(te) + parseFloat(ate);
+                                        td = parseFloat(td) + parseFloat(atd);
+                                    }
+                                    auxText.substr();
+                                    if ((venta[i][3]).length > 10) {
+                                        auxText=(venta[i][3]).substr(0,9)+'...';
+                                    }
+                                    var tipcom="";
+                                    if(venta[i].tipocomp=="boleta"){
+                                        tipcom="B";
+                                    }else if(venta[i].tipocomp="recibo"){
+                                        tipcom="R";
+                                    }
+                                    
+                                    var ccolor="";
+                                    if(venta[i].estadopedido==1){
+                                        ccolor="green";
+                                    }else{
+                                        ccolor="red";
+                                    }
+
+                                    var opengasto='<center style="display: inline-block;"><div style="width: 16px;height: 16px;background-color: '+ccolor+';border-radius: 8px;"></div></center>';
+                                    
+                                    
+                                    string += '<tr ' + anul + ' onclick="abrirVenta(' + venta[i][0] + ', \''+codVenta(venta[i][0])+'\');">\n\
+                                                <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                <td class=\"ColSM\">' +codVenta(venta[i][0])+opengasto + '</td>\n\
+                                                <td class=\"ColSM\">' + venta[i][1] + '</td>\n\
+                                                <td class=\"ColSM\">' + venta[i][2] + '</td>\n\
+                                                <td class=\"ColSM\">' + auxText + '</td>\n\
+                                                <td>' + venta[i][4] + '</td>\n\
+                                                <td class=\"ColSM ef\">' + ate + '</td>\n\
+                                                <td class=\"ColSM ta\">' + att + '</td>\n\
+                                                <td class=\"ColSM atr\">' + ttar + '</td>\n\
+                                                <td class=\"ColSM tt\">' + atd + '</td>\n\
+                                                <td class=\"ColSM ccc\">' + estado + '</td>\n\
+                                                <td class=\"idCol ccc\">' + tipcom + '</td>\n\
+                                                </tr>';
+                                }
+                                for (var j = 0; j < (15 - venta.length); j++) {
+                                    string += '<tr><td class=\"ColMS ch\">&nbsp;</td><td class=\"ColSM\"></td><td class=\"ColSM\"></td><td class=\"ColSM\"></td><td class=\"ColSM\"></td><td></td><td class=\"ColSM ef\"></td><td class=\"ColSM ta\"></td><td class=\"ColSM\"></td><td class=\"ColSM\ tt"></td><td class=\"ColSM\"></td><td class=\"idCol\"></td></tr>';
+                                }
+                                $('#tr').val(toDouble(tt));
+                                $('#te').val(toDouble(te));
+                                $('#td').val(toDouble(td));
+                                $('#data').html(string);
+                                formatoTabla('270px');
+                                document.getElementById('cargando').style.display = "none";
+                            },
+                            error: function () {
+                                document.getElementById('cargando').style.display = "none";
+                            }
+                        });
+                        formatoTabla('277px');
+                    }
+                    function abrirVenta(id, coddia) {
+                        location.href = 'ventas.html?idventa=' + id + '&idtienda=' +$('#tiend').val() + '&coddia='+coddia;
+                    }
+                    function cambiar() {
+                        loadVentas($('#fec').val(), $('#tiend').val(), ctipo, ccriterio);
+                    }
+                    function buscarPaciente() {
+                        ctipo = 'paciente';
+                        ccriterio = $('#buscador').val();
+                        loadVentas($('#fec').val(), $('#tiend').val(), ctipo, ccriterio);
+                    }
+                    function ListarPendientes() {
+                        ctipo = 'pendientes';
+                        ccriterio = '';
+                        loadVentas($('#fec').val(), $('#tiend').val(), ctipo, ccriterio);
+                    }
+                    function reset() {
+                        ctipo = 'todos';
+                        ccriterio = '';
+                        loadVentas($('#fec').val(), $('#tiend').val(), ctipo, ccriterio);
+                    }
+                    $('#data').css('height', '417px');
+                    $('#buscador').keyup(function (e) {
+                        if (e.keyCode == 13) {
+                            buscarPaciente();
+                        }
+                    });
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

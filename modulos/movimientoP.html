@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .BigTbody tr:hover .whiteHover{
+                color: black !important;
+                font-weight: inherit !important;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 5px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="botones">
+                <h2 id="titu">Envio de Productos a Óptica</h2>
+                <button onclick="location.href = 'detallemovimientoP.html';" class="btnn icon-nuevo" style="position: relative; top: 5px;">Nuevo Envio</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable" style="text-align: center">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td>Fecha</td>
+                        <td>Hora</td>
+                        <td>Optica</td>
+                        <td>Estado</td>
+                        <td class="ColMM"></td>
+                    </tr>
+                </thead>
+                <tbody id="data" class="BigTbody" style="text-transform: uppercase">
+                </tbody>
+            </table>
+            <h3>Vista de los 30 ultimos movimientos.</h3>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    window.parent.resizeModal(800, 615);
+                    var movimiento = $_GET('alta');
+                    var tie = $_GET('ti');
+                    var tipoL = 'listProd';
+                    if (movimiento != undefined) {
+                        tipoL = 'listpProd';
+                        $('#titu').html('Ingresos a Optica');
+                        $('.btnn').css('visibility', 'hidden')
+                        $('.tabla h3').html('Vista de los movimientos pendientes.');
+                    }
+                    if (tie == undefined) {
+                        tie = "";
+                    }
+                    loadMovimiento();
+                    function loadMovimiento() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/movimientoCRL.php',
+                            data: {action: tipoL, tienda: tie},
+                            success: function (data) {
+                                var movimientos = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < movimientos.length; i++) {
+                                    var acc = movimientos[i][5];
+                                    var color = "";
+                                    if (acc == "recibido") {
+                                        color = "style=\"color:#4CAF50;text-align: center;text-transform: uppercase;font-weight: bold;\"";
+                                    } else if (acc == "pendiente") {
+                                        color = "style=\"color:#FF9800;text-align: center;text-transform: uppercase;font-weight: bold;\"";
+                                    } else if (acc == "eliminado") {
+                                        color = "style=\"color:#FF5722;text-align: center;text-transform: uppercase;font-weight: bold;\"";
+                                    }
+                                    if (acc == 'pendiente') {
+                                        acc = '<button id=\"btnAcciones\" onclick=\"delEnvio(' + movimientos[i][0] + ');\" class=\"icon-cerrar\"></button>';
+                                    } else {
+                                        acc = '';
+                                    }
+                                    if (movimiento != undefined) {
+                                        acc = '';
+                                    }
+                                    string += '<tr onclick=\"getdetalle(\'' + movimientos[i][0] + '\' ,event);\">\n\
+                                               <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                               <td>' + movimientos[i][1] + '</td>\n\
+                                               <td>' + movimientos[i][2] + '</td>\n\
+                                               <td>' + movimientos[i][6] + '</td>\n\
+                                               <td ' + color + ' class="whiteHover">' + movimientos[i][5] + '</td>\n\
+                                               <td class="ColMM">' + acc + '</td></tr>';
+                                }
+                                for (var j = 0; j < (16 - movimientos.length); j++) {
+                                    string += '<tr>\n\
+                                               <td class=\"ColMS ch\"></td>\n\
+                                               <td>&nbsp;</td>\n\
+                                               <td></td>\n\
+                                               <td></td>\n\
+                                               <td></td>\n\
+                                               <td class="ColMM"></td></tr>';
+                                }
+                                $('#data').html(string);
+                                formatoTabla('162px');
+                            },
+                            error: function () {
+                            }
+                        });
+                        formatoTabla('95px');
+                    }
+                    function getdetalle(id, event) {
+                        var tag;//event.srcElement.tagName || e
+                        if (event.srcElement) {
+                            tag = event.srcElement.tagName;
+                        }
+                        else if (event.target) {
+                            tag = event.target.tagName;
+                        }
+                        //alert(tag);
+                        if (tag != "BUTTON" || tag == undefined) {
+                            var url = 'detallemovimientoP.html?idmovimiento=' + id;
+                            if (movimiento != undefined) {
+                                url = 'detallemovimientoP.html?idmovimiento=' + id + '&ti=' + tie + '&alta=true';
+                            }
+                            location.href = url;
+                        }
+                    }
+                    function delEnvio(id) {
+                        if (confirm('Desea elimiar el envio a tienda?')) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/movimientoCRL.php',
+                                data: {action: 'delp', id: id},
+                                success: function (data) {
+                                    if (data != 'NO') {
+                                        alert('Envio a tienda Eliminado!!');
+                                        loadMovimiento();
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+                    $('#data').css('height', '444px');
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+</head>
+
+<body class="modal" onload="cargando();" style="margin-top: 10px;">
+    <div class="preload">
+        <img src="../img/cargando.gif" class="preload-img">
+    </div>
+    <div class="formulario">
+        <form id="frmUser">
+            <input type="hidden" value="" name="action" id="action">
+            <input type="hidden" id="id" name="id">
+            <input type="hidden" id="tiend" name="tiend">
+            <table>
+                <tr>
+                    <td colspan="1" style="width: 42%">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" />
+                    </td>
+                    <td colspan="2" style="width: 42%">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="tipoDoc">Tipo de Documento</label>
+                        <div class="select-triangulo">
+                            <select id="tipo" name="tipo">
+                                <option>Seleccione</option>
+                                <option value="1">DNI</option>
+                                <option value="2">Carnet Extranjería</option>
+                                <option value="3">Pasaporte</option>
+                                <option value="4">Otro</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="numDoc">Nro. Documento</label>
+                        <input type="text" name="numDoc" id="numDoc" />
+                    </td>
+                </tr>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                <button onclick="saveSech();" type="button" class="icon-guardar">Guardar</button>
+                <button onclick="Eliminar();" type="button" class="icon-eliminar">Eliminar</button>
+            </div>
+        </form>
+    </div>
+    <div class="tabla">
+        <table class="datatable">
+            <thead>
+                <tr>
+                    <td class="ColMS" style="width: 10px;">#</td>
+                    <td style="width: 180px;">Nombre</td>
+                    <td style="width: 190px;">Apellidos</td>
+                    <td style="width: 150px;">Nro. Documento</td>
+                </tr>
+            </thead>
+            <tbody id="data">
+
+            </tbody>
+        </table>
+    </div>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        var aux = 0;
+
+        loadVendedores();
+
+        function Limpiar() {
+            $('#id').val('');
+            $('#nombre').val('');
+            $('#apellido').val('');
+            $('#tipo').val('Seleccione');
+            $('#numDoc').val('');
+            $('.msg').css("display", "none");
+            $('#nombre').focus();
+            aux = 0;
+        }
+
+        function getVendedor(id) {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/usuarioCRL.php',
+                data: { action: 'getVendedor', id: id },
+                success: function (data) {
+                    if (data != "no") {
+                        Limpiar();
+                        var users = JSON.parse(data);
+                        $('#id').val(users[0]);
+                        $('#nombre').val(users[1]);
+                        $('#apellido').val(users[2]);
+                        $('#tipo').val(users[3]);
+                        $('#numDoc').val(users[4]);
+                        aux = 1;
+                    } else {
+                        msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                    }
+                },
+                error: function () {
+                    msgError("Error del Sistema", "#F77474");
+                }
+            });
+        }
+
+        function loadVendedores() {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/usuarioCRL.php',
+                data: { action: "loadVendedores" },
+                success: function (data) {
+                    var users = JSON.parse(data);
+                    var string = '';
+                    for (let i = 0; i < users.length; i++) {
+                        string += '<tr onclick=\"getVendedor(\'' + users[i][0] + '\');\">\n\
+                                    <td style:"width: 25px !important;" class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                    <td style="width: 180px;">' + users[i][1] + '</td>\n\
+                                    <td style="width: 190px;">' + users[i][2] + '</td>\n\
+                                    <td style="width: 150px;">' + users[i][3] + '</td></tr>';
+                        $('#data').html(string);
+                    }
+                },
+                error: function () {
+                    msgError("Error del Sistema", "#F77474");
+                }
+            })
+        }
+
+        function Eliminar() {
+            if ($('#id').val() != "") {
+                if (confirm('Desea Eliminar?')) {
+                    var id = $('#id').val();
+                    console.log(id);
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/usuarioCRL.php',
+                        data: { action: "removeVendedor", id: id },
+                        success: function (data) {
+                            if (data == "OK") {
+                                msgError("Exito!, Usuario eliminado", "#94D613");
+                                $('#id').val('');
+                                $('#nombre').val('');
+                                $('#apellido').val('');
+                                $('#tipo').val('Seleccione');
+                                $('#numDoc').val('');
+                                loadVendedores();
+                            }
+                            else {
+                                msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                            }
+                        },
+                        error: function () {
+                            msgError("Error del Sistema", "#F77474");
+                        }
+                    });
+                }
+            } else {
+                msgError("Error!, Seleccione un Usuario", "#F77474");
+            }
+            aux = 0;
+        }
+
+        function saveSech() {
+            if (aux == 0) {
+                var nombre = $('#nombre').val();
+                var apellido = $('#apellido').val();
+                var tipo = $('#tipo').val();
+                var numDoc = $('#numDoc').val();
+                if (nombre != null && apellido != null && tipo != "Seleccione" && numDoc != null) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/usuarioCRL.php',
+                        data: { action: 'saveSech', nombre: nombre, apellido: apellido, tipo: tipo, numDoc: numDoc },
+                        success: function (data) {
+                            if (data == "OK") {
+                                msgError("Vendedor registrado con éxito!", "#3eec38");
+                                Limpiar();
+                                loadVendedores();
+                            }
+                            else {
+                                msgError("ERROR!", "#F77474");
+                                console.log("ERROR! 1");
+                            }
+                        },
+                        error: function () {
+                            msgError("ERROR!", "#F77474");
+                            console.log("ERROR! 2");
+                        }
+                    })
+                }
+                else {
+                    msgError("ERROR! Ingrese bien los datos", "#F77474");
+                    console.log("ERROR! 3");
+                }
+            }
+            else if (aux == 1) {
+                var id = $('#id').val();
+                var nombre = $('#nombre').val();
+                var apellido = $('#apellido').val();
+                var tipo = $('#tipo').val();
+                var numDoc = $('#numDoc').val();
+                if (nombre != null && apellido != null && tipo != "Seleccione" && numDoc != null && id != null) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/usuarioCRL.php',
+                        data: { action: 'updateSech',id: id, nombre: nombre, apellido: apellido, tipo: tipo, numDoc: numDoc },
+                        success: function (data) {
+                            if (data == "OK") {
+                                msgError("Vendedor actualizado con éxito!", "#3eec38");
+                                Limpiar();
+                                loadVendedores();
+                            }
+                            else {
+                                msgError("ERROR!", "#F77474");
+                                console.log("ERROR! 1");
+                            }
+                        },
+                        error: function () {
+                            msgError("ERROR!", "#F77474");
+                            console.log("ERROR! 2");
+                        }
+                    })
+                } else {
+                    msgError("ERROR! Ingrese bien los datos", "#F77474");
+                    console.log("ERROR! 3");
+                }
+            }
+        }
+
+        estoyEnUnIframe();
+    </script>
+</body>
+
+</html>

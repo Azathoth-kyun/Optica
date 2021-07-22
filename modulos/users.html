@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmUser">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="id" name="id" >
+                <input type="hidden" id="tiend" name="tiend" >
+                <table>
+                    <tr>
+                        <td colspan="1" style="width: 30%">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre"/>
+                        </td>
+                        <td colspan="2" style="width: 40%">
+                            <label for="apellido">Apellido</label>
+                            <input type="text" id="apellido" name="apellido"/>
+                        </td>
+                        <td style="width: 30%">
+                            <label for="usuario">Usuario</label>
+                            <input type="text" id="usuario" name="usuario"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="tipo">Tipo Usuario</label>
+                            <div class="select-triangulo">
+                                <select  id="tipo" name="tipo">
+                                    <option>Seleccione</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <!--option value="Administrador Tienda">Administrador Tienda</option-->
+                                    <option value="Optometra">Optometra</option>
+                                    <option value="Ventas">Ventas</option>
+                                    <option value="Mensajeria">Mensajeria</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <label for="pass">Contraseña</label>
+                            <input type="password" id="pass" name="pass"/>
+                        </td>
+                        <td>
+                            <label for="rpass">Repita Contraseña</label>
+                            <input type="password" id="rpass" name="rpass"/>
+                        </td>
+                        <td>
+                            <label for="tiend">Tienda</label>
+                            <div class="select-triangulo">
+                                <select  id="tienda" name="tienda">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg">mensaje</div>
+                    <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                    <button type="submit" class="icon-guardar">Guardar</button>
+                    <button onclick="Eliminar();" type="button" class="icon-eliminar">Eliminar</button>
+                </div>
+            </form>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td>Nombre</td>
+                        <td>Usuario</td>
+                        <td>Tipo Usuario</td>
+                        <td>Tienda</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                        loadUsers();
+                        
+                        var tienda="";
+                        
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: {action: 'listarTiendasSelect'},
+                            success: function (data) {
+                                tienda = JSON.parse(data);
+                                
+                            },
+                            error: function () {
+                            }
+                        });
+                        
+                        $('#tienda').change(function () {
+                            $('#tiend').val($('#tienda').val());
+                        });
+                        
+                        $('#tipo').change(function () {
+                            loadTiendas();
+                        });
+                        
+                        function loadTiendas(){
+                            var tipo = $('#tipo').val();
+                            var selec=0;
+                            var string = '<option value=\"0\">Seleccione...</option>';
+                            for (var i = 0; i < tienda.length; i++) {
+                                if (tipo == "Administrador"||tipo == "Optometra"||tipo == "Mensajeria") {
+                                    if (tienda[i][0] == "1") {
+                                        string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                        selec=tienda[i][0];
+                                        document.getElementById("tienda").disabled = true;
+                                    }
+                                } else if (tipo == "Ventas") {
+                                    if (tienda[i][0] != "1") {
+                                        string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                        document.getElementById("tienda").disabled = false;
+                                    }
+                                }
+                            }
+                            $('#tienda').html(string);
+                            $('#tienda').val(selec);
+                            $('#tiend').val($('#tienda').val());
+                        }
+                        function loadUsers() {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/usuarioCRL.php',
+                                data: {action: 'listUsuarios'},
+                                success: function (data) {
+                                    var users = JSON.parse(data);
+                                    var string = '';
+                                    for (var i = 0; i < users.length; i++) {
+                                        string += '<tr onclick=\"getUser(\'' + users[i].idUsuario + '\');\">\n\
+                                                    <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                    <td>' + users[i].nombres + " " + users[i].apellidos + '</td>\n\
+                                                    <td>' + users[i].nombUser + '</td>\n\
+                                                    <td>' + users[i].tipo + '</td>\n\
+                                                    <td>' + users[i].tienda + '</td></tr>';
+                                    }
+                                    for (var i = 0; i < (6 - users.length); i++) {
+                                        string += '<tr><td class=\"ColMS ch\"></td>\n\
+                            <td>&nbsp;</td>\n\
+                            <td></td><td></td><td></td></tr>';
+                                    }
+                                    $('#data').html(string);
+                                    formatoTabla('152px');
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema", "#F77474");
+                                }
+                            });
+                            formatoTabla('152px');
+                        }
+                        
+                        function loadTiendasGetUser(ptienda){
+                            var tipo = $('#tipo').val();
+                            var selec=0;
+                            var string = '<option value=\"0\">Seleccione...</option>';
+                            for (var i = 0; i < tienda.length; i++) {
+                                if (tipo == "Administrador"||tipo == "Optometra"||tipo == "Mensajeria") {
+                                    if (tienda[i][0] == "1") {
+                                        string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                        selec=tienda[i][0];
+                                        document.getElementById("tienda").disabled = true;
+                                    }
+                                } else if (tipo == "Ventas") {
+                                    if (tienda[i][0] != "1") {
+                                        string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                        document.getElementById("tienda").disabled = false;
+                                    }
+                                }
+                            }
+                            $('#tienda').html(string);
+                            $('#tienda').val(ptienda);
+                            $('#tiend').val($('#tienda').val());
+                        }
+                        
+                        function getUser(id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/usuarioCRL.php',
+                                data: {action: 'getusuario', id: id},
+                                success: function (data) {
+                                    if (data != "no") {
+                                        Limpiar();
+                                        var users = JSON.parse(data);
+                                        $('#id').val(users[0]);
+                                        $('#nombre').val(users[3]);
+                                        $('#apellido').val(users[2]);
+                                        $('#tipo').val(users[5]);
+                                        $('#usuario').val(users[1]);
+                                        loadTiendasGetUser(users[7]);
+                                        
+                                    } else {
+                                        msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                    }
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema", "#F77474");
+                                }
+                            });
+                        }
+                        function Limpiar() {
+                            $('#id').val('');
+                            $('#nombre').val('');
+                            $('#apellido').val('');
+                            $('#tipo').val('Seleccione');
+                            $('#usuario').val('');
+                            $('#pass').val('');
+                            $('#rpass').val('');
+                            $('#tienda').html('');
+                            $('#tiend').val('0');
+                            document.getElementById("tienda").disabled = false;
+                            $('.msg').css("display", "none");
+                            $('#nombre').focus();
+                        }
+                        function Eliminar() {
+                            if ($('#id').val() != "") {
+                                if (confirm('Desea Eliminar?')) {
+                                    var id = $('#id').val();
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/usuarioCRL.php',
+                                        data: {idUsuario: id, action: "removeUsuario"},
+                                        success: function (data) {
+                                            if (data == "OK") {
+                                                msgError("Exito!, Usuario eliminado", "#94D613");
+                                                $('#id').val('');
+                                                $('#nombre').val('');
+                                                $('#apellido').val('');
+                                                $('#tipo').val('Seleccione');
+                                                $('#usuario').val('');
+                                                $('#pass').val('');
+                                                $('#rpass').val('');
+                                                $('#tienda').html('');
+                                                $('#tiend').val('0');
+                                                document.getElementById("tienda").disabled = false;
+                                                loadUsers();
+                                            }
+                                            else {
+                                                msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                            }
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema", "#F77474");
+                                        }
+                                    });
+                                }
+                            } else {
+                                msgError("Error!, Seleccione un Usuario", "#F77474");
+                            }
+
+                        }
+                        $(function () {
+                            $('#frmUser').submit(function (event) {
+                                event.preventDefault();
+                                if ($('#nombre').val() == "" || $('#apellido').val() == "" || $('#tipo').val() == "Seleccione" || $('#usuario').val() == "") {
+                                    msgError("Complete todos los datos", "#FFAA0F");
+                                    $('#nombre').focus();
+                                } else {
+                                    if (confirm('Desea guardar?')) {
+                                        if ($('#id').val() == "") {
+                                            $('#action').val('insertUsuario');
+                                            if ($('#pass').val() != "" && $('#rpass').val() != "") {
+                                                if ($('#pass').val() == $('#rpass').val()) {
+
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: '../crl/usuarioCRL.php',
+                                                        data: {action: 'getuser', user: $('#usuario').val()},
+                                                        success: function (data) {
+                                                            if (data == '') {
+                                                                $.ajax({
+                                                                    type: 'POST',
+                                                                    url: '../crl/usuarioCRL.php',
+                                                                    data: $('#frmUser').serialize(),
+                                                                    success: function (data) {
+                                                                        if (data == "OK") {
+                                                                            msgError("Exito!, Usuario creado", "#94D613");
+                                                                            $('#id').val('');
+                                                                            $('#nombre').val('');
+                                                                            $('#apellido').val('');
+                                                                            $('#tipo').val('Seleccione');
+                                                                            $('#usuario').val('');
+                                                                            $('#pass').val('');
+                                                                            $('#tienda').html('');
+                                                                            $('#tiend').val('0');
+                                                                            document.getElementById("tienda").disabled = false;
+                                                                            $('#rpass').val('');
+                                                                            loadUsers();
+
+                                                                        } else {
+                                                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                                                        }
+                                                                    },
+                                                                    error: function () {
+                                                                        msgError("Error del Sistema", "#F77474");
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                msgError("Error el nombre de usuario ya existe!", "#FFAA0F");
+                                                                $('#usuario').focus();
+                                                                $('#usuario').select();
+                                                            }
+                                                        },
+                                                        error: function () {
+                                                            msgError("Error del Sistema", "#F77474");
+                                                        }
+                                                    });
+                                                }
+                                                else {
+                                                    msgError("Error. Las contraseñan no coinciden", "#F77474");
+                                                    $('#pass').focus();
+                                                }
+                                            } else {
+                                                msgError("Error. Contraseña en blanco", "#F77474");
+                                                $('#pass').focus();
+                                            }
+                                        }
+                                        else {
+                                            if ($('#pass').val() == "" && $('#rpass').val() == "") {
+                                                $('#action').val('updateUsuario');
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: '../crl/usuarioCRL.php',
+                                                    data: {action: 'getuserDistLog', user: $('#usuario').val(), id: $('#id').val()},
+                                                    success: function (data) {
+                                                        if (data == '') {
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: '../crl/usuarioCRL.php',
+                                                                data: $('#frmUser').serialize(),
+                                                                success: function (data) {
+                                                                    if (data == "OK") {
+                                                                        msgError("Exito!, Usuario Actualizado", "#94D613");
+                                                                        $('#id').val('');
+                                                                        $('#nombre').val('');
+                                                                        $('#apellido').val('');
+                                                                        $('#tipo').val('Seleccione');
+                                                                        $('#usuario').val('');
+                                                                        $('#pass').val('');
+                                                                        $('#rpass').val('');
+                                                                        $('#tienda').html('');
+                                                                        $('#tiend').val('0');
+                                                                        document.getElementById("tienda").disabled = false;
+                                                                        loadUsers();
+                                                                    } else {
+                                                                        msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                                                    }
+                                                                },
+                                                                error: function () {
+                                                                    msgError("Error del Sistema", "#F77474");
+                                                                }
+                                                            });
+                                                        } else {
+                                                            msgError("Error el nombre de usuario ya existe!", "#FFAA0F");
+                                                            $('#usuario').focus();
+                                                            $('#usuario').select();
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        msgError("Error del Sistema", "#F77474");
+                                                    }
+                                                });
+                                            } else {
+                                                if ($('#pass').val() == $('#rpass').val()) {
+                                                    $('#action').val('updateContrasena');
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: '../crl/usuarioCRL.php',
+                                                        data: $('#frmUser').serialize(),
+                                                        success: function (data) {
+                                                            if (data == "OK") {
+                                                                msgError("Exito!, Usuario Actualizado", "#94D613");
+                                                                $('#id').val('');
+                                                                $('#nombre').val('');
+                                                                $('#apellido').val('');
+                                                                $('#tipo').val('Seleccione');
+                                                                $('#usuario').val('');
+                                                                $('#pass').val('');
+                                                                $('#rpass').val('');
+                                                                $('#tienda').html('');
+                                                                $('#tiend').val('0');
+                                                                document.getElementById("tienda").disabled = false;
+                                                                loadUsers();
+                                                            } else {
+                                                                msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                                            }
+                                                        },
+                                                        error: function () {
+                                                            msgError("Error del Sistema", "#F77474");
+                                                        }
+                                                    });
+                                                } else {
+                                                    msgError("Error. Las contraseñan no coinciden", "#F77474");
+                                                    $('#pass').focus();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                        $('#data').css('height', '167px');
+                        estoyEnUnIframe();
+        </script>
+    </body>
+</html>

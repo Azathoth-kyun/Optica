@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        
+        <style>
+            .RepoDate {
+                width: 90%;
+            }
+            .progress-pie-chart {
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                background-color: #E5E5E5;
+                position: relative;
+              }
+              .progress-pie-chart.gt-50 {
+                background-color: #1abc9c;
+              }
+              .ppc-progress {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+                left: calc(50% - 100px);
+                top: calc(50% - 100px);
+                width: 200px;
+                height: 200px;
+                clip: rect(0, 200px, 200px, 100px);
+              }
+              .ppc-progress .ppc-progress-fill {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+                left: calc(50% - 100px);
+                top: calc(50% - 100px);
+                width: 200px;
+                height: 200px;
+                clip: rect(0, 100px, 200px, 0);
+                background: #1abc9c;
+                transform: rotate(60deg);
+              }
+              .gt-50 .ppc-progress {
+                clip: rect(0, 100px, 200px, 0);
+              }
+              .gt-50 .ppc-progress .ppc-progress-fill {
+                clip: rect(0, 200px, 200px, 100px);
+                background: #E5E5E5;
+              }
+
+              .ppc-percents {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+                left: calc(50% - 148.91304px/2);
+                top: calc(50% - 148.91304px/2);
+                width: 148.91304px;
+                height: 148.91304px;
+                background: #fff;
+                text-align: center;
+                display: table;
+              }
+              .ppc-percents span {
+                display: block;
+                font-size: 2.6em;
+                font-weight: bold;
+                color: #1abc9c;
+              }
+
+              .pcc-percents-wrapper {
+                display: table-cell;
+                vertical-align: middle;
+              }
+
+              body {
+                font-family: Arial;
+                background: #f7f7f7;
+              }
+
+              .progress-pie-chart {
+                margin: 25px auto 0;
+              }
+        </style>
+        <style>
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario" style="width: 500px; display: inline-block;">
+            <form id="frmUser">
+                <input type="hidden" id="id" name="id">
+                <input type="hidden" id="idtienda" name="idtienda">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="tienda">Tienda</label>
+                            <div class="select-triangulo">
+                                <select  id="tienda" name="tienda">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <label for="anio">Año</label>
+                            <div class="select-triangulo">
+                                <select id="anio" name="anio">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <label for="mensaje">Meses</label>
+                            <div class="select-triangulo">
+                                <select id="mes" name="mes">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div style="text-align: center;margin-top: 10px;font-size: 21px;">Reporte mes de <span id="mesreporte"> </span></div>
+                
+                <div id="divProgress" style="display: none;">
+
+                </div>
+                <div id="cargando" class="loadone" style="display: block;position: absolute;top: 340px;left: 242px;"></div>
+            </form>
+        </div>
+        <div class="tabla" style="width: 400px; display: inline-block; float: right;">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">#</td>
+                        <td class="ColFS">Mes</td>
+                        <td class="ColFS">Meta</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                    
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            $.ajax({
+                type: 'POST',
+                url: '../crl/usuarioCRL.php',
+                data: {action: 'getTipous'},
+                success: function (data) {
+
+                    if (data == 'Administrador') {
+                        
+                    }else{
+                        $('#tienda').attr("disabled", "");
+                    }
+                },
+                error: function () {
+                }
+            });
+            
+            var f = new Date();
+            var anio = f.getFullYear();
+            var messel = f.getMonth() + 1;
+            var string = '';
+            var an=2016;
+            
+            while(an<=anio+1){
+                if(an==anio){
+                    string += '<option value=\"' + (an) + '\" selected="">' + (an) + '</option>';
+                }else{
+                    string += '<option value=\"' + (an) + '\">' + (an) + '</option>';
+                }
+                
+                an++;
+            }
+            $('#anio').html(string);
+            
+            $.ajax({
+                type: 'POST',
+                url: '../crl/tiendasCRL.php',
+                data: {action: 'listarTiendasSelect'},
+                success: function (data) {
+                    var tienda = JSON.parse(data);
+                    var string = "";
+                    for (var i = 0; i < tienda.length; i++) {
+                        if(tienda[i][0]==1){
+                        }else{
+                            string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                        }
+                    }
+                    var stringmes='';
+                    for(var i=1; i<13; i++){
+                        if(messel==i){
+                            stringmes += '<option value=\"' + (i) + '\" selected="">' + getMesName(i) + '</option>';
+                        }else{
+                            stringmes += '<option value=\"' + (i) + '\">' + getMesName(i) + '</option>'; 
+                        }
+                    }
+                    $('#mes').html(stringmes);
+                    $('#mesreporte').html(getMesName(parseInt($('#mes').val())) + " - " + $('#anio').val());
+                    $('#tienda').html(string);
+                    
+                    
+                    if($_GET('t')>1){
+                        //alert("algo");
+                        $('#tienda').val($_GET('t'));
+                    }
+                    
+                    $('#idtienda').val($('#tienda').val());
+                    loadUsers();
+                    loadProgress();
+                },
+                error: function () {
+                }
+            });
+            
+            $('#tienda').change(function (){
+                $('#idtienda').val($('#tienda').val());
+                loadUsers();
+                loadProgress();
+            });
+            
+            $('#anio').change(function (){
+                $('#mesreporte').html(getMesName(parseInt($('#mes').val())) + " - " + $('#anio').val());
+                loadUsers();
+                loadProgress();
+            });
+            
+            $('#mes').change(function (){
+                $('#mesreporte').html(getMesName(parseInt($('#mes').val())) + " - " + $('#anio').val());
+                loadProgress();
+            });
+            
+            
+            function loadProgress(){
+                document.getElementById('cargando').style.display = "block";
+                document.getElementById('divProgress').style.display = "none";
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/metaCRL.php',
+                    data: {action: 'getMetaByMesByAnioByTienda', idtienda: $('#idtienda').val(), anio: $('#anio').val(), mes: $('#mes').val()},
+                    success: function (meta) {
+                        //alert(meta);
+                        var mesb = "";
+                        if($('#mes').val()<10){
+                            mesb="0"+$('#mes').val();
+                        }
+                        //alert("mesb: "+mesb);
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/metaCRL.php',
+                            data: {action: 'TotalIngresosByFecha', tienda: $('#idtienda').val(), anio: $('#anio').val(), mes: mesb},
+                            success: function (data) {
+                                var lista = JSON.parse(data);
+
+                                //for (var i = 0; i < lista.length; i++) {
+                                    //totalingresos = totalingresos + parseFloat(lista[i].efectivo) + parseFloat(lista[i].tarjeta);
+                                //}
+                                var tott=0;
+                                var tots=0;
+                                if(lista.length>0){
+                                    totali=lista[0].acuenta;
+                                    tott=lista[0].total;
+                                    tots=lista[0].saldo;
+                                }else{
+                                    totali=0;
+                                }
+                                
+                                //$('#totalUtilidades').val((totali-totalg).toFixed(2));
+
+                                var totalpercent=0;
+
+                                if(meta>0){
+                                    //alert(totali + " " + meta);
+                                    totalpercent = totali*100/meta;
+                                }
+
+                                document.getElementById("divProgress").innerHTML=
+                                    '<div id="progresspie" class="progress-pie-chart" data-percent="'+totalpercent+'" style="display: inline-block; margin-left: 102px;margin-top: 5px;">'
+                                        +'<div class="ppc-progress">'
+                                          +'<div class="ppc-progress-fill"></div>'
+                                        +'</div>'
+                                        +'<div class="ppc-percents">'
+                                          +'<div class="pcc-percents-wrapper">'
+                                            +'<span id="porcentajeav">%</span>'
+                                           +'</div>'
+                                        +'</div>'
+                                    +'</div>'
+                                    +'<div style="float: right;width: 160px;height: 210px;display: inline-block;text-align: left;margin-right: 27px;margin-top: 5px;">'
+                                    +'<div style="font-size: 19px;">'
+                                    +'<span>Ventas</span><br/><br/>'
+                                    +'<span style="color: rgb(15, 104, 211);">Total: '+tott+'</span><br/><br/>'
+                                    +'<span style="color: rgb(30, 165, 46);">A cuenta: '+totali+'</span><br/><br/>'
+                                    +'<span style="color: rgb(229, 74, 74);">Saldo: '+tots+'</span>'
+                                    +'</div>'
+                                    +'</div>'
+                                    +'<div style="display: inline-block;margin-top: 0px;width: 410px;text-align: center;">'
+                                    +'<span style="font-size: 19px;">Meta: '+meta+'</span>'
+                                    +'</div>';
+
+                                var $ppc = $('.progress-pie-chart'),
+                                percent = parseInt($ppc.data('percent'));
+
+                                if(percent>=100){
+                                    percent=100;
+                                    document.getElementById('progresspie').style.backgroundColor = '#FF9800';
+                                    document.getElementById('porcentajeav').style.color = '#FF9800';
+                                }
+
+                                var deg = 360*percent/100;
+
+                                if (percent > 50) {
+                                  $ppc.addClass('gt-50');
+                                }
+                                $('.ppc-progress-fill').css('transform','rotate('+ deg +'deg)');
+                                $('.ppc-percents span').html(''+(parseFloat(totalpercent)).toFixed(2)+'%');
+
+                                document.getElementById('cargando').style.display = "none";
+                                document.getElementById('divProgress').style.display = "block";
+
+                            },
+                            error: function () {
+                                msgError("Error del Sistema", "#F77474");
+                                document.getElementById('cargando').style.display = "none";
+                            }
+                        });
+                    }
+                });
+            }
+            
+            function loadUsers() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/metaCRL.php',
+                    data: {action: 'listMetasByTiendaByAnio', idtienda: $('#idtienda').val(), anio: $('#anio').val()},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        //alert(data);
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            string += '<tr >\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td class="ColFS">' + getMesName(parseInt(lista[i].mes)) + '</td>\n\
+                                        <td class="ColFS">' + lista[i].meta + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (12 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\">'+(i+1)+'</td>\n\
+                <td class="ColFS">'+getMesName(i+1)+'</td>\n\
+                <td class="ColFS"></td></tr>';
+                        }
+                        $('#data').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getMesName(mes){
+                switch(mes){
+                    case 1: return "Enero"; break;
+                    case 2: return "Febrero"; break;
+                    case 3: return "Marzo"; break;
+                    case 4: return "Abril"; break;
+                    case 5: return "Mayo"; break;
+                    case 6: return "Junio"; break;
+                    case 7: return "Julio"; break;
+                    case 8: return "Agosto"; break;
+                    case 9: return "Setiembre"; break;
+                    case 10: return "Octubre"; break;
+                    case 11: return "Noviembre"; break;
+                    case 12: return "Diciembre"; break;
+                }
+            }
+            
+            function Limpiar() {
+                $('#meta').val('');
+                for(var idd=1; idd<13; idd++){
+                    document.getElementById(idd).checked=0;
+                }
+            }
+            var listaMetas = [];
+            initMetas();
+            function initMetas(){
+                for(var i=1; i<13; i++){
+                    var temp = [i, 0];
+                    listaMetas.push(temp);
+                }
+            }
+            
+            function addListaMetas(i){
+                if(document.getElementById(i).checked == 1){
+                    listaMetas[i-1][1]=1;
+                }else{
+                    listaMetas[i-1][1]=0;
+                }
+            }
+            
+            $(function () {
+                $('#frmUser').submit(function (event) {
+                    event.preventDefault();
+                    var band=0;
+                    for(var i=0; i<12; i++){
+                        if(listaMetas[i][1]==1){
+                            band=1;
+                        }
+                    }
+                    
+                    if ($('#meta').val() == "") {
+                        msgError("Ingrese meta", "#FFAA0F");
+                        $('#asunto').focus();
+                    }else if(band==0){
+                        msgError("Seleccione al menos un mes", "#FFAA0F");
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            var metas = JSON.stringify(listaMetas);
+                            if ($('#id').val() == "") {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/metaCRL.php',
+                                    data: {
+                                        action: 'insertMetaTiendaAnio', 
+                                        idtienda: $('#idtienda').val(), 
+                                        anio: $('#anio').val(),
+                                        metas: metas,
+                                        meta: $('#meta').val()
+                                    },
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Datos registrados.", "#94D613");
+                                            $('#meta').val('');
+                                            loadUsers();
+                                            for(var i=0; i<12; i++){
+                                                listaMetas[i][1]=0;
+                                            }
+                                            for(var idd=1; idd<13; idd++){
+                                                document.getElementById(idd).checked=0;
+                                            }
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            else {
+                                /*
+                                $('#action').val('updateDetalleGasto');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/gastosCRL.php',
+                                    data: $('#frmUser').serialize(),
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Gasto actualizado", "#94D613");
+                                            $('#id').val('');
+                                            $('#asunto').val('');
+                                            $('#mensaje').val('');
+                                            $('.msg').css("display", "none");
+                                            $('#asunto').focus();
+                                            loadUsers();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                                */
+                            }
+                        }
+                    }
+                });
+            });
+            $('#data').css('height', '333px');
+            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+     <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="botones">
+                <h2>Ingresos a Almacen</h2>
+                <br>                
+                <br>
+                <button onclick="location.href = 'detalleingreso.html';" class="btnn" style="display: none">Nuevo</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColSM">Fecha</td>
+                        <td class="ColSM">Hora</td>
+                        <td >Razón Social</td>          
+                        <td>Proveedor</td>
+                        <td class="ColSM">Documento</td>
+                        <td class="ColSM">Numero Documento</td>
+                    </tr>
+                </thead>
+                <tbody id="data" class="BigTbody">
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    loadIngreso();
+                    function loadIngreso() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/ingresoCRL.php',
+                            data: {action: 'list'},
+                            success: function (data) {
+                                alert(data);
+                                var ingresos = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < ingresos.length; i++) {
+                                    string += '<tr onclick=\"getdetalle(\'' + ingresos[i][0] + '\');\"><td class=\"ColMS ch atr\">' + (i+1) + '</td><td class=\"ColSM\">' + ingresos[i][1] + '</td><td class=\"ColSM\">' + ingresos[i][2] + '</td><td>' + ingresos[i][4] + '</td><td>' + ingresos[i][5] + '</td><td class=\"ColSM\">' + ingresos[i][6] + '</td><td class=\"ColSM\">' + ingresos[i][7] + '</td></tr>';
+                                }
+                                for (var j = 0; j < (15 - ingresos.length); j++) {
+                                    string += '<tr><td class=\"ColMS ch\"></td><td class=\"ColSM\">&nbsp;</td><td class=\"ColSM\"></td><td></td><td></td><td class=\"ColSM\"></td><td class=\"ColSM\"></td></tr>';
+                                }
+                                $('#data').html(string);
+                                formatoTabla('420px');
+                            },
+                            error: function () {
+                            }
+                        });
+                        formatoTabla('420px');
+                    }
+                    function getdetalle(id) {
+                        location.href = 'detalleingreso.html?idingreso=' + id;
+                    }
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

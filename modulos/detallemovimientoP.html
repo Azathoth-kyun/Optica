@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .bloqueo{
+                display: none;
+                position: absolute;
+                background: transparent;
+                height: 100%;
+                width: 100%;
+                top:0px;
+                left: 0px;
+                text-align: center;
+                z-index: 2000;
+            }
+            .advertenciaMainContant{
+                margin: 150px auto 0 auto;
+                display: block;
+                position: relative;
+                width: 600px;
+                box-shadow: 0px 0px 47px rgba(0,0,0,.7);
+                border-radius: 15px;
+            }
+
+            .titleMainCpontent {
+                background-color: #E43834;
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+                padding: 10px 0px;
+                height: 50px;
+            }
+
+            .imgAdvertenciaContent {
+                position: absolute;
+                top: 12px;
+                right: 40px;
+                margin: 0px;
+                width: 8%;
+            }
+
+            .titleAdvertencia {
+                color: white;
+                font-family: sans-serif;
+                font-size: 24px;
+                position: absolute;
+                top: 20px;
+                left: 40px;;
+            }
+
+            .imgAdvertencia {
+                margin: 0px;
+            }
+
+            .contenidoMain {
+                background: #F4F4F4;
+                border-bottom: 2px solid #BCBCBC;
+                border-left: 2px solid #BCBCBC;
+                border-right: 2px solid #BCBCBC;
+                border-bottom-left-radius: 15px;
+                border-bottom-right-radius: 15px;
+                text-align: center;
+                padding: 30px 0px 40px 0px;
+            }
+
+            .textMainAlert {
+                font-family: sans-serif;
+                font-size: 20px;
+                color: #606060;
+                margin: 0px;
+                text-transform: uppercase;
+            }
+
+            .textDescription {
+                font-family: sans-serif;
+                font-size: 17px;
+                color: #606060;
+                margin: 10px 0px 30px 0px;
+            }
+
+            .btnAceptar {
+                font-family: sans-serif;
+                background-color: #E43834;
+                font-size: 18px;
+                box-shadow: 0 3px 0 0 #C52727;
+                border-radius: 9px;
+                color: white;
+                text-decoration: none;
+                padding: 10px 50px;
+            }
+            .loadone{
+                display: none;
+                position: absolute;
+                top: 19px;
+                left: 274px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="atras">
+                <button onclick="atras();" id="btnAt" class="icon-atras"></button>
+                <div style="  position: absolute;top: -8px;right: 0px;">
+                    <label for="fec">Fecha</label>
+                    <input type="text" id="fec" name="fec" disabled="" style="text-align: center;"/>
+                </div>
+            </div>
+            <input type="hidden" value="" name="action" id="action">
+            <table>
+                <tr>
+                    <td class="col-xxs">
+                        <label for="tiend">Tienda</label>
+                        <div class="select-triangulo">
+                            <select id="tiend" name="tiend">
+                            </select>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-xxs">
+                        <label for="cod">Codigo</label>
+                        <input type="hidden" id="edit"/>
+                        <input type="hidden" id="idp" name="idp"/>
+                        <input type="text" id="cod" name="cod" disabled=""/>
+                    </td>
+                    <!--td  class="ColXXXX">
+                        <label for="prod">Producto</label>
+                        <input type="text" id="prod" name="prod"/>
+                    </td-->
+                    <td class="ColXXXX">
+                        <label for="prod">Producto</label>
+                        <div class="select-triangulo">
+                            <select id="prod" name="prod" disabled="">
+                            </select>
+                        </div>
+                    </td>
+                    <td class="col-xs" >
+                        <label for="stock" style="color: #FFAB00;">Stock</label>
+                        <input class="atr" type="text" id="stock" name="stock" style="border:2px #FFAB00 solid;" disabled=""/>
+                    </td>
+                    <td class="col-xs" >
+                        <label for="cant" style="color: #00BCD4;">Cant. Envio</label>
+                        <input class="atr" type="text" id="cant" name="cant" style="border:2px #00BCD4 solid;" disabled=""/>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+        <div class="botones">
+            <div class="msg">mensaje</div>
+            <button id="add" class="icon-agregar">Agregar</button>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColOH2">Codigo</td>
+                        <td>Producto</td>
+                        <td class="ColMMM">Cantidad</td>          
+                        <td class="ColMMM">Acciones</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <div class="botones">
+            <table style="display: none;margin-top: -8px;" id="btnR">
+                <tr>
+                    <td>
+                        <label for="pass" style="text-align: left;">Clave usuario</label>
+                        <input type="password" id="pass" name="pass" style="height: 30px;text-align: center;font-family: 'Press Start 2P', cursive;width: 150px;letter-spacing: -4px;"/>
+                    </td>
+                    <td>
+                        <button type="button" onclick="recibir();"  style="width: 180px;margin-left: 2px;  margin-top: 30px;" class="icon-ok">Recibir Mercaderia</button>
+                    </td>
+                </tr>
+            </table>
+            <button onclick="location.href = 'detallemovimientoP.html';" type="button" id="btnN" class="icon-nuevo">Nuevo</button>
+            <button type="button" onclick="save();" id="btnS" class="icon-guardar cl-guardar1">Guardar</button>
+        </div>
+        <div class="bloqueo">
+            <div class="advertenciaMainContant">
+                <div class="titleMainCpontent">
+                    <p class="titleAdvertencia">Advertencia</p>
+                    
+                </div>
+                <div class="contenidoMain">
+                    <p class="textMainAlert">el código ingresado no es valido</p>
+                    <p class="textDescription">Por favor, verificar el código <br />escaneado y vuelva a intentarlo</p>
+                    <a href="#" class="btnAceptar" onclick="">Aceptar</a>
+                    <figure class="imgAdvertenciaContent">
+                        <img src="../img/icoAdvertencia.svg" class="imgAdvertencia">
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                window.parent.resizeModal(990, 615);
+                var isDisabled = false;
+                var movimiento = $_GET('idmovimiento');
+                var alta = $_GET('alta');
+                var tie = $_GET('ti');
+                var listaProductos = [];
+                $('#tiend').change(function () {
+                    if ($('#tiend').val() != "0") {
+                        $('#prod').removeAttr('disabled');
+                        $('#cant').removeAttr('disabled');
+                        $('#prod').focus();
+                    } else {
+                        $('#prod').attr('disabled', '');
+                        $('#cant').attr('disabled', '');
+                    }
+                });
+                $('#tiend').focus();
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/tiendasCRL.php',
+                    data: {action: 'listarTiendasSelect'},
+                    success: function (data) {
+                        var tienda = JSON.parse(data);
+                        var string = '<option value=\"0\">Seleccione...</option>';
+                        for (var i = 0; i < tienda.length; i++) {
+                            if (tienda[i][0] != "1") {
+                                string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                            }
+                        }
+                        $('#tiend').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/productosCRL.php',
+                    data: {action: 'list'},
+                    success: function (data) {
+                        var prods = JSON.parse(data);
+                        var string = '<option value=\'\'>Seleccione...</option>';
+                        for (var i = 0; i < prods.length; i++) {
+                            string += '<option value=\'' + prods[i][2] + '\'>' + prods[i][1] + '</option>';
+                        }
+                        $('#prod').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+                $('#prod').change(function () {
+                    if ($('#prod').val() != 'a') {
+                        var cod = $('#prod').val();
+                        if (isNaN(cod) && cod.length < 7) {
+                            cod = cod.substring(1);
+                            var s = cod.length;
+                            var ncod = 'P';
+                            for (var i = 0; i < (7 - (s + 1)); i++) {
+                                ncod += '0';
+                            }
+                            cod = ncod + cod;
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'getProductoCod', cod: cod},
+                            success: function (data) {
+                                if (data != "null") {
+                                    var producto = JSON.parse(data);
+                                    var edit = $('#edit').val();
+                                    var stock = producto[6];
+                                    $('#cod').val(producto[2]);
+                                    $('#idp').val(producto[0]);
+                                    $('#prod').val(producto[2]);
+                                    for (var i = 0; i < listaProductos.length; i++) {
+                                        if (listaProductos[i][0] == cod) {
+                                            if (edit == "") {
+                                                stock = parseInt(producto[6]) - parseInt(listaProductos[i][3]);
+                                            }
+                                        }
+                                    }
+                                    $('#stock').val(stock);
+                                    $('#cant').focus();
+                                } else {
+                                    msgError("Producto no encontrado!.", "orange");
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    } else {
+                        $('#edit').val('');
+                        $('#idp').val('');
+                        $('#prod').val('');
+                        $('#cod').val('');
+                        $('#cant').val('');
+                        $('#stock').val('');
+                    }
+                });
+                $('#fec').val(fecha());
+                listarProductos();
+                if (movimiento != undefined) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/movimientoCRL.php',
+                        data: {action: 'getmovp', id: movimiento},
+                        success: function (data) {
+                            var ing = JSON.parse(data);
+                            $('#tiend').val(ing[3]);
+                            $('#fec').val(ing[1]);
+                        },
+                        error: function () {
+                        }
+                    });
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/movimientoCRL.php',
+                        data: {action: 'listDetallep', id: movimiento},
+                        success: function (data) {
+                            listaProductos = JSON.parse(data);
+                            listarProductos();
+                        },
+                        error: function () {
+                        }
+                    });
+                    $('#tiend').attr('disabled', "");
+                    $('#fec').attr('disabled', "");
+                    $('#cod').attr('disabled', "");
+                    $('#idp').attr('disabled', "");
+                    $('#prod').attr('disabled', "");
+                    $('#cant').attr('disabled', "");
+                    $('#btnS').attr("disabled", "");
+                    $('#btnS').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                    $('#add').attr("disabled", "");
+                    $('#add').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                }//ya
+                if (alta != undefined) {
+                    $('#add').attr('style', "background: #BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                    $('#add').attr('disabled', "");
+                    $('#btnR').css('display', 'block');
+                    $('#btnN').css('display', 'none');
+                    $('#btnS').attr("disabled", "");
+                    $('#btnS').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                }
+                $("#cod").focusin(function () {
+                    $('#edit').val('');
+                    $('#cod').val('');
+                    $('#idp').val('');
+                    $('#prod').val('');
+                    $('#cant').val('');
+                    $('#stock').val('');
+                });
+                $('#cant').focusout(function () {
+                    if ($('#cant').val() != "") {
+                        $('#cant').val(toInt($('#cant').val()));
+                    }
+                });
+                $('.btnAceptar').click(function () {
+                    $('.bloqueo').css("display", "none");
+                    $('#cod').focus();
+                });
+                $("#cod").keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        var cod = $("#cod").val();
+                        if (isNaN(cod) && cod.length < 7) {
+                            cod = cod.substring(1);
+                            var s = cod.length;
+                            var ncod = 'P';
+                            for (var i = 0; i < (7 - (s + 1)); i++) {
+                                ncod += '0';
+                            }
+                            cod = ncod + cod;
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'getProductoCod', cod: cod},
+                            success: function (data) {
+                                if (data != "null") {
+                                    var producto = JSON.parse(data);
+                                    var edit = $('#edit').val();
+                                    var stock = producto[6];
+                                    $('#cod').val(producto[2]);
+                                    $('#idp').val(producto[0]);
+                                    $('#prod').val(producto[1]);
+                                    for (var i = 0; i < listaProductos.length; i++) {
+                                        if (listaProductos[i][0] == cod) {
+                                            if (edit == "") {
+                                                stock = parseInt(producto[6]) - parseInt(listaProductos[i][3]);
+                                            }
+                                        }
+                                    }
+                                    $('#stock').val(stock);
+                                    $('#cant').focus();
+                                } else {
+                                    msgError("Producto no encontrado!.", "orange");
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                });//ya
+                $('#cant').keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        agregar();
+                    }
+                });//ya
+                $('#add').click(function () {
+                    agregar();
+                });//ya
+                function removeList(num) {
+                    if (!isDisabled) {
+                        if (confirm('Desea retirar el producto de la lista?')) {
+                            listaProductos.splice(num, 1);
+                            listarProductos();
+                        }
+                    }
+                }//ya
+                function limpiar() {
+                    $('#edit').val('');
+                    $('#cod').val('');
+                    $('#idp').val('');
+                    $('#prod').val('');
+                    $('#cant').val('');
+                    $('#stock').val('');
+                    $('#cod').focus();
+                }
+                function listarProductos() {
+                    var aux = listaProductos;
+                    var string = '';
+                    for (var i = 0; i < aux.length; i++) {
+                        if (movimiento != undefined) {
+                            string += '<tr>\n\
+                        <td class=\"ColOH2\">' + aux[i][0] + '</td>\n\
+                        <td>' + aux[i][2] + '</td>\n\
+                        <td class="ColMMM atr">' + aux[i][3] + '</td>\n\
+                        <td class="ColMMM"></td></tr>';
+                        }
+                        else {
+                            string += '<tr onclick=\"editCant(\'' + i + '\',event);\">\n\
+                            <td class=\"ColOH2\">' + aux[i][0] + '</td>\n\
+                            <td>' + aux[i][2] + '</td>\n\
+                            <td class="ColMMM atr">' + aux[i][3] + '</td>\n\
+                            <td class="ColMMM"><button id=\"btnAcciones\" onclick=\"removeList(' + i + ');\" class=\"icon-cerrar\"></button></td></tr>';
+                        }
+                    }
+                    for (var i = 0; i < (9 - aux.length); i++) {
+                        string += "<tr><td class=\"ColOH2\"></td>\n\
+                                    <td>&nbsp;</td>\n\
+                                    <td  class=\"ColMMM\"></td>\n\
+                                    <td class=\"ColMMM\"></td></tr>";
+                    }
+                    $('#data').html(string);
+                    formatoTabla('700px');
+                }//ya
+                function editCant(pos, event) {
+                    var tag;//event.srcElement.tagName || e
+                    if (event.srcElement) {
+                        tag = event.srcElement.tagName;
+                    }
+                    else if (event.target) {
+                        tag = event.target.tagName;
+                    }
+                    if (tag != "BUTTON" || tag == undefined) {
+                        $('#edit').val(pos);
+                        $('#cod').val(listaProductos[pos][0]);
+                        $('#idp').val(listaProductos[pos][1]);
+                        $('#prod').val(listaProductos[pos][0]);
+                        $('#cant').val(listaProductos[pos][3]);
+                        $('#cant').focus();
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'getProductoCod', cod: listaProductos[pos][0]},
+                            success: function (data) {
+                                var producto = JSON.parse(data);
+                                var stock = producto[6];
+                                for (var i = 0; i < listaProductos.length; i++) {
+                                    if (listaProductos[i][0] == listaProductos[pos][0]) {
+                                        stock = parseInt(producto[6]) - parseInt(listaProductos[i][3]);
+                                    }
+                                }
+                                $('#stock').val(stock);
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                }
+                function agregar() {
+                    var stock = $('#stock').val();
+                    var edit = $('#edit').val();
+                    var cod = $('#cod').val();
+                    var id = $('#idp').val();
+                    var prod = $('#prod option:selected').text();
+                    var cant = $('#cant').val();
+                    cant = toInt(cant);
+                    if ($('#prod').val() == "") {
+                        msgError("Debe seleccionar un producto!!", "orange");
+                        $('#cod').focus();
+                    }else if (isNaN(cant)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#cant').val('');
+                        $('#cant').focus();
+                    } else if (cant <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#cant').val('');
+                        $('#cant').focus();
+                    } else if (parseInt(cant) > parseInt(stock)) {
+                        msgError("stock insuficiente!!", "orange");
+                        $('#cant').val('');
+                        $('#cant').focus();
+                    } else if (cant == "") {
+                        msgError("Debe agregar una cantidad", "orange");
+                        $('#cant').focus();
+                    } else {
+                        for (var i = 0; i < listaProductos.length; i++) {
+                            if (listaProductos[i][0] == cod) {
+                                if (confirm('Producto ya agregado desea agregar mas?')) {
+                                    if (edit == "") {
+                                        cant = parseInt(cant) + parseInt(listaProductos[i][3]);
+                                    }
+                                    edit = i;
+                                } else {
+                                    edit = '/';
+                                }
+                            }
+                        }
+                        var temp = [cod, id, prod, cant];
+                        if (edit === "/") {
+
+                        } else if (edit !== "") {
+                            listaProductos[edit] = temp;
+                        } else {
+                            listaProductos.push(temp);
+                        }
+                        listarProductos();
+                        limpiar();
+                    }
+                }
+                function save() {
+                    var tienda = $('#tiend').val();
+                    if (tienda == "0" || listaProductos.length <= 0) {
+                        msgError("Complete todos los datos", "orange");
+                    } else {
+                        if (confirm('Desea Guardar?')) {
+                            var fechas = fecha();
+                            var horas = hora();
+                            var productos = JSON.stringify(listaProductos);
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/movimientoCRL.php',
+                                data: {action: 'insertp', fecha: fechas, hora: horas, res: tienda, productos: productos},
+                                success: function () {
+                                    msgError("Exito!, Envío registrado.", "green");
+                                    document.getElementById('tiend').disabled=true;
+                                    $('#cod').attr("disabled", "");
+                                    $('#cant').attr("disabled", "");
+                                    $('#btnS').attr("disabled", "");
+                                    $('#btnS').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                    $('#add').attr("disabled", "");
+                                    $('#add').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                    isDisabled = true;
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+                }
+                function atras() {
+                    if (alta != undefined) {
+                        location.href = 'movimientoP.html?alta=true&ti=' + tie;
+                        // window.parent.resizeModal(1000, 635);
+                    }
+                    else if (movimiento != undefined) {
+                        location.href = 'movimientoP.html';
+                        // window.parent.resizeModal(1000, 635);
+                    }
+                    else {
+                        if (listaProductos.length > 0) {
+                            if (!isDisabled) {
+                                if (confirm('Hay datos sin guardar que se perderan, Desea Salir?')) {
+                                    location.href = 'movimientoP.html';
+                                }
+                            } else {
+                                location.href = 'movimientoP.html';
+                            }
+                        } else {
+                            location.href = 'movimientoP.html';
+                            //window.parent.resizeModal(1000, 635);
+                        }
+                    }
+                }
+                function recibir() {
+                    var pass = $('#pass').val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/usuarioCRL.php',
+                        data: {action: 'valUser', pass: pass},
+                        success: function (data) {
+                            if (data != 'no') {
+                                var productos = JSON.stringify(listaProductos);
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/movimientoCRL.php',
+                                    data: {action: 'updRP', id: movimiento, productos: productos},
+                                    success: function () {
+                                        location.href = 'movimiento.html?alta=true&ti=' + tie;
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            } else {
+                                alert("error al ingresar la contraseña!!");
+                                $('#pass').val('');
+                                $('#pass').focus();
+                            }
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+                $('body').keyup(function (e) {
+                    if (e.keyCode == 27) {
+                        $('.bloqueo').css("display", "none");
+                        $('#cod').focus();
+                    }
+                });
+                $('#data').css('height', '225px');
+                estoyEnUnIframe();
+                //--------------------------------
+        </script>
+    </body>
+</html>

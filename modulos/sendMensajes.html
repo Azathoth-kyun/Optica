@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmUser">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="id" name="id" />
+                <table>
+                    <tr>
+                        <td>
+                            <label for="idtienda">Tienda</label>
+                            <div class="select-triangulo">
+                                <select  id="idtienda" name="idtienda">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <label for="asunto">Asunto</label>
+                            <input type="text" id="asunto" name="asunto">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" style="width: 100%;height: 65px;"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg">mensaje</div>
+                    <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                    <button type="submit" class="icon-guardar">Enviar</button>
+                </div>
+            </form>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">#</td>
+                        <td class="ColM">Asunto</td>
+                        <td class="ColXX">Mensaje</td>
+                        <td class="ColFS">Fecha</td>
+                        <td class="ColFS">Hora</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                    
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script language="javascript" src="../js/fancywebsocket.js"></script>
+        <script>
+            $.ajax({
+                type: 'POST',
+                url: '../crl/tiendasCRL.php',
+                data: {action: 'listarTiendasSelect'},
+                success: function (data) {
+                    var tienda = JSON.parse(data);
+                    var string = "";
+                    for (var i = 0; i < tienda.length; i++) {
+                        if(tienda[i][0]==1){
+                        }else{
+                            string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                        }
+                    }
+                    $('#idtienda').html(string);
+                    
+                    loadUsers();
+                },
+                error: function () {
+                }
+            });
+            
+            $('#idtienda').change(function (){
+                loadUsers();
+            });
+            
+            function loadUsers() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/mensajeCRL.php',
+                    data: {action: 'listMensajesByTienda', idtienda: $('#idtienda').val()},
+                    success: function (data) {
+                        var lista = JSON.parse(data);
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            string += '<tr onclick=\"getUser(\'' + lista[i].idmensaje + '\');\">\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td class="ColM">' + lista[i].asunto + '</td>\n\
+                                        <td class="ColXX">' + lista[i].mensaje + '</td>\n\
+                                        <td class="ColFS">' + toFecha(lista[i].fecha) + '</td>\n\
+                                        <td class="ColFS">' + lista[i].hora + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (8 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td class="ColM">&nbsp;</td>\n\
+                <td class="ColXX"></td><td class="ColFS"></td><td class="ColFS"></td></tr>';
+                        }
+                        $('#data').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getUser(id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: {action: 'getDetalleGasto', id: id},
+                    success: function (data) {
+                        if (data != "no") {
+                            Limpiar();
+                            var users = JSON.parse(data);
+                            
+                            $('#id').val(users[0].idgasto);
+                            $('#categoria').val(users[0].idcategoria);
+                            $('#monto').val(users[0].monto);
+                            $('#descripcion').val(users[0].descripcion);
+                            $('#observacion').val(users[0].observacion);
+                        } else {
+                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                        }
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+            }
+            
+            function Limpiar() {
+                $('#id').val('');
+                $('#asunto').val('');
+                $('#mensaje').val('');
+                $('.msg').css("display", "none");
+                $('#asunto').focus();
+            }
+            
+            $(function () {
+                $('#frmUser').submit(function (event) {
+                    event.preventDefault();
+                    if ($('#asunto').val() == "") {
+                        msgError("Ingrese un asunto", "#FFAA0F");
+                        $('#asunto').focus();
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            if ($('#id').val() == "") {
+                                $('#action').val('insertMensajeTienda');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/mensajeCRL.php',
+                                    data: $('#frmUser').serialize(),
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Mensaje enviado", "#94D613");
+                                            $('#id').val('');
+                                            $('#asunto').val('');
+                                            $('#mensaje').val('');
+                                            $('#asunto').focus();
+                                            loadUsers();
+                                            var obj = '{'
+                                                +'"update" : "sendMensajeToTienda"'
+                                            +'}';
+                                            //alert(obj);
+                                            send(obj);// array JSON
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            else {
+                                /*
+                                $('#action').val('updateDetalleGasto');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/gastosCRL.php',
+                                    data: $('#frmUser').serialize(),
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Gasto actualizado", "#94D613");
+                                            $('#id').val('');
+                                            $('#asunto').val('');
+                                            $('#mensaje').val('');
+                                            $('.msg').css("display", "none");
+                                            $('#asunto').focus();
+                                            loadUsers();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                                */
+                            }
+                        }
+                    }
+                });
+            });
+            $('#data').css('height', '210px');
+            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

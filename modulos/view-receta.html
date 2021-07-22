@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>View de Medición - Receta de Medición</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            body{
+                height: auto;
+            }
+            button{
+                background: #C72928 !important;
+            }
+            button:hover{
+                background: #DA6463 !important;
+            }
+            .modal{
+                margin: 0px;
+            }
+            .panelDock{
+                min-width: 840px;
+                width: 840px;
+                display: none;
+                position: absolute;
+                top:0px;
+                right:0px;
+                bottom: 0px;
+                height: 100%;
+                width: 384px;
+                background:rgb(255, 195, 19);
+                z-index: 99;
+                margin-top: -20px;
+                box-shadow: 0px 0px 10px 3px rgba(0,0,0,.5);
+            }
+            .panel-titulo{
+                font-family: 'Roboto Condensed', sans-serif;
+                font-size: 25px;
+                font-weight: bold;
+                color: white;
+                padding: 11px 20px;
+                border-bottom: 5px solid #FF8F00;
+                background: #FFAB00;
+                background: rgb(255, 180, 0)
+            }
+            .materiales{
+                text-align: center;
+                background: white;
+                padding: 0px 8px 20px 8px;
+                width: 247px;
+                display: inline-block;
+                vertical-align: top; 
+                border: 3px solid rgb(255, 143, 0);
+                border-radius: 7px;
+                margin: 15px 2px 10px 15px;
+            }
+            .materiales-row{
+                padding: 4px 0px;
+            }
+            .materiales-col{
+                width: 49%;
+                height: 48px;
+                display: inline-block;
+                vertical-align: middle;
+            }
+            .subtitu-materiales{
+                color: #7C7C7C !important;
+                display: block !important;
+                text-align: left;
+                margin-left: 21px;
+                font-weight: bold;
+                margin-bottom: -2px;
+            }
+            .label-select-tipo{
+                display: inline-block !important;
+            }
+            .select-tipo{
+                width: 58% !important;
+                display: inline-block !important;
+            }
+            .tipo{
+                border: 1px solid #FFB200;
+                border-radius: 5px;
+            }
+            .input-material{
+                padding: 6px 4px;
+                border: 1px solid #FFB200;
+                border-radius: 5px;
+                width: 82%;
+            }
+            .style-unico1{
+                width: 100%;
+                margin-bottom: 0px;
+            }
+            .style-unico2{
+                width: 100% !important;
+                -webkit-box-sizing: border-box !important;
+            }
+            .style-unico3{
+                width: 100%;
+                margin-bottom: 9px;
+            }
+            .dioptrias-interno{
+                margin-top: 10px;
+                width: 405px;
+                display: inline-block;
+                vertical-align: top;
+                padding: 0px 20px;
+            }
+            .dioptrias-OI{
+                width: 400px;
+                /* padding: 10px 0px; */
+                background: white;
+                border: 1px solid #FF8E01;
+                border-radius: 9px;
+            }
+            .dioptrias-OD{
+                width: 400px;
+                /* padding: 10px 0px; */
+                background: white;
+                border: 1px solid #FF8E01;
+                border-radius: 9px;
+                margin-bottom: 10px;
+                display: inline-block;
+                margin-left: 13px;
+            }
+            .titu-OI{
+                background: #FF8E01;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+                padding: 24px 0px 0px 0px;
+                text-align: center;
+                border-radius: 8px 0px 0px 8px;
+                position: relative;
+                left: -1px;
+                width: 70px;
+                height: 46px;
+                display: inline-block;
+            }
+            .dioptrias{
+                background: #FFB200;
+                padding: 18px 5px;
+                /* text-align: center; */
+                position: relative;
+                width: 537px;
+                display: inline-block;
+            }
+            .content-tbl-dioptria{
+                display: inline-table;
+                width: 316.6px;
+                vertical-align: top;
+                margin-top: 7px;
+                margin-right: 10px;
+            }
+            .content-row-dioptria{
+                display: table-row;
+            }
+            .content-dioptria{
+                display: table-cell;
+                margin-bottom: 5px;
+                padding-bottom: 5px;
+            }
+            .titu-diop{
+                width: 36px;
+                display: inline-block;
+                text-align: right;
+            }
+            .input-dioptria{
+                position: relative;
+                left: 3px;
+            }
+            .input-dioptria2{
+                padding: 3px 4px !important;
+                border: 1px solid #FFB200 !important;
+                background: #FFE083;
+                border-radius: 5px;
+                width: 48% !important;
+                margin-left: 4px;
+                text-align: right;
+                outline: 0 !important;
+            }
+            .color-white{
+                color: white !important;
+                font-weight: bold !important;
+            }
+            .precio{
+                border: 1px solid #558C31 !important;
+                background: #AED582;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+            .verde{
+                color: #558C31;
+                font-weight: bold;
+            }
+            .franja-naranja{
+                padding: 7px 0px;
+                background: #FF8E01;
+                color: white;
+            }
+            .color-black{
+                color: black;
+            }
+            .btn-agLunas{
+                padding: 10px 26px !important;
+                width: initial !important;
+                background: #EF6C00 !important;
+                color: white !important;
+                border-radius: 5px;
+                margin: 20px auto;
+                border: none;
+                position: relative;
+                top: -8px;
+            }
+            /*.union-izq:before{
+                content: " ";
+                background: #FF8E01;
+                width: 36px;
+                height: 33px;
+                position: absolute;
+                margin-right: 7px;
+                z-index: -1;
+            }
+            .union-der:after{
+                content: " ";
+                background: #FF8E01;
+                width: 22px;
+                height: 25px;
+                position: absolute;
+                margin-left: 7px;
+
+            }*/
+            .inputlista{
+                border: none;
+                padding: 10px; 
+                background: #f5f5f5;
+                color:#6e6c6c;
+            }
+            .btn-agMonturas{
+                background: #EF6C00 !important;
+                margin-top: 46px  !important;
+            }
+            .content-extras input{
+                width: 90px !important;
+            }
+            .content-extras label{
+                color: white;
+                text-align: left;
+                margin-left: 10px;
+            }
+            .content-extras {
+                width: 108px;
+                display: inline-block;
+                padding: 5px 10px 10px 5px;
+                margin-top: 11px;
+                /* height: 137px; */
+                background: #FF8E01;
+                border-radius: 10px;
+            }
+        </style>
+        <style type="text/css">
+            .contv-izquierda{
+                width: 390px;
+                position: relative;
+            }
+            .head-ci{
+                background: rgb(255, 83, 78);
+                color: white;
+                font-weight: bold;
+                font-size: 25px;
+                padding: 14px 15px 14px 20px;
+                border-bottom: 4px solid rgb(230, 35, 34);
+            }
+            .formulario-ci{
+                width: calc(50% - 60px);
+                display: inline-table;
+                padding: 15px 10px 10px 50px;
+                vertical-align: middle;
+            }
+            .form-row-ci{
+                display: table-row;
+            }
+            .form-element{
+                display: table-cell;
+            }
+            .form-element input{
+                width: calc(100% - 20px) !important;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }
+            .globales-ci{
+                margin-top: 15px;
+                width: 400px;
+                display: table;
+            }
+            .glob-row-ci{
+                display: table-row;
+            }
+            .glob-element{
+                background: white;
+                border: 1px solid lightgray;
+                width: 100px;
+                display: table-cell;
+                text-align: center;
+            }
+            .colorHeader{
+                background:#2979FF !important;
+                color:white;
+            }
+            .imp{
+                background:#FFB300 !important;
+            }
+            .totales-ci{
+                width: 200px;
+                display: table;
+                position: absolute;
+                right: 390px;
+                bottom: 24px;
+            }
+            .tot-row-ci{
+                display: table-row;
+            }
+            .tot-element{
+                padding: 5px 5px;
+                background: white;
+                border: 1px solid lightgray;
+                width: 100px;
+                display: table-cell;
+                text-align: right;
+                margin-bottom: 20px;
+            }
+            .refraccion{
+                width: calc(50% - 64px);
+                display: inline-table;
+                padding: 0px 30px 10px 30px;
+                vertical-align: middle;
+            }
+            .refraccion textarea{
+                border-radius: 7px;
+                border: 2px solid #A4A4A4;
+                width: calc(100% - 20px) !important;
+                height: 156px;
+                padding: 10px;
+                font-size: 16px;
+            }
+            .btng{margin-top: 5px !important; position: absolute; right: 120px;top:1px}
+            .btnp{margin-top: 5px !important; position: absolute; right: 0px; top:1px;}
+            .content-extras-c .titu-diop{
+                color: white;
+            }
+        </style>
+        <style>
+            @media print{
+                @page {
+                    size: A4 portrait;
+                    margin: 5mm 12mm 8mm 8mm ;
+                }
+                .contv-derecha,.formulario-ci,.botones,.globales-ci,.totales-ci,button{
+                    display:none !important;
+                }
+                tr{
+                    border:none !important;
+                }
+                .content-boleta{
+                    -webkit-print-color-adjust: exact;
+                    -moz-print-color-adjust: exact;
+                }
+                .noB{
+                    border-right: none !important;
+                }
+                .noBB{
+                    border-bottom:none !important;
+                }
+            }
+            .content-boleta{
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0px;
+                left: 0px;
+                background: white;
+            }
+            .boleta{
+                width: 443px;
+                height: 542px;
+                position: relative;
+                top: 180px;
+                left: 2px;
+                text-align: center;
+                margin: 0 auto;
+                transform: scale(0.9);
+            }
+            .bpaciente{
+                position: absolute;
+                top: 20px;
+                left: 41px;
+            }
+            #nombre:before {
+                content: "NOMBRE:";
+                margin-right: 10px;
+                font-weight: 600;
+            }
+            .bfecha{
+                position: absolute;
+                top: 42px;
+                right: 34px;
+            }
+            #fecha:before {
+                content: "FECHA:";
+                margin-right: 10px;
+                font-weight: 600;
+            }
+            .bdetalle{
+                position: absolute;
+                top: 74px;
+                left: 28px;
+            }
+            .btbld{
+                display: table;
+                width: 350px;
+                border: 3px solid #525252;
+                border-radius: 10px;
+                font-weight: 900;
+            }
+            .btrow{
+                display: table-row;
+            }
+            .btcell{
+                display: table-cell;
+                width: 50px;
+                border-right: 3px solid #525252;
+                border-bottom: 3px solid #525252;
+                padding: 7px 23px;
+            }
+            .rc{
+                background: darkgrey;
+                border-radius: 10px 10px 0px 0px;
+            }
+            .noB{
+                border-right: none;
+            }
+            .noBB{
+                border-bottom:none;
+            }
+            .bdipl{
+                position: absolute;
+                top: 192px;
+                left: 29px;
+                font-weight: bold;
+            }
+            .badddl{
+                position: absolute;
+                top: 192px;
+                left: 159px;
+                font-weight: bold;
+            }
+            .bpiol{
+                position: absolute;
+                top: 192px;
+                left: 320px;
+                font-weight: bold;
+            }
+            .bobservasion{
+                position: absolute;
+                top: 225px;
+                left: 29px;
+                width: 384px;
+                text-align: left;
+            }
+            #Recomendaciones:before {
+                content: "RECOMENDACIÓN:";
+                margin-right: 10px;
+                font-weight: 600;
+            }
+            .mat{
+                display: none;
+                position: absolute;
+                top: 240px;
+                left: 41px;
+                width: 350px;
+                text-align: left;
+            }
+            .msg{
+                left: 105px;
+                top: 3px;
+                background: transparent !important;
+                border: 1px solid white !important;; 
+            }
+            .btiv{
+                position: absolute;
+                top: 42px;
+                left: 41px;
+                text-align: left;
+            }
+            .optometra{
+                display: none;
+                position: absolute;
+                top: 10px;
+                right: 190px;
+                background: #C72928;
+            }
+            .btne{
+                margin-top: 5px !important; position: absolute; right: 240px;top:1px
+            }
+        </style>
+    </head>
+    <body>
+        <div class="boleta">
+                <div class="btit"></div>
+                <div class="bpaciente" id="nombre"></div>
+                <div class="bfecha" id="fecha"></div>
+                <div class="bdetalle"><div class="btbld">
+                        <div class="btrow rc">
+                            <div class="btcell" style=" border-radius: 7px 0 0 0;"></div>
+                            <div class="btcell">ESF.</div>
+                            <div class="btcell">CIL.</div>
+                            <div class="btcell">EJE.</div>
+                            <div class="btcell noB" style=" border-radius: 0 7px 0 0;">A/V</div>
+                        </div>
+                        <div class="btrow">
+                            <div class="btcell">OD</div>
+                            <div class="btcell" id="esfd"> </div>
+                            <div class="btcell" id="cild"> </div>
+                            <div class="btcell" id="ejed"> </div>
+                            <div class="btcell noB" id="avd"> </div>
+                        </div>
+                        <div class="btrow">
+                            <div class="btcell noBB">OI</div>
+                            <div class="btcell noBB" id="esfi"> </div>
+                            <div class="btcell noBB" id="cili"> </div>
+                            <div class="btcell noBB"id="ejei" > </div>
+                            <div class="btcell noB noBB" id="avi"> </div>
+                        </div>
+                    </div></div>
+                <div class="bdipl" id="DIP"> </div>
+                <div class="badddl" id="ADD"> </div>
+                <div class="bpiol" id="PIO"> </div>
+                <div class="mat" ID="Materiales"> </div>
+                <div class="bobservasion" id="Recomendaciones"> </div>
+        </div>
+        
+    <script src="../js/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript">
+            var paramstr = window.location.search.substr(1)
+            var paramarr = paramstr.split("&");
+            var params = {};
+
+            for (var i = 0; i < paramarr.length; i++) {
+                var tmparr = paramarr[i].split("=");
+                params[tmparr[0]] = tmparr[1];
+            }
+            var nombre = params['nombre'];
+            var apellido = params['apellido'];
+            var comentario = params['comentario'];
+            var fecha=params["fecha"];
+            var tipo = params['tipoD'];
+            var material = params['materialD'];
+            var subtipo = params['subTipo'];
+            var ptrat = params['ptrat'];
+            var strat = params['strat'];
+            var esfi = params['esfi'];
+            var cili = params['cili'];
+            var ejei = params['ejei'];
+            var avi = params['avi'];
+            var dip = params['dip'];
+            var esfd = params['esfd'];
+            var cild = params['cild'];
+            var ejed = params['ejed'];
+            var avd = params['avd'];
+            var pio = params['pio'];
+            var addd = params['addd'];
+            
+            $("#nombre").text(nombre.replace(/%20/g,' ')+' '+apellido.replace(/%20/g,' '));
+            $("#fecha").text(fecha);
+            $("#DIP").text('DIP: ' +dip);
+            $("#ADD").text('ADD: '+addd);
+            $("#PIO").text('PIO: '+pio + " mm Hg");
+            $("#Recomendaciones").text(comentario.replace(/%20/g,' '));
+            $("#esfd").text(esfd);
+            $("#esfi").text(esfi);
+            $("#cild").text(cild);
+            $("#cili").text(cili);
+            $("#ejed").text(ejed);
+            $("#ejei").text(ejei);
+            $("#avd").text(avd);
+            $("#avi").text(avi);
+            $("#Materiales").text(material);
+        </script>
+    </body>
+</html>

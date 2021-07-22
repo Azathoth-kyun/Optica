@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <input type="hidden" value="" name="action" id="action">
+            <input type="hidden" id="id" name="id"/>
+            <table>
+                <tr>
+                    <td>
+                        <label for="parametro">Parametro</label>
+                        <input type="text" id="parametro" name="parametro"/>
+                    </td>
+                    <td>
+                        <label for="descripcion">Descripcion</label>
+                        <input type="text" id="descripcion" name="descripcion"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <button type="button" onclick="update();">Guardar</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="idCol">ID</td>
+                        <td>Parametro</td>
+                        <td>descripcion</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    loadParametros();
+                    function loadParametros() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/parametrosCRL.php',
+                            data: {action: 'list'},
+                            success: function (data) {
+                                var parametros = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < parametros.length; i++) {
+                                    string += '<tr onclick=\"getParametros(\'' + parametros[i][0] + '\');\"><td class=\"idCol\">' + parametros[i][0] + '</td><td>' + parametros[i][1] + '</td><td>' + parametros[i][2] + '</td></tr>';
+                                }
+                                for (var i = 0; i < (6 - parametros.length); i++) {
+                                    string += '<tr><td class=\"idCol\"></td><td>&nbsp;</td><td></td></tr>';
+                                }
+                                $('#data').html(string);
+                                formatoTabla('165px');
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                            }
+                        });
+                        formatoTabla('165px');
+                    }
+                    function getParametros(id) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/parametrosCRL.php',
+                            data: {action: 'get', id: id},
+                            success: function (data) {
+                                if (data != "NO") {
+                                    var param = JSON.parse(data);
+                                    $('#id').val(param[0]);
+                                    $('#parametro').val(param[1]);
+                                    $('#descripcion').val(param[2]);
+                                    $('.msg').css("display", "none");
+                                } else {
+                                    msgError("Error!, porfavor intentelo otra vez", "red");
+                                }
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                            }
+                        });
+                    }
+
+                    function update() {
+                        if ($('#id').val() == "") {
+                            msgError("Error!, seleccione un parametro.", "red");
+                        } else {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/parametrosCRL.php',
+                                data: {action: 'upd', id: $('#id').val(), nomb: $('#parametro').val(), desc: $('#descripcion').val()},
+                                success: function (data) {
+                                    aler(data);
+                                    if (data != "NO") {
+                                        msgError("Exito!, Parametro Actualizado.", "green");
+                                        $('#id').val("");
+                                        $('#parametro').val("");
+                                        $('#descripcion').val("");
+                                        loadParametros();
+                                    } else {
+                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                    }
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema.", "red");
+                                }
+                            });
+                        }
+                    }
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

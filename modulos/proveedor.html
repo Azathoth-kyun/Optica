@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+     <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmproveedor">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="id" name="id" />
+                <table>
+                    <tr>
+                        <td>
+                            <label for="ruc">RUC (Registro Único de Contribuyente)</label>
+                            <input type="text" id="ruc" name="ruc"/>
+                        </td>
+                        <td colspan="2">
+                            <label for="Rsocial">Razón Social</label>
+                            <input type="text" id="Rsocial" name="Rsocial" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            <label for="telefono">Telefono</label>
+                            <input type="text" id="telefono" name="telefono" />
+                        </td>
+                        <td >
+                            <label for="proveedor">Contacto</label>
+                            <input type="text" id="proveedor" name="proveedor" />
+                        </td>
+                        <td>
+                            <label for="celular">Celular</label>
+                            <input type="text" id="celular" name="celular" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" >
+                            <label for="direccion">Dirección</label>
+                            <input type="text" id="direccion" name="direccion" />
+                        </td>
+                        <td>
+                            <label for="comentario">Comentario</label>
+                            <input type="text" id="comentario" name="comentario" />
+                        </td>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg">mensaje</div>
+                    <button type="button" onclick="Limpiar()" class="icon-nuevo">Nuevo</button>
+                    <button type="submit" class="icon-guardar">Guardar</button>
+                    <button type="button" onclick="Eliminar();" class="icon-eliminar">Eliminar</button>
+                </div>
+            </form>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColSM">RUC</td>
+                        <td>Razón Social</td>
+                        <td class="ColSM">Telefono</td>
+                        <td>Dirección</td>
+                        <td>Proveedor</td>
+                        <td class="ColSM">Celular</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                        loadproveedores();
+                        function loadproveedores() {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/proveedorCRL.php',
+                                data: {action: 'list'},
+                                success: function (data) {
+                                    var proveedores = JSON.parse(data);
+                                    var string = '';
+                                    for (var i = 0; i < proveedores.length; i++) {
+                                        string += '<tr onclick=\"getProveedor(\'' + proveedores[i][0] + '\');\">\n\
+                                                   <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                   <td class=\"ColSM\">' + proveedores[i][2] + '</td>\n\
+                                                   <td>' + proveedores[i][1] + '</td>\n\\n\
+                                                   <td class=\"ColSM\">' + proveedores[i][4] + '</td>\n\
+                                                   <td>' + proveedores[i][3] + '</td>\n\
+                                                   <td>' + proveedores[i][5] + '</td>\n\
+                                                   <td class=\"ColSM\">' + proveedores[i][6] + '</td></tr>';
+                                    }
+                                    for (var j = 0; j < (7 - proveedores.length); j++) {
+                                        string += '<tr><td class=\"ColMS ch\">\n\
+                                                   </td><td class=\"ColSM\">&nbsp;</td>\n\
+                                                   <td></td>\n\\n\
+                                                   <td class=\"ColSM\"></td>\n\
+                                                   <td></td>\n\
+                                                   <td></td>\n\
+                                                   <td class=\"ColSM\"></td></tr>';
+                                    }
+                                    $('#data').html(string);
+                                    formatoTabla('207px');
+                                },
+                                error: function () {
+                                }
+                            });
+                            formatoTabla('207px');
+                        }
+                        function getProveedor(id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/proveedorCRL.php',
+                                data: {action: 'get', id: id},
+                                success: function (data) {
+                                    if (data != "no") {
+                                        Limpiar();
+                                        var carac = JSON.parse(data);
+                                        $('#id').val(carac[0]);
+                                        $('#ruc').val(carac[2]);
+                                        $('#Rsocial').val(carac[1]);
+                                        $('#proveedor').val(carac[5]);
+                                        $('#telefono').val(carac[4]);
+                                        $('#celular').val(carac[6]);
+                                        $('#direccion').val(carac[3]);
+                                        $('#comentario').val(carac[7]);
+                                        $('#ruc').focus();
+                                        $('.msg').css("display", "none");
+                                    } else {
+                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                    }
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema.", "red");
+                                }
+                            });
+                        }
+                        function Limpiar() {
+                            $('#id').val('');
+                            $('#ruc').val('');
+                            $('#Rsocial').val('');
+                            $('#proveedor').val('');
+                            $('#telefono').val('');
+                            $('#celular').val('');
+                            $('#direccion').val('');
+                            $('#comentario').val('');
+                            $('.msg').css("display", "none");
+                            $('#ruc').focus();
+                        }
+                        function Eliminar() {
+                            if ($('#id').val() != "") {
+                                if (confirm('Desea Eliminar?')) {
+                                    var id = $('#id').val();
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/proveedorCRL.php',
+                                        data: {id: id, action: "del"},
+                                        success: function (data) {
+                                            if (data == "OK") {
+                                                msgError("Exito!, Proveedor eliminada.", "green");
+                                                Limpiar();
+                                                loadproveedores();
+                                            }
+                                            else {
+                                                msgError("Error!, porfavor intentelo otra vez", "red");
+                                            }
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                        }
+                                    });
+                                }
+                            } else {
+                                msgError("Error!, Seleccione un Proveedor.", "red");
+                            }
+                        }
+                        $(function () {
+                            $('#frmproveedor').submit(function (event) {
+                                event.preventDefault();
+                                if ($('#proveedor').val() == "") {
+                                    msgError("Complete los datos", "orange");
+                                    $('#ruc').focus();
+                                } else {
+                                    if (confirm('Desea guardar?')) {
+                                        if ($('#id').val() == "") {
+                                            $('#action').val('insert');
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '../crl/proveedorCRL.php',
+                                                data: $('#frmproveedor').serialize(),
+                                                success: function (data) {
+                                                    //alert(data);
+                                                    if (data == "OK") {
+                                                        Limpiar();
+                                                        msgError("Exito!, Proveedor Registrado.", "green");
+                                                        loadproveedores();
+
+                                                    } else {
+                                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                                    }
+                                                },
+                                                error: function () {
+                                                    msgError("Error del Sistema.", "red");
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            $('#action').val('update');
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '../crl/proveedorCRL.php',
+                                                data: $('#frmproveedor').serialize(),
+                                                success: function (data) {
+                                                    //alert(data);
+                                                    if (data == "OK") {
+                                                        Limpiar();
+                                                        msgError("Exito!,  proveedor Actualizado.", "green");
+                                                        loadproveedores();
+                                                    } else {
+                                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                                    }
+                                                },
+                                                error: function () {
+                                                    msgError("Error del Sistema.", "red");
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                        $('#Rsocial').focusout(function () {
+                            var val = $('#Rsocial').val().toUpperCase();
+                            $('#Rsocial').val(val);
+                        });
+                        $('#proveedor').focusout(function () {
+                            var val = $('#proveedor').val().toUpperCase();
+                            $('#proveedor').val(val);
+                        });
+                        $('#data').css('height', '212px');
+                        estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <link rel="stylesheet" type="text/css" href="../css/main-res.css?v=15">
+        <link rel="stylesheet" type="text/css" href="../css/detallegastoventa.css?v=2">
+
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 5px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div id="divGastoDetalle" class="Msg-DatosSuscripcion">
+            <div class="formulario formularioSuscripcion">
+                <table>
+                    <tr>
+                        <td colspan="2" style="background-color: #bd1e1e; height: 24px; color: white">
+                            DATOS DEL GASTO <span style="position: absolute; right: -2px; top: 0px;"><a class="close icon-cerrar" href="#" onclick="cerrarDatosCliente();" style="background: rgba(17, 17, 17, 0);"></a></span>
+                        </td>
+                    </tr>
+                </table>
+                <input type="hidden" id="iddetalle" name="iddetalle">
+                <input type="hidden" id="idgastodetalle" name="idgastodetalle">
+                <table style="padding: 15px;">
+                    <tr>
+                        <td colspan="2">
+                            <label for="descdetalle">Detalle</label>
+                            <input type="text" id="descdetalle" name="descdetalle" readonly="">
+                            <input type="hidden" id="idtienda" name="idtienda">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="observacion">Observacion</label>
+                            <input type="text" id="observacion" name="observacion">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" id="fechagasto" name="fechagasto">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="proveedor">Proveedor</label>
+                            <div class="select-triangulo">
+                                <select id="proveedor" name="proveedor">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="tipodocumento">Tipo Documento</label>
+                            <div class="select-triangulo">
+                                <select  id="tipodocumento" name="tipodocumento">
+                                    <option value="Factura">Factura</option>
+                                    <option value="Boleta">Boleta</option>
+                                    <option value="Nota_Compra">Nota de Compra</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%">
+                            <label for="serie">Serie</label>
+                            <input type="text" id="serie" name="serie">
+                        </td>
+                        <td style="width: 65%">
+                            <label for="numero">Número</label>
+                            <input type="text" id="numero" name="numero">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="costo">Costo</label>
+                            <input type="number" id="costo" name="costo">
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones" style="padding: 0px 15px 15px 0px">
+                    <div class="msg3">mensaje</div>
+                    <button type="submit" id="btnGuardarGasto" class="icon-guardarmodal" onclick="guardarGastoDetalle();">Guardar</button>
+                    <button type="submit" id="btnHabilitarEditar" onclick="habilitarEditar();">Habilitar</button>
+                    <div  style="display: none;"><button onclick="EliminarGastoDetalle();" id="btneliminargd" type="button" class="icon-eliminar">Eliminar</button></div>
+                </div>
+            </div>
+        </div>
+        <div id="divDetalleIngreso" class="Msg-DatosSuscripcion">
+            <div class="formulario formularioSuscripcion">
+                <table>
+                    <tr>
+                        <td style="background-color: #bd1e1e; height: 24px; color: white">
+                            DETALLE DEL INGRESO <span style="position: absolute; right: -2px; top: 0px;"><a class="close icon-cerrar" href="#" onclick="cerrarDatosCliente();" style="background: rgba(17, 17, 17, 0);"></a></span>
+                        </td>
+                    </tr>
+                </table>
+                <div style="padding: 10px;">
+                    <table class="datatable" style="text-align: center">
+                        <thead>
+                            <tr>
+                                <td class="ColMS">Item</td>
+                                <td class="ColFS">tipo</td>
+                                <td class="ColFS">Cantidad</td>
+                                <td class="ColMV">Descripción</td>
+                                <td>Precio</td>
+                                <td>Importe</td>
+                            </tr>
+                        </thead>
+                        <tbody id="dataDetalleIngreso" class="BigTbody" style="text-transform: uppercase; height: 340px;">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="botones">
+                    <div class="msg3">mensaje</div>
+
+                </div>
+            </div>
+        </div>
+        <div id="page-original" style="margin-bottom: 100px;">
+            <div class="formulario">
+                <div>
+                    <table border="0" style="display: block;">
+                        <tr style="display: block;">
+                            <td style="width: 250px; display: block; margin-bottom: 7px;">
+                                <label for="tienda">Seleccione su Tienda</label>
+                                <div class="select-triangulo">
+                                    <select id="tienda" name="tienda" style="width: 220px">
+                                    </select>
+                                </div>
+                            </td>
+                            <td style="display: inline-block; width: 161px;">
+                                <label for="fec">Fecha Inicio</label>
+                                <input type="date" id="fechainicio" name="fechainicio" style="height: 21px; width: 133px;text-align: center">
+                            </td>
+                            <td style="display: inline-block; width: 200px;">
+                                <label for="fec">Fecha Fin</label>
+                                <input type="date" id="fechafin" name="fechafin" style="height: 21px; width: 133px;text-align: center">
+                            </td>
+                            <td style="width: 300px; display: inline-block;">
+                                <label for="filtro">Filtrar por</label>
+                                <div class="select-triangulo">
+                                    <select id="filtro" name="filtro" style="width: 220px">
+                                        <option value="todos">Todos</option>
+                                        <option value="procesados">Procesados</option>
+                                        <option value="noprocesados">No Procesado</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td style="width: 50px; display: inline-block;">
+                                <button id="buscargastos" onclick="loadMovimiento(); return false" style="height: 34px;  width: 34px !important; margin-top: 30px;" class="icon-buscar"></button>
+                            </td><br/>
+                            <td style="display: inline-block; width: 300px;">
+                                <label for="fec">Venta</label>
+                                <input type="text" id="codventa" name="codventa" style="height: 21px; width: 283px;text-align: center">
+                            </td>
+                            <td style="width: 50px; display: inline-block;">
+                                <button id="buscargastosbycodventa" onclick="loadMovimientoByCodVenta(); return false" style="height: 34px;  width: 34px !important; margin-top: 30px;" class="icon-buscar"></button>
+                            </td>
+                            <td>
+                                <div id="cargando" class="loadone" style="margin-top: 25px; display: none;"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="tabla" style="margin-bottom: 150px; margin-top: 20px;">
+                <div>
+                    <div style="csltittlegasto" style="margin: 0px 0px 10px 0px; text-align: center; font-size: 16px; font-weight: bold;">Venta/Gasto</div>
+                    <div id="data" class="clscontenedor" style="text-transform: uppercase; overflow: scroll auto; height: 800px;">
+                    </div>
+                </div>
+            </div>
+            <div style="position: absolute;top: 515px;right: 10px; margin-bottom: 30px;">
+                <button onclick="imprimir()" class="icon-imprimir">Imprimir</button>
+            </div>
+        </div>
+        <div id="page-print" style="background-color: transparent;">
+            <h4>REPORTE DE GASTOS </h4>Optómetra: <span id="roptometra"></span>
+            <span id="rfechainicio"></span> <span id="rfechafin"></span>
+            <table class="datatable" style="margin-top: 0px !important">
+                <thead style="display: block;">
+                    <tr>
+
+                    </tr>
+                </thead>
+                <tbody id="dataImprimir" class="BigTbody">
+                </tbody>
+            </table>
+            <br/>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js?v=33"></script>
+        <script>
+                    function imprimir() {
+                        $('#roptometra').html($("#optometra option:selected").text());
+
+                        $('#rfechainicio').html("Fecha Inicio: " + toFecha($('#fechainicio').val()));
+                        $('#rfechafin').html("Fecha Fin: " + toFecha($('#fechafin').val()));
+
+                        window.print();
+                    }
+
+                    $('#fechainicio').val(fechaG());
+                    $('#fechafin').val(fechaG());
+                    $('#filtro').val('noprocesados');
+                    var tuser;
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/usuarioCRL.php',
+                        data: {action: 'getTipous'},
+                        success: function (data) {
+                            tuser = data;
+                        },
+                        error: function () {
+                        }
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/tiendasCRL.php',
+                        data: {action: 'listarTiendasSelect'},
+                        success: function (data) {
+                            var tienda = JSON.parse(data);
+                            //var string1 = '<option value=\"0\" selected="">TODAS</option>';
+                            var string1 = '<option value="0">Corporación</option>';
+                            for (var i = 1; i < tienda.length; i++) {
+                                string1 += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                            }
+                            $('#tienda').html(string1);
+                            loadMovimiento();
+                        },
+                        error: function () {
+                        }
+                    });
+                    /*
+                     $('#tienda').change(function (){
+                     loadMovimiento();
+                     });
+                     $('#fechainicio').change(function (){
+                     loadMovimiento();
+                     });
+                     $('#fechafin').change(function (){
+                     loadMovimiento();
+                     });
+                     */
+
+                    function loadMovimientoByCodVenta() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/reportedeboletasCRL.php',
+                            data: {action: 'getReporteBoletaByCodVenta',
+                                codventa: $('#codventa').val()
+                            },
+                            success: function (data) {
+                                loadDatosDeDetalleGasto(data);
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+
+                    function loadMovimiento() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/reportedeboletasCRL.php',
+                            data: {action: 'getReporteBoleta',
+                                tienda: $('#tienda').val(),
+                                fechainicio: $('#fechainicio').val(),
+                                fechafin: $('#fechafin').val(),
+                                razon: $('#filtro').val()
+                            },
+                            success: function (data) {
+                                loadDatosDeDetalleGasto(data);
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+
+                    function loadDatosDeDetalleGasto(data) {
+                        //alert(data);
+                        var ventas = JSON.parse(data);
+                        var string = '';
+                        var stringimp = '<tr style="background-color: #ECECEC;height: 25px !important;"><td class="ColMS">#</td><td>Código</td><td>Fecha</td><td>Cliente</td><td>Estado</td><td>Total</td><td>Comprobante</td><td>Tienda</td></tr>';
+
+                        var c = 0;
+                        for (var i = 0; i < ventas.length; i++) {
+                            var clsestpe = "";
+                            var btnpedido = "";
+                            if (ventas[i].estadopedido == 1) {
+                                clsestpe = "TablaA is-TablaA-success";
+                            } else {
+                                clsestpe = "TablaA";
+                                btnpedido = '<button id="btnpedido' + i + '" onclick="pedidorealizado(\'' + ventas[i].idventa + '\');" class="clsbtnpedido" style="display: none;">Enviar</button>';
+                            }
+                            var btnllamada = "";
+                            var imgphone = "";
+                            var stylephone = "";
+                            if (ventas[i].estadollamada == 1) {
+                                stylephone = "color: #76dc00;";
+                            } else {
+                                stylephone = "cursor: pointer; color: #000000;";
+                                btnllamada = 'llamadarealizada(' + ventas[i].idventa + ')';
+                            }
+                            string += '<div id="classestado' + i + '" class="' + clsestpe + '">\n\
+                                        <div class="TablaA-Datos TablaBox01">\n\
+                                        <ul class="u-ulClear">\n\
+                                            <li><strong class="u-ulClear cod-venta">' + ventas[i].idventa + '</strong></li>\n\
+                                            <li class="cero-left">Fecha: <strong>' + ventas[i].fv + '</strong></li>\n\
+                                        </ul>\n\
+                                        <ul class="u-ulClear">\n\
+                                            <li>F. Ent.: <strong>' + ventas[i].fe + '</strong></li>\n\
+                                            <li>H. Ent.: <strong>' + ventas[i].he + '</strong></li>\n\
+                                        </ul>\n\
+                                        <ul class="u-ulClear">\n\
+                                            <li>Estado: <strong>' + ventas[i].estado + '</strong></li>\n\
+                                            <li>Total: <strong>' + ventas[i].total + '</strong></li>\n\
+                                        </ul>\n\
+                                        <ul class="u-ulClear">\n\
+                                            <li>Tienda: <strong class="text-puntos">' + ventas[i].tienda + '</strong></li>\n\
+                                        </ul>\n\
+                                        <ul class="u-ulClear">\n\
+                                            <li title="' + ventas[i].observacion + '">Comentario: ' + ventas[i].observacion + '</li>\n\
+                                        </ul>' + btnpedido + '\n\
+                                        <div id="divllamada' + ventas[i].idventa + '" onclick="' + btnllamada + '" style="' + stylephone + '" class="classtelefono flaticon-check" ></div>\n\
+                                    </div><div id="dataAnidada' + i + '" style="display: flex; width: calc(100% - 275px);"></div></div>';
+                            //style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis; width: 240px;"
+                            stringimp += '<tr>\n\
+                                        <td class="ColMS">' + (i + 1) + '</td>\n\
+                                        <td class="ColMM">' + ventas[i].idventa + '</td>\n\
+                                        <td class="ColSM">' + ventas[i].fv + '</td>\n\
+                                        <td class="ColXX">' + ventas[i].nombre + ' ' + ventas[i].apellido + '</td>\n\
+                                        <td class="ColSM">' + ventas[i].estado + '</td>\n\
+                                        <td class="ColSM">' + ventas[i].total + '</td>\n\
+                                        <td class="ColSM">' + ventas[i].tipoComp + '</td>\n\
+                                        <td class="ColXX">' + ventas[i].tienda + '</td>\n\
+                                        </tr><tr id="detaniimp' + i + '" style="display: none;"><td colspan="8" class="ColANI2"><table class="datatable" style="margin-top: 0px;"><tbody id="dataAnidadaImp' + i + '" style="overflow-y: hidden; height: initial !important;border-radius: 0px !important;"></tbody></table></td></tr>';
+
+
+                        }
+
+                        $('#dataImprimir').html(stringimp);
+                        $('#data').html(string);
+                        formatoTabla('162px');
+
+                        imprimirAnidado(ventas, 0);
+
+                        formatoTabla('95px');
+                    }
+
+                    function llamadarealizada(idventa) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/gastodetalleventaCRL.php',
+                            data: {action: 'llamadarealizada',
+                                idventa: idventa
+                            },
+                            success: function (data) {
+                                if (data == 'OK') {
+                                    msgError("Exito!, Llamada realizada", "#94D613");
+                                    $('#divllamada' + idventa).css('color', '#76dc00');
+                                    $('#divllamada' + idventa).css('cursor', 'auto');
+                                    //loadMovimiento();
+                                } else {
+                                    alert('Error, Actualize');
+                                }
+                            },
+                            error: function () {
+                                alert('Error, Actualize');
+                                //document.getElementById('cargandoGOP').style.display = "none";
+                            }
+                        });
+                    }
+
+                    var idtienda = 0;
+                    function imprimirAnidado(listamov, index) {
+                        if (index < listamov.length) {
+
+                            $('#dataAnidada' + index).html('');
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/reportedeboletasCRL.php',
+                                data: {action: 'getDetalleGastoReporte',
+                                    idventa: listamov[index][0]
+                                },
+                                success: function (data) {
+                                    //alert(data);
+                                    var lista = JSON.parse(data);
+                                    var string = '<div class="TablaA-Datos TablaBox02">\n\
+                                                    <div class="TablaA-Head">\n\
+                                                      <div class="TablaA-tr">\n\
+                                                        <div class="TablaA-td w-Cant">Cant</div>\n\
+                                                        <div class="TablaA-td w-descripcion">Descripción</div>\n\
+                                                        <div class="TablaA-td w-monto">Prec</div>\n\
+                                                        <div class="TablaA-td w-monto">Imp</div>\n\
+                                                        <div class="TablaA-td">Gto</div>\n\
+                                                      </div>\n\
+                                                    </div>\n\
+                                                    <div class="TablaA-Body">';
+                                    var string2 = '<div class="TablaA-Datos TablaBox03">\n\
+                                                    <div class="TablaA-Head">\n\
+                                                      <div class="TablaA-tr">\n\
+                                                        <div class="TablaA-td w-fecha">Fecha</div>\n\
+                                                        <div class="TablaA-td w-prov">Proveedor</div>\n\
+                                                        <div class="TablaA-td w-factura">Factura</div>\n\
+                                                        <div class="TablaA-td w-monto">Costo</div>\n\
+                                                      </div>\n\
+                                                    </div>\n\
+                                                    <div class="TablaA-Body">';
+                                    var tienegasto = 0;
+                                    var cantgasto = 0;
+                                    var cantgastopag = 0;
+                                    for (var i = 0; i < lista.length; i++) {
+                                        var opengasto = "";
+                                        var ccolor = "";
+                                        if (lista[i].isgasto == 1) {
+                                            ccolor = "green";
+                                        } else {
+                                            ccolor = "red";
+                                        }
+
+
+                                        if (lista[i].cantidad > 0) {
+                                            opengasto += '<center><div style="width: 16px;height: 16px;background-color: ' + ccolor + ';border-radius: 8px;" onclick="openModalGastoDetalle(\'' + lista[i].iddetalle + '\',\'' + lista[i].descventa + '\',\'' + lista[i].idgasto + '\',\'' + lista[i].tipo + '\',\'' + lista[i].idtienda + '\');"></div></center>';
+                                        }
+                                        if (lista[i].tipo == "D" || lista[i].tipo == "C") {
+                                            if (lista[i].tipo == "D") {
+                                                cantgasto++;
+                                            }
+
+                                            if (lista[i].descripcion == null) {
+                                                string += '<div class="TablaA-tr">\n\
+                                                           <div class="TablaA-td w-Cant">' + lista[i].cantidad + '</div>\n\
+                                                           <div class="TablaA-td w-descripcion" title="' + lista[i].descventa + '">' + lista[i].descventa + '</div>\n\
+                                                           <div class="TablaA-td w-monto">' + lista[i].precio + '</div>\n\
+                                                           <div class="TablaA-td w-monto">' + lista[i].importe + '</div>\n\
+                                                           <div class="TablaA-td">' + opengasto + '</div>\n\
+                                                           </div>';
+                                                string2 += '<div class="TablaA-tr">\n\
+                                                           <div class="TablaA-td"></div>\n\
+                                                           <div class="TablaA-td"></div>\n\
+                                                           <div class="TablaA-td"></div>\n\
+                                                           <div class="TablaA-td"></div>\n\
+                                                           </div>';
+                                            } else {
+                                                cantgastopag++;
+                                                tienegasto = 1;
+                                                string += '<div class="TablaA-tr">\n\
+                                                           <div class="TablaA-td w-Cant">' + lista[i].cantidad + '</div>\n\
+                                                           <div class="TablaA-td w-descripcion" title="' + lista[i].descripcion + '">' + lista[i].descripcion + '</div>\n\
+                                                           <div class="TablaA-td w-monto">' + lista[i].precio + '</div>\n\
+                                                           <div class="TablaA-td w-monto">' + lista[i].importe + '</div>\n\
+                                                           <div class="TablaA-td">' + opengasto + '</div>\n\
+                                                           </div>';
+                                                string2 += '<div class="TablaA-tr">\n\
+                                                           <div class="TablaA-td w-fecha">' + lista[i].fecha + '</div>\n\
+                                                           <div class="TablaA-td w-prov">' + lista[i].razonsocial + '</div>\n\
+                                                           <div class="TablaA-td w-factura">' + lista[i].serie + "-" + lista[i].correlativo + '</div>\n\
+                                                           <div class="TablaA-td w-monto">' + lista[i].monto + '</div>\n\
+                                                           </div>';
+                                            }
+                                        }
+                                    }
+
+                                    if (cantgasto == 0) {
+                                        $('#classestado' + index).css('display', 'none');
+                                    }
+
+                                    //alert(cantgasto+">"+cantgastopag);
+                                    if (cantgasto > cantgastopag) {
+                                        $('#btnpedido' + index).css('display', 'none');
+                                    } else {
+                                        $('#btnpedido' + index).css('display', 'block');
+                                    }
+
+                                    string += '</div></div>';
+                                    string2 += '</div></div>';
+                                    string = string + string2;
+
+                                    $('#dataAnidada' + index).html(string);
+
+                                    imprimirAnidado(listamov, (index + 1));
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+                    var idgasto = 0;
+                    var editar = 1;
+                    function openModalGastoDetalle(iddetalle, descripcion, idgastodetalle, tipo, idtienda) {
+                        idgasto = idgastodetalle;
+                        if (tuser == "Mensajeria") {
+                            $('#btnHabilitarEditar').css('display', 'none');
+                            $('#btnGuardarGasto').css('display', 'block');
+                        } else if (tuser == "Administrador") {
+                            $('#btnHabilitarEditar').css('display', 'block');
+                            $('#btnGuardarGasto').css('display', 'none');
+                        }
+                        editar = 1;
+                        $('.icon-guardarmodal').attr('disabled', '');
+                        $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+                        $('#btneliminargd').attr('disabled', '');
+                        $('#btneliminargd').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+                        document.getElementById('divGastoDetalle').style.display = "block";
+                        $('#iddetalle').val(iddetalle);
+                        $('#descdetalle').val(descripcion);
+                        $('#fechagasto').val(fechaG());
+                        $('#proveedor').val(0);
+                        $('#observacion').val('');
+                        $('#tipodocumento').val('Factura');
+                        $('#serie').val('');
+                        $('#numero').val('');
+                        $('#costo').val(0);
+                        $('#idtienda').val(idtienda);
+
+                        if (idgastodetalle == 'null') {
+                            $('#idgastodetalle').val(0);
+                        } else {
+                            $('#idgastodetalle').val(idgastodetalle);
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/gastodetalleventaCRL.php',
+                            data: {action: 'getDetalleGasto', iddetalle: iddetalle},
+                            success: function (data) {
+                                var detgasto = JSON.parse(data);
+
+                                if (detgasto.length > 0) {
+                                    $('#fechagasto').val(detgasto[0].fecha);
+                                    $('#proveedor').val(detgasto[0].idproveedor);
+                                    $('#serie').val(detgasto[0].serie);
+                                    $('#numero').val(detgasto[0].correlativo);
+                                    $('#costo').val(detgasto[0].monto);
+                                    $('#observacion').val(detgasto[0].observacion);
+                                    $('#tipodocumento').val(detgasto[0].tipodocumento);
+                                    $('#btneliminargd').removeAttr('disabled');
+                                    $('#btneliminargd').removeAttr('style');
+
+                                    if (detgasto[0].editar == 1) {
+                                        $('.icon-guardarmodal').removeAttr('disabled');
+                                        $('.icon-guardarmodal').removeAttr('style');
+                                        editar = 1;
+                                    } else {
+                                        $('.icon-guardarmodal').attr('disabled', '');
+                                        $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                        editar = 0;
+                                    }
+                                } else {
+                                    $('.icon-guardarmodal').removeAttr('disabled');
+                                    $('.icon-guardarmodal').removeAttr('style');
+                                }
+                                if (tuser == "Mensajeria") {
+                                    $('#btnHabilitarEditar').css('display', 'none');
+                                    $('#btnGuardarGasto').css('display', 'block');
+                                } else if (tuser == "Administrador") {
+                                    $('#btnHabilitarEditar').css('display', 'block');
+                                    $('#btnGuardarGasto').css('display', 'none');
+                                }
+                            },
+                            error: function () {
+                                $('.icon-guardarmodal').removeAttr('disabled');
+                                $('.icon-guardarmodal').removeAttr('style');
+                                if (tuser == "Mensajeria") {
+                                    $('#btnHabilitarEditar').css('display', 'none');
+                                    $('#btnGuardarGasto').css('display', 'block');
+                                } else if (tuser == "Administrador") {
+                                    $('#btnHabilitarEditar').css('display', 'block');
+                                    $('#btnGuardarGasto').css('display', 'none');
+                                }
+                            }
+                        });
+                        if (tuser == "Mensajeria") {
+                            $('#btnHabilitarEditar').css('display', 'none');
+                            $('#btnGuardarGasto').css('display', 'block');
+                        } else if (tuser == "Administrador") {
+                            $('#btnHabilitarEditar').css('display', 'block');
+                            $('#btnGuardarGasto').css('display', 'none');
+                        }
+                    }
+
+                    function getdetalleingreso(idventa) {
+                        $('#dataDetalleIngreso').html('');
+                        document.getElementById('divDetalleIngreso').style.display = 'block';
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/ventaCRL.php',
+                            data: {action: 'listDetalleDioptrias',
+                                idventa: idventa
+                            },
+                            success: function (data) {
+                                //alert(data);
+                                var listamov = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < listamov.length; i++) {
+                                    string += '<tr>\n\
+                                                <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                <td class="ColFS">' + listamov[i].tipo + '</td>\n\
+                                                <td class="ColFS">' + listamov[i].cantidad + '</td>\n\
+                                                <td class="ColMV">' + listamov[i].descripcion + '</td>\n\\n\
+                                                <td>' + listamov[i].precio + '</td>\n\
+                                                <td>' + listamov[i].importe + '</td>\n\
+                                                </tr>';
+                                }
+                                for (var j = 0; j < (15 - listamov.length); j++) {
+                                    string += '<tr>\n\
+                                                <td class=\"ColMS ch\"></td>\n\
+                                                <td  class="ColFS">&nbsp;</td>\n\
+                                                <td class="ColFS"></td>\n\
+                                                <td class="ColMV"></td>\n\\n\
+                                                <td></td>\n\
+                                                <td></td>\n\
+                                                </tr>';
+                                }
+                                $('#dataDetalleIngreso').html(string);
+                                formatoTabla('162px');
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+
+                    function cerrarDatosCliente() {
+                        document.getElementById('divDetalleIngreso').style.display = 'none';
+                    }
+
+                    $('#data').css('height', '390px');
+
+                    function guardarGastoDetalle() {
+                        if (editar == 1) {
+                            if ($('#costo').val() >= 0) {
+                                if ($('#idgastodetalle').val() == "0") {
+                                    $('.icon-guardarmodal').attr('disabled', '');
+                                    $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/gastodetalleventaCRL.php',
+                                        data: {action: 'SaveGastosDetalle',
+                                            iddetalle: $('#iddetalle').val(),
+                                            idgastodetalle: $('#idgastodetalle').val(),
+                                            fecha: $('#fechagasto').val(),
+                                            serie: $('#serie').val(),
+                                            correlativo: $('#numero').val(),
+                                            costo: $('#costo').val(),
+                                            idproveedor: $('#proveedor').val(),
+                                            descripcion: $('#descdetalle').val(),
+                                            observacion: $('#observacion').val(),
+                                            tipodocumento: $('#tipodocumento').val(),
+                                            tienda: $('#idtienda').val()
+                                        },
+                                        success: function (data) {
+                                            if (data == 'OK') {
+                                                msgError("Exito!, Gasto guardado", "#94D613");
+                                                loadMovimiento();
+                                            } else {
+                                                alert('Error, Actualize');
+                                            }
+
+                                            $('.icon-guardarmodal').attr('disabled', '');
+                                            $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                            document.getElementById('divGastoDetalle').style.display = "none";
+                                            //document.getElementById('cargandoGOP').style.display = "none";
+                                        },
+                                        error: function () {
+                                            alert('Error, Actualize');
+                                            //document.getElementById('cargandoGOP').style.display = "none";
+                                        }
+                                    });
+                                } else {
+                                    document.getElementById('cargandoGOP').style.display = "block";
+                                    $('.icon-guardarmodal').attr('disabled', '');
+                                    $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/gastodetalleventaCRL.php',
+                                        data: {action: 'UpdateGastosDetalle',
+                                            iddetalle: $('#iddetalle').val(),
+                                            idgastodetalle: $('#idgastodetalle').val(),
+                                            fecha: $('#fechagasto').val(),
+                                            serie: $('#serie').val(),
+                                            correlativo: $('#numero').val(),
+                                            costo: $('#costo').val(),
+                                            idproveedor: $('#proveedor').val(),
+                                            descripcion: $('#descdetalle').val(),
+                                            observacion: $('#observacion').val(),
+                                            tipodocumento: $('#tipodocumento').val(),
+                                            tienda: $('#idtienda').val()
+                                        },
+                                        success: function (data) {
+                                            if (data == 'OK') {
+                                                msgError("Exito!, Gasto actualizado", "#94D613");
+                                                loadMovimiento();
+                                            } else {
+                                                alert('Error, Actualize');
+                                            }
+
+                                            $('.icon-guardarmodal').attr('disabled', '');
+                                            $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                            document.getElementById('divGastoDetalle').style.display = "none";
+                                        },
+                                        error: function () {
+                                            alert('Error, Actualize');
+                                        }
+                                    });
+                                }
+                            } else {
+                                msgError("Debe ingresar un costo", "orange");
+                            }
+                        }
+                    }
+
+                    function pedidorealizado(idventa) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/gastodetalleventaCRL.php',
+                            data: {action: 'pedidorealizado',
+                                idventa: idventa
+                            },
+                            success: function (data) {
+                                if (data == 'OK') {
+                                    msgError("Exito!, Pedido realizado", "#94D613");
+                                    loadMovimiento();
+                                } else {
+                                    alert('Error, Actualize');
+                                }
+                            },
+                            error: function () {
+                                alert('Error, Actualize');
+                                //document.getElementById('cargandoGOP').style.display = "none";
+                            }
+                        });
+                    }
+
+                    function EliminarGastoDetalle() {
+                        if (confirm('¿Desea eliminar el gasto?')) {
+                            $('#btneliminargd').attr('disabled', '');
+                            $('#btneliminargd').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/gastodetalleventaCRL.php',
+                                data: {action: 'DeleteGastosDetalle',
+                                    iddetalle: $('#iddetalle').val()
+                                },
+                                success: function (data) {
+                                    if (data == 'OK') {
+                                        msgError("Exito!, Gasto eliminado", "#94D613");
+                                        loadMovimiento();
+                                    } else {
+                                        alert('Error, Actualize');
+                                    }
+
+                                    $('.icon-guardarmodal').removeAttr('disabled');
+                                    $('.icon-guardarmodal').removeAttr('style');
+                                    $('#btneliminargd').removeAttr('disabled');
+                                    $('#btneliminargd').removeAttr('style');
+                                    document.getElementById('divGastoDetalle').style.display = "none";
+                                    //document.getElementById('cargandoGOP').style.display = "none";
+                                },
+                                error: function () {
+                                    alert('Error, Actualize');
+                                    //document.getElementById('cargandoGOP').style.display = "none";
+                                }
+                            });
+                        }
+                    }
+                    function cerrarDatosCliente() {
+                        document.getElementById("divGastoDetalle").style.display = "none";
+                        $('#iddetalle').val(0);
+                        $('#idgastodetalle').val(0);
+                        $('#fechagasto').val(fechaG());
+                        $('#proveedor').val(0);
+                        $('#serie').val("");
+                        $('#numero').val("");
+                        $('#costo').val("");
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/proveedorCRL.php',
+                        data: {action: 'list'},
+                        success: function (data) {
+                            var lista = JSON.parse(data);
+                            var string = '<option value="0">Seleccione..</option>';
+                            for (var i = 0; i < lista.length; i++) {
+                                string += '<option value="' + lista[i].idproveedor + '">' + lista[i].razonsocial + '</option>';
+                            }
+
+                            $('#proveedor').html(string);
+                        },
+                        error: function () {
+                        }
+                    });
+
+                    function habilitarEditar() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/gastodetalleventaCRL.php',
+                            data: {action: 'habilitareditar', idgasto: idgasto},
+                            success: function (data) {
+                                if (data == 'OK') {
+                                    msgError("Exito!, Editar Habilitado", "#94D613");
+                                    loadMovimiento();
+                                } else {
+                                    alert('Error, Actualize');
+                                }
+
+                                document.getElementById('divGastoDetalle').style.display = "none";
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmUser">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="id" name="id" />
+                <input type="hidden" id="idtienda" name="idtienda" />
+                <table>
+                    <tr>
+                        <td style="width: 70%;">
+                            <label for="gasto">Tipo de Gasto</label>
+                            <div class="select-triangulo">
+                                <select  id="categoria" name="categoria">
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <label for="monto">Monto</label>
+                            <input type="text" id="monto" name="monto">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="descripcion">Descripción</label>
+                            <input type="text" id="descripcion" name="descripcion">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="observacion">Observación</label>
+                            <input type="text" id="observacion" name="observacion">
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg">mensaje</div>
+                    <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                    <button type="submit" class="icon-guardar">Guardar</button>
+                </div>
+            </form>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">#</td>
+                        <td>Tipo Gasto</td>
+                        <td>Descripción</td>
+                        <td>Observación</td>
+                        <td>Monto</td>
+                        <td>Fecha</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                    
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            loadUsers();
+            $.ajax({
+                type: 'POST',
+                url: '../crl/gastosCRL.php',
+                data: {action: 'listCategoriaGastoActiva'},
+                success: function (data) {
+                    var lista = JSON.parse(data);
+                    var string = '<option value=\"0\">Seleccione...</option>';
+                    for (var i = 0; i < lista.length; i++) {
+                        string += '<option value=\"' + lista[i][0] + '\">' + lista[i][2] +'</option>';
+                    }
+                    $('#categoria').html(string);
+                },
+                error: function () {
+                }
+            });
+            
+            $.ajax({
+                type: 'POST',
+                url: '../crl/tiendasCRL.php',
+                data: {action: 'getTiendaByUsuario'},
+                success: function (data) {
+                    var users = JSON.parse(data);
+                    $('#idtienda').val(users[0]);
+                },
+                error: function () {
+                }
+            });
+            
+            function loadUsers() {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: {action: 'listDetalleGastos'},
+                    success: function (data) {
+                        var lista = JSON.parse(data);                        
+                        var string = '';
+                        for (var i = 0; i < lista.length; i++) {
+                            string += '<tr onclick=\"getUser(\'' + lista[i].idgasto + '\');\">\n\
+                                        <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                        <td>' + lista[i].categoria + '</td>\n\
+                                        <td>' + lista[i].descripcion + '</td>\n\
+                                        <td>' + lista[i].observacion + '</td>\n\
+                                        <td>' + lista[i].monto + '</td>\n\
+                                        <td>' + lista[i].fecha + '</td>\n\
+                                        </tr>';
+                        }
+                        for (var i = 0; i < (10 - lista.length); i++) {
+                            string += '<tr><td class=\"ColMS ch\"></td>\n\
+                <td>&nbsp;</td>\n\
+                <td></td><td></td><td></td><td></td></tr>';
+                        }
+                        $('#data').html(string);
+                        formatoTabla('152px');
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+                formatoTabla('152px');
+            }
+            
+            function getUser(id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastosCRL.php',
+                    data: {action: 'getDetalleGasto', id: id},
+                    success: function (data) {
+                        if (data != "no") {
+                            Limpiar();
+                            var users = JSON.parse(data);
+                            
+                            $('#id').val(users[0].idgasto);
+                            $('#categoria').val(users[0].idcategoria);
+                            $('#monto').val(users[0].monto);
+                            $('#descripcion').val(users[0].descripcion);
+                            $('#observacion').val(users[0].observacion);
+                        } else {
+                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                        }
+                    },
+                    error: function () {
+                        msgError("Error del Sistema", "#F77474");
+                    }
+                });
+            }
+            
+            function Limpiar() {
+                $('#id').val('');
+                $('#categoria').val(0);
+                $('#monto').val('');
+                $('#descripcion').val('');
+                $('#observacion').val('');
+                $('.msg').css("display", "none");
+                $('#categoria').focus();
+            }
+            
+            $(function () {
+                $('#frmUser').submit(function (event) {
+                    event.preventDefault();
+                    if ($('#monto').val() == "" || $('#categoria').val() == "0" || $('#descripcion').val() == "") {
+                        msgError("Complete todos los datos", "#FFAA0F");
+                        $('#categoria').focus();
+                    }else if($('#monto').val() < 0){
+                        msgError("El monto no debe ser negativo", "#FFAA0F");
+                        $('#monto').focus();
+                    } else {
+                        if (confirm('Desea guardar?')) {
+                            if ($('#id').val() == "") {
+                                $('#action').val('insertDetalleGasto');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/gastosCRL.php',
+                                    data: $('#frmUser').serialize()+'&tipouserpago=tienda',
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Gasto registrado", "#94D613");
+                                            $('#id').val('');
+                                            $('#categoria').val(0);
+                                            $('#monto').val('');
+                                            $('#descripcion').val('');
+                                            $('#observacion').val('');
+                                            $('#categoria').focus();
+                                            loadUsers();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                            
+                            else {
+                                $('#action').val('updateDetalleGasto');
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/gastosCRL.php',
+                                    data: $('#frmUser').serialize(),
+                                    success: function (data) {
+                                        if (data == "OK") {
+                                            msgError("Exito!, Gasto Actualizado", "#94D613");
+                                            $('#id').val('');
+                                            $('#categoria').val(0);
+                                            $('#monto').val('');
+                                            $('#descripcion').val('');
+                                            $('#observacion').val('');
+                                            $('#categoria').focus();
+                                            loadUsers();
+                                        } else {
+                                            msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                        }
+                                    },
+                                    error: function () {
+                                        msgError("Error del Sistema", "#F77474");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+            $('#data').css('height', '240px');
+            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

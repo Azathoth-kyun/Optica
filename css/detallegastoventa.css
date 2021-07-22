@@ -1,0 +1,242 @@
+.BigTbody tr:hover .whiteHover{
+  color: black !important;
+  font-weight: inherit !important;
+}
+
+@media print{
+  #page-original {
+      display: none;
+  }
+  #page-print {
+     display: block;
+  }
+  body{
+      background-color: white !important;
+  }
+  
+}
+.clscontenedor{
+  text-transform: uppercase;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 410px;
+  background: white;
+}
+
+.clstranidada{
+  position: relative;
+  left: 37px;
+  width: 1070px !important;
+  border: 1px solid #dfdfdf ;
+  background: white !important;
+}
+.clstranidada:before {
+  content: "";
+  height: 0px;
+  border-top: 7px solid transparent;
+  border-left: 11px solid rgba(181,198,208,1);
+  border-bottom: 7px solid transparent;
+  position: absolute;
+  left: -21px;
+  top: 7px;
+}
+.Msg-DatosSuscripcion {
+  display: none;
+  position: absolute;
+  background: black;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(255,255,255,0.8);
+}
+.formularioSuscripcion {
+  width: 100%;
+  height: 565px;
+  background-color: #f7f7f7;
+  border: 0px;
+}
+.msg3 {
+  position: absolute;
+  left: 0px;
+  top: 22px;
+  color: white;
+  background: #F77474;
+  display: none;
+  padding: 6px 10px;
+  margin: 5px 0 0 1px;
+  border-radius: 7px;
+  font-weight: 400;
+  font-size: 15px;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.26);
+  z-index: 99999;
+}
+.u-ulClear {
+  margin: 0px !important;
+  padding: 0px;
+  list-style: none;
+}
+.text-puntos{
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cod-venta{
+  font-size: 19px;
+  position: absolute;
+  top: 16px;
+}
+.cero-left{
+  margin-left: 0px !important;
+}
+.is-TablaA-success {
+  border-left: 5px solid #00E500 !important;
+}
+
+.TablaA-Head, .TablaA-Body, .TablaA-tr, .TablaA-td {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.TablaBox01::after, .TablaBox02::after {
+  content: '';
+  display: inline-block;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  position: absolute;
+  right: -12px;
+  top: calc(50% - 20px);
+  z-index: 1;
+}
+
+.TablaA {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0px 0px;
+  border-left: 5px solid #ff0101;
+  border-bottom: 1px solid #505050;
+}
+
+.TablaA-Datos {
+  padding: 5px 20px;
+  display: flex;
+  flex-direction: column;
+  height: 180px;
+  justify-content: center;
+}
+
+.TablaA-Head {
+  flex-direction: column;
+    font-weight: bold;
+    border-bottom: 1px solid #7b7b7b;
+}
+.TablaA-tr:last-child {
+    border-bottom: 0px solid;
+}
+.TablaA-Body {
+  flex-direction: column;
+}
+
+.TablaA-tr {
+  width: 100%;
+    height: 19px !important;
+    padding: 5px 0px;
+    border-bottom: dashed 1px rgb(162, 162, 162);
+}
+
+.TablaA-td {
+  font-size: 13px;
+    padding: 0px 10px 0px 10px;
+    display: inline-block;
+    overflow: hidden;
+    /*white-space: nowrap; */
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+}
+
+.TablaA-td:nth-child(1) {
+  border-left: none;
+}
+.w-Cant {
+    width: 48px;
+    display: inline-block;
+    text-align: center;
+}
+.w-descripcion{
+  width: 234px;
+}
+
+.TablaBox01 {
+  background-color: #fff;
+    position: relative;
+    min-height: 220px;
+    font-size: 14px;
+    padding-right: 5px !important;
+}
+
+.TablaBox01 ul {
+  display: flex;
+}
+
+.TablaBox01 ul li {
+  margin: 2px 0px;
+}
+
+.TablaBox01 ul li strong {
+  margin-left: 5px;
+}
+
+.TablaBox01 ul li:nth-child(2) {
+  margin-left: 15px;
+}
+
+.TablaBox01::after {
+  border-left: 20px solid #fff;
+}
+
+.TablaBox02 {
+  background-color: rgba(254, 255, 200, 0);
+    width: 500px;
+    position: relative;
+    padding-left: 20px;
+}
+.w-fecha {
+    width: 59px;
+}
+.w-factura {
+    width: 75px;
+}
+.w-prov {
+    display: inline-block;
+    width: 250px;
+}
+.w-monto {
+    width: 48px;
+    text-align: right;
+}
+.TablaBox02::after {
+    border-left: 15px solid rgb(255, 255, 255);
+}
+
+.TablaBox03 {
+  background-color: rgba(255, 235, 59, 0.2);
+    width: 602px;
+    position: relative;
+    border-radius: 7px;
+}
+
+.clsbtnpedido{
+    margin-top: 0px !important;
+    padding: 0px !important;
+}
+
+.classtelefono{
+    position: absolute;
+    width: 20px;
+    top: 1px;
+    left: 1348px;
+}

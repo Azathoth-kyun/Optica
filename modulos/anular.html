@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            #estados{
+                margin-bottom: -30px;
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <label for="venta">Cod. Venta</label>
+                        <input type="hidden" id="id" name="id"/>
+                        <input type="text" id="venta" name="venta"/>
+                    </td>
+                    <td>
+                        <label id="estados"></label>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <label for="paciente">Paciente</label>
+                        <input type="text" id="paciente" name="paciente" readonly="" style="text-transform: uppercase;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 6px;">
+                        <label for="tot" style="color: #00BCD4">Total.</label>
+                        <span style="  position: absolute;  bottom: 95px;  left: 25px;  font-weight: 500;color: #00BCD4">S/.</span>
+                        <input type="text" id="tot" name="tot" class="atr" readonly="" style="border-color: #00BCD4"/>
+                    </td>
+                    <td style="padding-left: 6px;">
+                        <label for="acuenta" style="color: #FFAB00">Acuenta.</label>
+                        <span style="  position: absolute;  bottom: 95px;  left: 203px;  font-weight: 500;color: #FFAB00">S/.</span>
+                        <input type="text" id="acuenta" name="acuenta" class="atr" readonly="" style="border-color: #FFAB00"/>
+                    </td>
+                    <td style="padding-left: 6px;">
+                        <label for="saldo" style="color: #FF5722">Saldo.</label>
+                        <span style="  position: absolute;  bottom: 95px;  left: 381px;  font-weight: 500;color: #FF5722">S/.</span>
+                        <input type="text" id="saldo" name="saldo" class="atr" readonly="" style="border-color: #FF5722"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 6px;">
+                        <label for="pass">Clave usuario</label>
+                        <input type="password" id="pass" name="pass" style="height: 18px;text-align: center;font-family: 'Press Start 2P', cursive;width: 150px;letter-spacing: -4px;"/>
+                    </td>
+                    <td>
+                        <button style="margin-left: 5px;" class="icon-guardar" onclick="anular();">Guardar</button>
+                    </td>
+                    <td>
+                        <div class="botones">
+                            <div class="msg"  style="top:-10px;  right: 0px;text-align: left;">Este es un mensaje de prueba</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                            var prod = $_GET('t');
+                            $('#venta').focusin(function () {
+                                limpiar();
+                            });
+                            $('#venta').keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    var cod = $("#venta").val();
+                                    var id = "";
+                                    if (!isNaN(cod)) {
+                                        id = cod;
+                                        var s = cod.length;
+                                        var ncod = 'V';
+                                        for (var i = 0; i < (9 - (s + 1)); i++) {
+                                            ncod += '0';
+                                        }
+                                        cod = ncod + cod;
+                                    } else {
+                                        id = cod.substring(1, cod.length);
+                                        id = parseInt(id);
+                                    }
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/ventaCRL.php',
+                                        data: {action: 'getSN', id: id, idt:prod},
+                                        success: function (data) {
+                                            //alert(data);
+                                            if (data != "null") {
+                                                var ventas = JSON.parse(data);
+                                                $("#venta").val(cod);
+                                                $("#paciente").val(ventas[2] + " " + ventas[1]);
+                                                $("#id").val(id);
+                                                $('#tot').val(ventas[9]);
+                                                $('#estados').text(ventas[10].capitalize());
+                                                if (ventas[10] == 'cancelado') {
+                                                    $('#estados').css('color', '#4CAF50');
+                                                } else if (ventas[10] == 'pendiente') {
+                                                    $('#estados').css('color', '#FF9800');
+                                                } else {
+                                                    $('#estados').removeAttr('style');
+                                                }
+                                                $('#saldo').val(ventas[20]);
+                                                $('#acuenta').val(toDouble(parseFloat(ventas[9]) - parseFloat(ventas[20])));
+                                                $('#pass').focus();
+                                            } else {
+                                                msgError("venta anulada o no existente.", "orange");
+                                                $("#venta").select();
+                                                $("#venta").focus();
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            });
+                            
+                            function anular() {
+                                var pass = $('#pass').val();
+                                var id = $('#id').val();
+                                if (id !== "") {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/usuarioCRL.php',
+                                        data: {action: 'valUser', pass: pass},
+                                        success: function (data) {
+                                            if (data != 'no') {
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: '../crl/ventaCRL.php',
+                                                    data: {action: 'anular', id: id},
+                                                    success: function (data) {
+                                                        if (data != 'NO') {
+                                                            msgError('Venta anulada', 'green');
+                                                            limpiar();
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                msgError("contraseña incorrecta", "red");
+                                                $('#pass').val('');
+                                                $('#pass').focus();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            function limpiar() {
+                                $("#paciente").val('');
+                                $('#estados').text('');
+                                $('#saldo').val('');
+                                $('#acuenta').val('');
+                                $('#venta').val('');
+                                $('#id').val('');
+                                $('#tot').val('');
+                                $('#pass').val('');
+                            }
+                            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .cl-typeFile::-webkit-file-upload-button {
+                visibility: hidden;
+            }
+            .cl-typeFile::before {
+                content: 'Seleccione una Foto';
+                border: none;
+                background-color: #bd1e1e;
+                border-bottom: 5px solid #b6071e;
+                border-radius: 0.5em;
+                color: white;
+                margin-top: 20px;
+                margin-right: 5px;
+                padding: 12px 10px;
+                outline: 0px;
+                font-size: 17px;
+                cursor: pointer;
+                top: -3px;
+                position: relative;
+                -webkit-transition: all 0.3s;
+            }
+            .cl-typeFile:hover::before{
+                -webkit-transition: all 0.3s;
+                border-bottom: 5px solid #b6071e;
+            }
+            .cl-typeFile:active::before{
+                -webkit-transform: scale(0.8,0.8);
+                border-bottom: 5px solid #b6071e;
+            }
+            .cl-nota {
+                position: absolute;
+                top: 16px;
+                width: 262px;
+                font-size: 13px;
+                left: 202px;
+                color: #5F5F5F;
+            }
+            .box-output{
+                margin-top: 5px;
+                width: 570px;
+                height: 348px;
+                background: #FFFFFF;
+                text-align: center;
+                position: relative;
+                overflow: auto;
+                border-radius: 1em;
+                border: 13px solid #C5C5C5;
+                box-shadow: inset 0px 0px 37px -3px rgba(0,0,0,.7);
+            }
+            .Msg-DatosSuscripcion {
+                display: none;
+                position: absolute;
+                background: black;
+                top: 0px;
+                left: 0px;
+                width: 1205px;
+                height: 473px;
+                z-index: 10;
+                background-color: rgba(255,255,255,0.8);
+            }
+            .formularioSuscripcion {
+                position: absolute;
+                width: 470px;
+                background-color: #f7f7f7;
+                left: 284px;
+                top: 30px;
+                border-style: outset;
+            }
+            .msg3 {
+                position: absolute;
+                left: 0px;
+                top: 22px;
+                color: white;
+                background: #F77474;
+                display: none;
+                padding: 6px 10px;
+                margin: 5px 0 0 1px;
+                border-radius: 7px;
+                font-weight: 400;
+                font-size: 15px;
+                text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.26);
+                z-index: 99999;
+            }
+            .Msg-DatosEmail {
+                display: none;
+                position: absolute;
+                background: black;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background-color: rgba(255,255,255,0.8);
+            }
+            .formularioEmail {
+                position: absolute;
+                width: 525px;
+                background-color: #f7f7f7;
+                left: 284px;
+                top: 5px;
+                border-style: outset;
+            }
+            .Cargando{
+                width: 100%;
+                position: absolute !important;
+                top: 0px;
+                left: 0px;
+                display: none;
+                background-color: #bd1e1e;
+                border-radius: 0.5em;
+                padding-top: 13px;
+            }
+            .Cargando img{
+                margin: 0 auto;
+                width: 30px;
+            }
+            .clsEstadoAct{
+                width: 10px;
+                height: 10px;
+                position: relative;
+                display: inline-block;
+                background: #03AF03 ;
+                top: 4px;
+                left: 0px;
+                vertical-align: top;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+            .clsEstadoSus{
+                width: 10px;
+                height: 10px;
+                position: relative;
+                display: inline-block;
+                background: #F31616;
+                top: 4px;
+                left: 0px;
+                vertical-align: top;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+            .clsEstadoPen{
+                width: 10px;
+                height: 10px;
+                position: relative;
+                display: inline-block;
+                background: #F5D51F;
+                top: 4px;
+                left: 0px;
+                vertical-align: top;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+            .clsEstadoEnv{
+                width: 10px;
+                height: 10px;
+                position: relative;
+                display: inline-block;
+                background: #bd1e1e;
+                top: 4px;
+                left: 0px;
+                vertical-align: top;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();" style="margin-top: 10px;">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div id="divDatosPago" class="Msg-DatosSuscripcion">
+            <div class="formulario formularioSuscripcion">
+                <table>
+                    <tr>
+                        <td style="background-color: #bd1e1e; height: 24px; color: white">
+                            DATOS DE LA SUSCRIPCIÓN <span style="position: absolute; right: -2px; top: 0px;"><a class="close icon-cerrar" href="#" onclick="cerrarDatosCliente();" style="background: rgba(17, 17, 17, 0);"></a></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="tienda">Tienda</label>
+                            <input type="text" id="tiendam" name="tiendam" readonly="" style="background-color: rgba(210, 210, 210, 0.26)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="direccion">Direccion</label>
+                            <input type="text" id="direccionm" name="direccionm" readonly="" style="background-color: rgba(210, 210, 210, 0.26)">
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg3">mensaje</div>
+                    <button type="submit" id="btnProcesarPago" class="icon-guardar" onclick="guardarSuscripcion();">Procesar</button>
+                </div>
+            </div>
+        </div>
+        <div id="divDatosEmail" class="Msg-DatosEmail">
+            <div class="formulario formularioEmail">
+                <table>
+                    <tr>
+                        <td style="background-color: #bd1e1e; height: 24px; color: white">
+                            Enviar Voucher / Tienda <span id="nameTienda"></span> <span style="position: absolute; right: -2px; top: 0px;"><a class="close icon-cerrar" href="#" onclick="cerrarDatosEmail();" style="background: rgba(17, 17, 17, 0);"></a></span>
+                        </td>
+                    </tr>
+                </table>
+                <section>
+                    <form method="post" id="frmEmail" enctype="multipart/form-data">
+                        <input type="hidden" value="" name="action" id="action">
+                        
+                        <input type="hidden" id="idemail" name="idemail">
+                        <input type="hidden" id="idsuscripcion" name="idsuscripcion">
+                        <input type="hidden" id="direccionemail" name="direccionemail">
+                        <input type="hidden" id="planemail" name="planemail">
+                        <input type="hidden" id="tiendaemail" name="tiendaemail">
+                        <div>
+                            <div>
+                                <input style="background: rgba(255, 255, 255, 0); border: 0px !important; color: transparent !important; width: 162px !important; position: relative; top: 14px; z-index: 1000000000000000;" class="cl-typeFile" type="file" id="files" name="files" />
+                            </div>
+                            <div class="cl-nota"></div>
+                            <figure class="box-output" style="width: 500px; height: 310px;">
+                                <output id="list"></output>
+                            </figure>
+                        </div>
+                    </form>
+                    <div class="botones">
+                    <div class="msg3" style="top: 0px;">mensaje</div>
+                        <button type="submit" id="enviaremailcrl" class="icon-guardar" style="margin-top: 5px;">Enviar
+                            <div id="divCarga" class="Cargando" style="display: none;">
+                                <img src="../img/load.gif"/>
+                            </div>
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="formulario">
+            <input type="hidden" id="id" name="id"/>
+            <table>
+                <tr>
+                    <td style="width: 200px;">
+                        <label for="parametro">Tienda</label>
+                        <input type="text" id="parametro" name="parametro"  />
+                    </td>
+                    <td>
+                        <label for="descripcion">Dirección</label>
+                        <input type="text" id="descripcion" name="descripcion"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <button class="icon-guardar" type="button" onclick="guardar();">Guardar</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">ID</td>
+                        <td style="width: 500px !important;">Tienda</td>
+                        <td style="width: 500px !important;">Direccion</td>
+                    </tr>
+                </thead>
+                <tbody id="data" style="height: 280px;">
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            function archivo(evt) {
+                  var files = evt.target.files; // FileList object
+
+                  // Obtenemos la imagen del campo "file".
+                  for (var i = 0, f; f = files[i]; i++) {
+                    //Solo admitimos imágenes.
+                    if (!f.type.match('image.*')) {
+                          continue;
+                    }
+
+                    var reader = new FileReader();
+
+                    reader.onload = (function(theFile) {
+                          return function(e) {
+                            // Insertamos la imagen
+                           document.getElementById("list").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+                          };
+                    })(f);
+
+                    reader.readAsDataURL(f);
+                  }
+            }
+            
+            document.getElementById('files').addEventListener('change', archivo, false);
+            
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/planesCRL.php',
+                        data: {action: 'list'},
+                        success: function (data) {
+                            var plan = JSON.parse(data);
+                            var string = '<option value=\"0\">Seleccione...</option>';
+                            for (var i = 0; i < plan.length; i++) {
+                                string += '<option value=\"' + plan[i].idplan + '\">' + plan[i].plan + ' - Precio: ' + plan[i].precio + '</option>';
+                            }
+                            $('#plan').html(string);
+                        },
+                        error: function () {
+                        }
+                    });
+                    loadParametros();
+                    function loadParametros() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: {action: 'list'},
+                            success: function (data) {
+                                //alert(data);
+                                var parametros = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < parametros.length; i++) {
+                                    
+                                    if(parametros[i][1]=='ALMACEN'){
+                                        string += '<tr>\n\
+                                                <td style="width: 18px !important;" onclick=\"getParametros(\'' + parametros[i][0] + '\');\" >' + (i + 1) + '</td>\n\
+                                                <td style="width: 500px !important;" onclick=\"getParametros(\'' + parametros[i][0] + '\');\">' + parametros[i][1] + '</td>\n\
+                                                <td style="width: 500px !important;" onclick=\"getParametros(\'' + parametros[i][0] + '\');\" >' + parametros[i][2] + '</td>\n\
+                                                </tr>';
+                                    }else{
+                                    string += '<tr>\n\
+                                                <td style="width: 18px !important;" onclick=\"getParametros(\'' + parametros[i][0] + '\');\" >' + (i + 1) + '</td>\n\
+                                                <td style="width: 500px !important;" onclick=\"getParametros(\'' + parametros[i][0] + '\');\">' + parametros[i][1] + '</td>\n\
+                                                <td style="width: 500px !important;" onclick=\"getParametros(\'' + parametros[i][0] + '\');\" >' + parametros[i][2] + '</td>\n\
+                                                </tr>';
+                                    }
+            
+                                }
+                        //         for (var i = 0; i < (6 - parametros.length); i++) {
+                        //             string += '<tr><td class=\"ColMS\"></td><td>&nbsp;</td>\n\
+                        // <td class="ColXX"></td>\n\
+                        // <td class="ColOH2"></td>\n\
+                        // <td class="ColOH2"></td>\n\
+                        // <td class="ColOH2"></td>\n\
+                        // <td class="ColOH2"></td><td class="ColOH2"></td></tr>';
+                        //         }
+                                $('#data').html(string);
+                                // formatoTabla('165px');
+                            },
+                            error: function () {
+                                msgError("Error del Sistema", "red");
+                            }
+                        });
+                        // formatoTabla('165px');
+                    }
+                    function enviarEmail(id, tienda, direccion, plan, idsuscripcion) {
+                        document.getElementById('divDatosEmail').style.display = 'block';
+                        $('#idemail').val(id);
+                        $('#idsuscripcion').val(idsuscripcion);
+                        document.getElementById('nameTienda').innerHTML =  tienda;
+                        $('#direccionemail').val(direccion);
+                        $('#planemail').val(plan);
+                        $('#tiendaemail').val(tienda);
+                    }
+                    $('#enviaremailcrl').click(function (event) {
+                        $('#action').val('enviarvoucher');
+                        document.getElementById('enviaremailcrl').disabled=true;
+                        event.preventDefault();
+                        document.getElementById('divCarga').style.display = 'block';
+                        var formData = new FormData(document.getElementById("frmEmail"));
+                        
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: formData,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (datos) {
+                                var data = JSON.parse(datos);
+                                if (data.ret === "inserto") {
+                                    $('#files').val('');
+                                    document.getElementById("list").innerHTML = "";
+                                    msgError("Exito!, Voucher enviado.", "#94D613");
+                                    cerrarDatosEmail();
+                                    loadParametros();
+                                }else if(data.ret === "nosubir"){
+                                    msgError3("Error! No se pudo subir la imagen!", "#FFAA0F");
+                                }else {
+                                    
+                                    msgError3("Error!, intente nuevamente", "#F77474");
+                                }
+                                document.getElementById('divCarga').style.display = 'none';
+                                document.getElementById('enviaremailcrl').disabled=false;
+                            },
+                            error: function () {
+                                msgError3("Error del Sistema", "#F77474");
+                                document.getElementById('divCarga').style.display = 'none';
+                                document.getElementById('enviaremailcrl').disabled=false;
+                            }
+                        });
+                    });
+                    function getParametros(id) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: {action: 'get', id: id},
+                            success: function (data) {
+                                if (data != "NO") {
+                                    var param = JSON.parse(data);
+                                    $('#id').val(param[0]);
+                                    $('#parametro').val(param[1]);
+                                    $('#descripcion').val(param[2]);
+                                    $('.msg').css("display", "none");
+                                    if (param[0] == '1') {
+                                        $('#parametro').attr("disabled", "");
+                                    } else {
+                                        $('#parametro').removeAttr("disabled");
+                                    }
+                                } else {
+                                    msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                }
+                            },
+                            error: function () {
+                                msgError("Error del Sistema", "#F77474");
+                            }
+                        });
+                    }
+                    function modalSuscripcion() {
+                        document.getElementById('divDatosPago').style.display = 'block';
+                        $('#tiendam').val($('#parametro').val());
+                        $('#direccionm').val($('#descripcion').val());
+                        
+                    }
+                    function guardarSuscripcion() {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/tiendasCRL.php',
+                                data: {action: 'insert', id: $('#id').val(), nomb: $('#tiendam').val(), desc: $('#direccionm').val(), plan: $('#plan').val()},
+                                success: function (data) {
+                                    //alert(data);
+                                    if (data != "NO") {
+                                        msgError("Exito!, tienda Registrada", "#94D613");
+                                        $('#id').val("");
+                                        $('#parametro').val("");
+                                        $('#descripcion').val("");
+                                        cerrarDatosCliente();
+                                        loadParametros();
+                                    } else {
+                                        msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                    }
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema", "#F77474");
+                                }
+                            });
+                    }
+                    function guardar() {
+                        $('#parametro').removeAttr("disabled");
+                        if ($('#parametro').val() == "") {
+                            msgError("No se puede ingresar datos en blanco", "#FFAA0F");
+                            $('#parametro').focus();
+                            $('#parametro').select();
+                        } else if ($('#descripcion').val() == "") {
+                            msgError("No se puede ingresar datos en blanco", "#FFAA0F");
+                            $('#descripcion').focus();
+                            $('#descripcion').select();
+                        } else if ($('#id').val() == "") {
+                            // modalSuscripcion();
+                            $.ajax({
+                             type: 'POST',
+                             url: '../crl/tiendasCRL.php',
+                             data: {action: 'ins', nomb: $('#parametro').val(), desc: $('#descripcion').val()},
+                             success: function (data) {
+                             alert(data);
+                             if (data != "NO") {
+                             msgError("Exito!, tienda registrada", "green");
+                             $('#id').val("");
+                             $('#parametro').val("");
+                             $('#descripcion').val("");
+                             loadParametros();
+                             } else {
+                             msgError("Error!, porfavor intentelo otra vez", "red");
+                             }
+                             },
+                             error: function () {
+                             msgError("Error del Sistema", "red");
+                             }
+                             });
+                        } else {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/tiendasCRL.php',
+                                data: {action: 'upd', id: $('#id').val(), nomb: $('#parametro').val(), desc: $('#descripcion').val()},
+                                success: function (data) {
+                                    //alert(data);
+                                    if (data != "NO") {
+                                        msgError("Exito!, tienda Actualizada", "#94D613");
+                                        $('#id').val("");
+                                        $('#parametro').val("");
+                                        $('#descripcion').val("");
+                                        loadParametros();
+                                    } else {
+                                        msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                    }
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema", "#F77474");
+                                }
+                            });
+                        }
+                    }
+                    function cerrarDatosEmail(){
+                        document.getElementById("divDatosEmail").style.display = "none";
+                        $('#plan').val(0);
+                        $('#tiendam').val("");
+                        $('#direccionm').val("");
+                    }
+                    function cerrarDatosCliente(){
+                        document.getElementById("divDatosPago").style.display = "none";
+                        $('#plan').val(0);
+                        $('#tiendam').val("");
+                        $('#direccionm').val("");
+                    }
+                    $('input[type=text]').focusout(function () {
+                        $(this).val($(this).val().toUpperCase());
+                    });
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

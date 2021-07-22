@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .bloqueo{
+                display: none;
+                position: absolute;
+                background: transparent;
+                height: 100%;
+                width: 100%;
+                top:0px;
+                left: 0px;
+                text-align: center;
+                z-index: 2000;
+            }
+            .advertenciaMainContant{
+                margin: 150px auto 0 auto;
+                display: block;
+                position: relative;
+                width: 600px;
+                box-shadow: 0px 0px 47px rgba(0,0,0,.7);
+                border-radius: 15px;
+            }
+
+            .titleMainCpontent {
+                background-color: #E43834;
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+                padding: 10px 0px;
+                height: 50px;
+            }
+
+            .imgAdvertenciaContent {
+                position: absolute;
+                top: 12px;
+                right: 40px;
+                margin: 0px;
+                width: 8%;
+            }
+
+            .titleAdvertencia {
+                color: white;
+                font-family: sans-serif;
+                font-size: 24px;
+                position: absolute;
+                top: 20px;
+                left: 40px;;
+            }
+
+            .imgAdvertencia {
+                margin: 0px;
+            }
+
+            .contenidoMain {
+                background: #F4F4F4;
+                border-bottom: 2px solid #BCBCBC;
+                border-left: 2px solid #BCBCBC;
+                border-right: 2px solid #BCBCBC;
+                border-bottom-left-radius: 15px;
+                border-bottom-right-radius: 15px;
+                text-align: center;
+                padding: 30px 0px 40px 0px;
+            }
+
+            .textMainAlert {
+                font-family: sans-serif;
+                font-size: 20px;
+                color: #606060;
+                margin: 0px;
+                text-transform: uppercase;
+            }
+
+            .textDescription {
+                font-family: sans-serif;
+                font-size: 17px;
+                color: #606060;
+                margin: 10px 0px 30px 0px;
+            }
+
+            .btnAceptar {
+                font-family: sans-serif;
+                background-color: #E43834;
+                font-size: 18px;
+                box-shadow: 0 3px 0 0 #C52727;
+                border-radius: 9px;
+                color: white;
+                text-decoration: none;
+                padding: 10px 50px;
+            }
+            .loadone{
+                display: none;
+                position: absolute;
+                top: 19px;
+                left: 274px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <table style="width: 270px;">
+                <tr>
+                    <td>
+                        <label>Tienda : </label>
+                    </td>
+                    <td style="width: 200px;">
+                        <div class="select-triangulo">
+                            <select id="tiend" name="tiend" onchange="loadInventario($('#tiend').val());"></select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="loadone"></div>
+                    </td>
+                </tr>
+            </table>
+            <table style="margin-top: 15px; display: none" id="rfind">
+                <tr >
+                    <td class="col-xxs">
+                        <label for="cod">Codigo</label>
+                        <input type="text" id="cod" name="cod"/>
+                    </td>
+                    <td class="ColXXXX">
+                        <label for="prod">Producto</label>
+                        <input type="text" id="prod" name="prod" disabled=""/>
+                    </td>
+                    <td>
+                        <label for="costo">Costo</label>
+                        <input type="text" id="costo" name="costo" disabled=""/>
+                    </td>
+                    <td>
+                        <label for="ventas">Ventas</label>
+                        <input type="text" id="venta" name="venta" disabled=""/>
+                    </td>
+                    <td>
+                        <label for="tope">Tope</label>
+                        <input type="text" id="tope" name="tope" disabled=""/>
+                    </td>
+                    <td >
+                        <label for="cant">Cantidad</label>
+                        <input type="text" id="cant" name="cant" disabled=""/>
+                    </td>
+                    <td >
+                        <label for="sm">Stock Min.</label>
+                        <input type="text" id="sm" name="sm" disabled=""/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColOH2">Codigo</td>
+                        <!-- td>ID</td -->
+                        <td class="ColXXXMM">Producto</td>
+                        <td>Costo</td> 
+                        <td>Venta</td> 
+                        <td>Desc. Min.</td> 
+                        <td>Cant.</td>  
+                        <td>Stock. Min.</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+
+                </tbody>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <button type="button" onclick="imprimir();" class="icon-imprimir" style="padding: 12px 0px 9px 35px; margin-top: 12px;">Imprimir</button>
+            </div>
+        </div>
+        <div class="bloqueo">
+            <div class="advertenciaMainContant">
+                <div class="titleMainCpontent">
+                    <p class="titleAdvertencia">Advertencia</p>
+                    <figure class="imgAdvertenciaContent">
+                        <img src="../img/icoAdvertencia.svg" class="imgAdvertencia">
+                    </figure>
+                </div>
+                <div class="contenidoMain">
+                    <p class="textMainAlert">el código ingresado no es valido</p>
+                    <p class="textDescription">Por favor, verificar el código <br />escaneado y vuelva a intentarlo</p>
+                    <a href="#" class="btnAceptar" onclick="$('.bloqueo').css('display', 'none');
+                            $('#cod').focus();">Aceptar</a>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                        var prod = $_GET('t');
+                        console.log(prod);
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: {action: 'listarTiendasSelect'},
+                            success: function (data) {
+                                var tienda = JSON.parse(data);
+                                var string = '<option value=\"0\">Seleccione...</option>';
+                                string = '';
+                                for (var i = 0; i < tienda.length; i++) {
+                                    string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                }
+                                $('#tiend').html(string);
+                                if (prod != '1') {
+                                    $('#tiend').attr('disabled', '');
+                                }
+                                $('#tiend').val(prod);
+                            },
+                            error: function () {
+                            }
+                        });
+                        limpiarList();
+                        loadInventario(prod);
+                        function limpiarList() {
+                            var string = '';
+                            for (var i = 0; i < 13; i++) {
+                                string += "<tr><td class=\"ColMS ch\"></td>\n\
+                                        <td class=\"ColOH2\"></td>\n\
+                                        <td class=\"ColXXXMM\">&nbsp;</td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        </tr>";
+                            }
+                            $('#data').scrollTop(0);
+                            $('#data').html(string);
+                            formatoTabla('61px');
+                        }
+                        function imprimir() {
+                            var cadena = '<tr class=\"colorHeader\">\n\
+                                        <td class="ColMS">#</td>\n\
+                                        <td class="ColOH2">Cod.</td>\n\
+                                        <td class="ColXXXMM">Producto</td>\n\
+                                        <td>Costo</td>\n\
+                                        <td>Venta</td>\n\
+                                        <td>Min</td>\n\
+                                        <td>Cant</td>\n\
+                                        <td>S Min.</td></tr>';
+                            var string = $('#data').html();
+                            string = cadena + string;
+                            $('#data').html(string);
+                            formatoTabla('61px');
+                            window.print();
+                            loadInventario($('#tiend').val());
+
+
+                        }
+                        function loadInventario(p) {
+                            $(".loadone").css('display', 'block');
+                            if (p != '1') {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/productosCRL.php',
+                                    data: {action: 'listXtienda', tienda: p},
+                                    success: function (data) {
+                                        var productos = JSON.parse(data);
+                                        var string = '';
+                                        for (var i = 0; i < productos.length; i++) {
+                                            string += '<tr><td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                    <td class=\"ColOH2\">' + productos[i][2] + '</td>\n\
+                                                    <td class=\"ColXXXMM\">' + productos[i][1] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][3] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][4] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][5] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][10] + '</td>\n\
+                                                    <td  class=\"atr\"  contenteditable=\"true\" onblur=\"guardarSM(\'' + productos[i][0] + '\',\'' + productos[i][9] + '\',$(this));\">' + productos[i][11] + '</td></tr>';
+                                        }
+                                        for (var i = 0; i < (13 - productos.length); i++) {
+                                            string += "<tr><td class=\"ColMS ch\"></td>\n\
+                                                    <td class=\"ColOH2\"></td>\n\
+                                                    <td class=\"ColXXXMM\">&nbsp;</td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    </tr>";
+                                        }
+                                        $('#data').scrollTop(0);
+                                        $('#data').html(string);
+                                        $('#contRow').text('Registros: ' + productos.length);
+                                        formatoTabla('61px');
+                                        $(".loadone").css('display', 'none');
+                                    },
+                                    error: function () {
+                                        $(".loadone").css('display', 'none');
+                                    }
+                                });
+                            } else {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/productosCRL.php',
+                                    data: {action: 'listXAlmacen'},
+                                    success: function (data) {
+                                        var productos = JSON.parse(data);
+                                        var string = '';
+                                        for (var i = 0; i < productos.length; i++) {
+                                            string += '<tr><td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                    <td class=\"ColOH2\">' + productos[i][2] + '</td>\n\
+                                                    <td class=\"ColXXXMM\">' + productos[i][1] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][3] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][4] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][5] + '</td>\n\
+                                                    <td  class=\"atr\">' + productos[i][6] + '</td>\n\
+                                                    <td  class=\"atr\"  contenteditable=\"true\" onblur=\"guardarSM(\'' + productos[i][0] + '\',\'1\',$(this));\">' + productos[i][7] + '</td></tr>';
+                                        }
+                                        for (var i = 0; i < (13 - productos.length); i++) {
+                                            string += "<tr><td class=\"ColMS ch\"></td>\n\
+                                                    <td class=\"ColOH2\"></td>\n\
+                                                    <td class=\"ColXXXMM\">&nbsp;</td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    <td></td>\n\
+                                                    </tr>";
+                                        }
+                                        $('#data').scrollTop(0);
+                                        $('#data').html(string);
+                                        $('#contRow').text('Registros: ' + productos.length);
+                                        formatoTabla('61px');
+                                        $(".loadone").css('display', 'none');
+                                    },
+                                    error: function () {
+                                        $(".loadone").css('display', 'none');
+                                    }
+                                });
+                            }
+                            $(".loadone").css('display', 'none');
+                            formatoTabla('61px');
+                        }
+                        function guardarSM(id, tiend, txt) {
+                            var txts = txt.text();
+                            txts = txts.replace(/\s+/g, '');
+
+                            if (isNaN(txts) || txts == "") {
+                                alert('Ingrese un valor valido!!');
+                                txt.text('0');
+                                txt.focus();
+                                txt.select();
+                            }
+                            txts = toInt(txts);
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/productosCRL.php',
+                                data: {action: 'updateSM', id: id, tx: txts, tiend: tiend},
+                                success: function (data) {
+                                    if (data == 'OK') {
+                                        txt.text(txts);
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                        $(function () {
+                            $("#cod").focusin(function () {
+                                $('#cod').val('');
+                                $('#idp').val('');
+                                $('#prod').val('');
+                                $('#cant').val('');
+                                $('#costo').val('');
+                                $('#venta').val('');
+                                $('#tope').val('');
+                                $('#sm').val('');
+                            });
+                            $("#cod").keyup(function (e) {
+                                var product = $('#tiend').val()
+                                if (e.keyCode == 13) {
+                                    var cod = $("#cod").val();
+                                    if (isNaN(cod) && cod.length < 7) {
+                                        cod = cod.substring(1);
+                                        var s = cod.length;
+                                        var ncod = 'P';
+                                        for (var i = 0; i < (7 - (s + 1)); i++) {
+                                            ncod += '0';
+                                        }
+                                        cod = ncod + cod;
+                                    }
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/productosCRL.php',
+                                        data: {action: 'getxCodTiend', cod: cod, tiend: product},
+                                        success: function (data) {
+                                            if (data != "null") {
+                                                var producto = JSON.parse(data);
+                                                var cantidad = 0;
+                                                var stockM = 0;
+                                                if (product != "1") {
+                                                    cantidad = producto[10];
+                                                    stockM = producto[11];
+                                                } else {
+                                                    cantidad = producto[6];
+                                                    stockM = producto[7];
+                                                }
+                                                $('#cod').val(producto[2]);
+                                                $('#idp').val(producto[0]);
+                                                $('#prod').val(producto[1]);
+                                                $('#cant').val(cantidad);
+                                                $('#costo').val(producto[3]);
+                                                $('#venta').val(producto[4]);
+                                                $('#tope').val(producto[5]);
+                                                $('#sm').val(stockM);
+                                                $('#cant').focus();
+                                            } else {
+                                                $('.textMainAlert').text('El Producto ingresado no existe');
+                                                $('.textDescription').html('Por favor, verificar y volver a intentar');
+                                                $('.bloqueo').css("display", "block");
+                                                $('#buscar').select();
+                                                $('#buscar').blur();
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                } else {
+                                    $('#idp').val('');
+                                    $('#prod').val('');
+                                    $('#cant').val('');
+                                    $('#costo').val('');
+                                    $('#venta').val('');
+                                    $('#tope').val('');
+                                }
+                            });
+                        });
+                        $('body').keyup(function (e) {
+                            if (e.keyCode == 27) {
+                                $('.bloqueo').css("display", "none");
+                                $('#buscar').focus();
+                            }
+                        });
+                        $('#data').css('height', '361px');
+                        //$('#find').css('margin-top', '33px');
+                        estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+            #estados{
+                margin-bottom: -30px;
+                margin-left: 10px;
+            }
+            .loadone{
+                display: none;
+                margin-top: 27px;
+            }
+            .tipograf {
+                position: absolute;
+                top: 21px;
+                right: 50px;
+            }
+            .boxMain{
+                width: 320px !important;
+                position: absolute !important;
+                font-family: arial !important;
+                right: 0px;
+                overflow: hidden;
+                display: none;
+                top:-650px;
+            }
+            .boxTop{
+                background-color: #DEDEDE !important;
+                color: #6B6B6B !important;
+                text-align: center !important;
+                font-size: 16px !important;
+                padding: 9px 0px !important;
+            }
+            .triangle{
+                border-left: 18px solid transparent !important;
+                border-top: 10px solid transparent !important;
+                border-right: 18px solid transparent !important;
+                content: "" !important;
+                position: absolute !important;
+                top: 40px;
+                left: 0px;
+                right: 0px;
+                width: 0px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .boxDetalle{
+                background-color: #F4F4F4 !important;
+                height: 548px !important;
+                padding: 6px 5px 6px !important;
+                overflow-y: scroll;
+            }
+            .boxTienda{
+                background-color: #F4F4F4 !important;
+                padding: 5px 5px 9px 16px !important;
+                margin: 4px 0px !important;
+                border-bottom: 1px dotted #A5A5A5;
+            }
+            .xnameTienda{
+                margin: 0px !important;
+                color: #000000 !important;
+                font-weight: 400;
+                font-size: 16px !important;
+                letter-spacing: -0.3px;
+            }
+            .xboleta, .xrecibo{
+                margin: 0px !important;
+                color: #666666 !important;
+                display: inline-block !important;
+                font-size: 13px;
+            }
+            .xboleta label, .xrecibo label{
+                display: inline;
+            }
+            .xboleta{
+                margin-right: 10px !important;
+            }
+            .xsaldo{
+                color: #0F68D3 !important;
+                font-size: 17px !important;
+                padding: 0px;
+                font-weight: 600 !important;
+            }
+            .boxBottom {
+                background-color: #F4F4F4 !important;
+                text-align: center !important;
+                height: 32px;
+                padding-bottom: 7px;
+            }
+            .trianguloReversa{
+                background-color: #B1B1B1;
+                padding: 19px;
+                border-radius: 50%;
+                position: absolute !important;
+                bottom: 10px;
+                left: 0px;
+                right: 0px;
+                width: 0px;
+                margin-left: auto;
+                margin-right: auto;
+                cursor: pointer;
+            }
+            .trianguloReversa:before{
+                border-left: 7px solid transparent !important;
+                border-right: 7px solid transparent !important;
+                border-bottom: 9px solid transparent !important;
+                content: "" !important;
+                border-bottom-color: white!important;
+                position: absolute !important;
+                bottom: 16px;
+                left: 0px;
+                right: 0px;
+                width: 0px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .data-detalle{
+                position: absolute;
+                top: 21px;
+                right: 10px;
+            }
+            .icon-tabla{
+                width: 30px !important;
+                height: 30px;
+                padding: 0px !important;
+                margin-top: 23px !important;
+                margin-right: 0px !important;
+            }
+            .icon-tabla:before{
+                margin: initial !important;
+                font-size: 20px;
+                position: relative;
+                top: 2px;
+            }
+            .blockgrafico{
+                position: absolute;
+                background-color: white;
+                width: 65px;
+                height: 21px;
+                right: 15px;
+                bottom: 15px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <label for="tiempo">Dia</label>
+                        <input type="date" id="tiempo" name="tiempo" onchange="cambiar($(this).val(), 'd')" style="width: 120px" >
+                    </td>
+                    <td>
+                        <div class="loadone" style="/*display: none;*/"></div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="tipograf">
+                <label for="tgraf">Grafico</label>
+                <div class="select-triangulo">
+                    <select id="tgraf" name="tgraf" onchange="cambiarGraf($(this).val())" style="width: 120px">
+                        <option value="column" selected="">Columnas</option>
+                        <option value="line">Lineal</option>
+                    </select>
+                </div>
+            </div>
+            <div class="data-detalle">
+                <label></label>
+                <button type="button" class="icon-tabla" onclick="abrirPanel()"></button>
+            </div>
+            <div id="container" style="min-width: 310px; height: 520px; margin: 20px auto 0"></div>
+            <div class="blockgrafico"></div>
+            <div class="boxMain" style="z-index: 10;">
+                <div class="boxTop">Detalles</div>
+                <div class="triangle"></div>
+                <div class="boxDetalle">
+                    <div class="boxTienda">
+                        <p class="xnameTienda">San Agustin</p>
+                        <p class="xboleta">Total: <label class="xsaldo">S/.100000.00</label></p>
+                        <p class="xrecibo">Recibo: <label class="xsaldo">S/.200000.00</label></p>
+                    </div>
+                </div>
+                <div class="boxBottom"  onclick="abrirPanel()">
+                    <div class="trianguloReversa"></div>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script src="../js/highcharts.js"></script>
+        <script src="../js/exporting.js"></script>
+        <script>
+                    var oDia = fechaG();
+                    var prod = $_GET('t');
+                    var tipoGraf = 'column';
+                    var cross = true;
+                    var share = false;
+                    function cambiarGraf(tipo) {
+                        tipoGraf = tipo;
+                        cambiar(toFechaG(oDia), 'd');
+                    }
+                    function cambiar(auxValor, auxTipo) {
+                        $(".loadone").css('display', 'block');
+                        if (auxTipo == 'd') {
+                            oDia = toFecha(auxValor);
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/reporteCRL.php',
+                            data: {action: 'rptETA', dia: oDia},
+                            success: function (data) {
+                                var efectivo = [], tarjeta = [], tiendas = [];
+                                var todos = JSON.parse(data);
+                                var oText = '';
+                                for (var i = 0; i < todos.length; i++) {
+                                    tiendas.push(todos[i][1]);
+                                    efectivo.push(parseFloat(todos[i][2]));
+                                    tarjeta.push(parseFloat(todos[i][3]));
+                                    oText += '<div class="boxTienda">\n\
+                                                    <p class="xnameTienda">' + todos[i][1] + '</p>\n\
+                                                    <p class="xboleta">Efectivo: <label class="xsaldo">S/.' + todos[i][2] + '</label></p>\n\
+                                                    <p class="xrecibo">Tarjeta: <label class="xsaldo">S/.' + todos[i][3] + '</label></p>\n\
+                                                </div>';
+                                }//fin for
+                                $('.boxDetalle').html(oText);
+                                $('#container').highcharts({
+                                    chart: {
+                                        type: tipoGraf
+                                    },
+                                    colors: ['#17A3E1','#17E18C'],
+                                    title: {
+                                        text: ('Todas las tiendas - ' + toFecha($('#tiempo').val()))
+                                    },
+                                    subtitle: {
+                                        text: 'Reporte Mensual'
+                                    },
+                                    xAxis: {
+                                        categories: tiendas,
+                                        crosshair: cross
+                                    },
+                                    yAxis: {
+                                        min: 0,
+                                        title: {
+                                            text: 'Acuenta (S/.)'
+                                        }
+                                    },
+                                    tooltip: {
+                                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                                '<td style="padding:0"><b>S/. {point.y:.1f}</b></td></tr>',
+                                        footerFormat: '</table>',
+                                        shared: share,
+                                        useHTML: true
+                                    },
+                                    plotOptions: {
+                                        column: {
+                                            pointPadding: 0.2,
+                                            borderWidth: 0
+                                        }
+                                    },
+                                    series: [{
+                                            name: 'Efectivo',
+                                            data: efectivo
+
+                                        }, {
+                                            name: 'Tarjeta',
+                                            data: tarjeta
+
+                                        }]
+                                });
+                                $(".loadone").css('display', 'none');
+                            }//fin successs
+                        });//fin ajax
+                    }//fin funcion
+                    function abrirPanel() {
+                        if (($('.boxMain').css('top')).charAt(0) == '-') {
+                            $('.boxMain').fadeIn(0);
+                            $('.boxMain').animate({top: 0}, "16000");
+                        } else {
+                            $('.boxMain').animate({top: -650}, "16000");
+                            $('.boxMain').fadeOut(1600);
+                        }
+                    }
+                    $('#tiempo').val(fechaG());
+                    cambiar(oDia, 'd');
+                    estoyEnUnIframe();
+
+        </script>
+    </body>
+</html>

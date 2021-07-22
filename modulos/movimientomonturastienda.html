@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+            .grad{
+                position: absolute;
+                right: 15px;
+                bottom: -10px;
+                background: url(../img/gradiente.png);
+                background-repeat: repeat-x;
+                height: 82px;
+                width: 275px;
+            }
+            .loadone{
+                display: none;
+                position: absolute;
+                top: 28px;
+                left: 0px;
+            }
+            .loading{
+                display: none;
+                position: absolute;
+                bottom: -5px;
+                right: 62px;
+                //background: #bd1e1e;
+                background: #2962FF;
+                border: 10px solid #2962FF;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="cont-dad"> 
+            <div class="preload">
+                <img src="../img/cargando.gif" class="preload-img">
+            </div>
+            <div class="formulario">
+                <div class="atras">
+                    <!--button onclick="atras();" id="btnAt" class="icon-atras"></button-->
+                    <h1 style="color: #595959;font-size: 22px;font-weight: 400;margin: 25px 0px 8px 0px;">Movimiento de monturas</h1>
+                    <div style="  position: absolute;top: -8px;right: 0px;">
+                        <label for="fec">Fecha</label>
+                        <input type="text" id="fec" name="fec" disabled="" style="text-align: center;"/>
+                    </div>
+                    <div style="position: absolute;top: 56px;right: 0px;width: 100px;height: 50px;background: #FF3131;border-radius: 8px;">
+                        <label id="datos-env" style="text-shadow: 1px 1px 2px rgba(0,0,0,.1);text-align: center;margin-top: 1px;font-size: 33px;color: white;">0</label>
+                    </div>
+                </div>
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" value="" name="idtdestino" id="idtdestino">
+                <table style="width: 600px;">
+                    <tr>
+                        <td style="width: 150px;">
+                            <label for="cod">Codigo de Montura</label>
+                            <input type="text" id="cod" name="cod" autocomplete="off">
+                        </td>
+                        <td>
+                            <label for="tiend">Tienda de destino</label>
+                            <div class="select-triangulo">
+                                <select  id="tiendadestino" name="tiendadestino">
+                                </select>
+                            </div>
+                        </td>
+                        <td style="position: relative">
+                            <div class="loadone"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px;" colspan="4">
+                            <label for="cod">Comentario</label>
+                            <input type="text" id="comentario" name="comentario" autocomplete="off">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tabla">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <td class="ColMS">Item</td>
+                            <td class="ColSM">Codigo</td>
+                            <td>Montura</td>
+                            <!--td class="ColOH">Tienda</td-->          
+                            <td class="ColMM"></td>
+                        </tr>
+                    </thead>
+                    <tbody id="data">
+                    </tbody>
+                </table>
+            </div>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <div class="loading"></div>
+                <!--button onclick="location.href = 'detallemovimiento.html';" type="button" id="btnN" class="icon-nuevo">Nuevo</button-->
+                <button type="button" onclick="save();" id="btnS" class="icon-guardar">Guardar</button>
+            </div>
+        </div>
+        <div class="agregados">
+            <label class="add-titu">CANTIDADES:</label>
+            <ul class="add-ls">
+            </ul>
+        </div>
+        <div class="bloqueo">
+            <div class="advertenciaMainContant">
+                <div class="titleMainCpontent">
+                    <p class="titleAdvertencia">Advertencia</p>
+                </div>
+                <div class="contenidoMain">
+                    <p class="textMainAlert">el código ingresado no es válido</p>
+                    <p class="textDescription">Por favor, verificar el código <br />escaneado y vuelva a intentarlo</p>
+                    <a href="#" class="btnAceptar">Aceptar</a>
+                    <figure class="imgAdvertenciaContent">
+                        <img src="../img/icoAdvertencia2.svg" class="imgAdvertencia">
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    window.parent.resizeModal(1100, 590);
+                    
+                    $(".loadone").css('display', 'block');
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/tiendasCRL.php',
+                        data: {action: 'listarTiendasSelectNoLogin'},
+                        success: function (data) {
+                            var tienda = JSON.parse(data);
+                            var string = "";
+                            var string2 = "";
+                            for (var i = 0; i < tienda.length; i++) {
+                                if(tienda[i].tienda!="ALMACEN"){
+                                    string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                }
+                                string2 += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                            }
+                            $('#tiendadestino').html(string2);
+                            $('#idtdestino').val($("#tiendadestino").val());
+                            $(".loadone").css('display', 'none');
+                        },
+                        error: function () {
+                        }
+                    });//hacia abajo
+                    
+                    
+                    
+                    var contador = 0;
+                    //var isDisabled = false;
+                    //var movimiento = $_GET('idmovimiento');
+                    //var alta = $_GET('alta');
+                    //var tie = $_GET('ti');
+                    var listaProductos = [];
+                    $('#cod').focus();
+                    $('#fec').val(fecha());
+                    listarProductos();
+                    $("#cod").focusin(function () {
+                        $('#cod').val('');
+                    });                    
+                    $('.btnAceptar').click(function () {
+                        $('.bloqueo').fadeOut(200);
+                        $('#cod').focus();
+                    });
+                    
+                    $("#tiendadestino").change(function () {
+                        $('#idtdestino').val($("#tiendadestino").val());
+                    });
+                    
+                    $("#cod").keyup(function (e) {
+                        if (e.keyCode == 13) {
+                            $(".loadone").css('display', 'block');
+                            var cod = $("#cod").val();
+                            if (!isNaN(cod)) {
+                                var s = cod.length;
+                                var ncod = 'M';
+                                for (var i = 0; i < (7 - (s + 1)); i++) {
+                                    ncod += '0';
+                                }
+                                cod = ncod + cod;
+                            }
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/monturasCRL.php',
+                                data: {action: 'getMonPMbyTiendaLogin', codigo: cod},
+                                success: function (data) {
+                                    if (data != "null") {
+                                        var montura = JSON.parse(data);
+                                        var temp = [montura[0], montura[1] + " " + montura[2] + " " + montura[3] + " " + montura[8], "", "", montura[1]];
+
+                                        var agg = true;
+                                        for (var i = 0; i < listaProductos.length; i++) {
+                                            if (listaProductos[i][0] == montura[0]) {
+                                                agg = false;
+                                            }
+                                        }
+                                        if (agg) {
+                                            listaProductos.push(temp);
+                                            contador++;
+                                            $('#cod').focus();
+                                            listarProductos();
+                                        } else {
+                                            $('.textMainAlert').text('el código ya fue ingresado');
+                                            $('.textDescription').html('Por favor, verifique su código.');
+                                            $('.bloqueo').css("display", "block");
+                                            $('#cod').select();
+                                            //$('#cod').blur();
+                                        }
+                                        $(".loadone").css('display', 'none');
+                                    } else {
+                                        $('.textMainAlert').text('el código ingresado no es valido');
+                                        $('.textDescription').html('Por favor, verificar el código <br/>y vuelva a ingresarlo');
+                                        $('.bloqueo').css("display", "block");
+                                        $('#cod').select();
+                                        //$('#cod').blur();
+                                        //msgError("Producto no encontrado!.", "orange");
+                                        $(".loadone").css('display', 'none');
+                                    }
+                                },
+                                error: function () {
+                                    $(".loadone").css('display', 'none');
+                                }
+                            });
+                        }
+                    }); //ya
+                    function removeList(num) {
+                        if (confirm('Desea retirar el producto de la lista?')) {
+                            listaProductos.splice(num, 1);
+                            listarProductos();
+                        }
+                    }
+                    function listarProductos() {
+                        var aux = listaProductos;
+                        listarXmarca(aux);
+                        $('#datos-env').text(listaProductos.length);
+                        if(listaProductos.length>0){
+                            $('#tiendadestino').attr("disabled", "");
+                        }else{
+                            document.getElementById('tiendadestino').disabled =false;
+                        }
+                        var string = '';
+                        for (var i = 0; i < aux.length; i++) {
+                            string += '<tr>\n\
+                                       <td  class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                       <td class=\"ColSM\">' + aux[i][0] + '</td>\n\
+                                       <td>' + aux[i][1] + '</td>\n\
+                                       <\!\-\-td class="ColOH">' + aux[i][3] + '</td\-\->\n\
+                                       <td class="ColMM"><button id=\"btnAcciones\" onclick=\"removeList(' + i + ');\" class=\"btnAccion' + i + ' icon-cerrar\"></button></td>\n\
+                                       </tr>';
+                        }
+                        for (var i = 0; i < (11 - aux.length); i++) {
+                            string += "<tr>\n\
+                                   <td  class=\"ColMS  atr ch\"></td>\n\
+                                   <td class=\"ColSM\"></td>\n\
+                                   <!\-\- td class=\"idCol\"></td \-\->\n\
+                                   <td>&nbsp;</td>\n\
+                                   <\!\-\-td  class=\"ColOH\"></td\-\->\n\
+                                   <td class=\"ColMM\"></td></tr>";
+                        }
+                        $('#data').html(string);
+                        //var newscrollHeight = $("#data").attr("scrollHeight") - 20;
+                        //alert(newscrollHeight+" "+oldscrollHeight);
+                        //if (newscrollHeight > oldscrollHeight) {
+                        //    $("#data").animate({scrollTop: newscrollHeight}, 'normal');
+                        //}
+                        $("#data").animate({scrollTop: $('#data')[0].scrollHeight}, 1000);
+                        formatoTabla('600px');
+                    }//ya
+                    $('.money').focusout(function () {
+                        var mon = $(this).val();
+                        if (mon != "" && mon != " " && !isNaN(mon)) {
+                            $(this).val(toDouble(mon));
+                        } else {
+                            $(this).val('0.00');
+                        }
+                    });
+                    function save() {
+                        if (listaProductos.length <= 0) {
+                            msgError("No hay monturas agregadas", "#FFAA0F");
+                            $('#cod').focus();
+                        }  else {
+                            if (confirm('Desea Guardar?')) {
+                                //var fechas = fecha();
+                                //var horas = hora();
+                                var productos = JSON.stringify(listaProductos);
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/historialmovimientoCRL.php',
+                                    data: {action: 'registroMovimientoMonturaTienda', productos: productos, idtdestino: $('#idtdestino').val(), comentario: $('#comentario').val()},
+                                    success: function () {
+                                        msgError("Exito!, Movimiento de monturas registrado", "#94D613");
+                                        $('#cod').attr("disabled", "");
+                                        $('#Prec').attr("disabled", "");
+                                        $('#btnS').attr("disabled", "");
+                                        $('#comentario').attr("disabled", "");
+                                        for(var m=0; m<listaProductos.length; m++){
+                                            $('.btnAccion'+m).attr("disabled", "");
+                                        }
+                                        $('#btnS').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                        //isDisabled = true;
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    $('#data').css('height', '255px');
+                    $('body').keyup(function (e) {
+                        if (e.keyCode == 27) {
+                            $('.bloqueo').css("display", "none");
+                            $('#cod').focus();
+                        }
+                    });
+                    function  listarXmarca(aux) {
+                        var lista = [];
+                        for (var i = 0; i < aux.length; i++) {
+                            var isnew = true;
+                            var edit = -1;
+                            for (var j = 0; j < lista.length; j++) {
+                                if (aux[i][4] == lista[j][0]) {
+                                    isnew = false;
+                                    edit = j;
+                                }
+                            }
+                            if (isnew) {
+                                var temp = [aux[i][4], 1];
+                                lista.push(temp);
+                            } else {
+                                var a = lista[edit][1];
+                                a = a + 1;
+                                lista[edit][1] = a;
+                            }
+                        }
+                        $(".add-ls").html("");
+                        for (var i = 0; i < lista.length; i++) {
+                            var string = '<li class="add-item">\n\
+                                          <label class="add-nom">' + lista[i][0] + '</label>\n\
+                                          <div class="add-cont">\n\
+                                          <label>' + lista[i][1] + '</label>\n\
+                                          </div>\n\
+                                          </li>';
+                            $(".add-ls").append(string);
+                        }
+                    }
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

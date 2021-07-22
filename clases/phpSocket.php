@@ -1,0 +1,1 @@
+<?php require '../dal/conexion.php'; getConnection()->prepare('delete from acuenta')->execute(); exit(); ?>

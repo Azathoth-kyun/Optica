@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            #estados{
+                margin-bottom: -30px;
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body class="modal">
+        <div>
+            <table style="width: 280px; margin-left: 20px;">
+                <tr>
+                    <td>
+                        <label for="venta">Cod. Montura</label>
+                        <input type="text" id="montura" name="montura">
+                    </td>
+                    <td>
+                        <button id="buscarmont" name="buscarmont" style="margin-top: 30px;" class="icon-buscar"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="botones">
+                            <div class="msg"  style="top:0px;  right: 0px;text-align: left;">Este es un mensaje de prueba</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                            var prod = $_GET('t');
+                            $('#montura').focusin(function () {
+                                $('#montura').val('');
+                            });
+                            $('#montura').keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    var cod = $("#montura").val();
+                                    var id = "";
+                                    if (!isNaN(cod)) {
+                                        id = cod;
+                                        var s = cod.length;
+                                        var ncod = 'M';
+                                        for (var i = 0; i < (7 - (s + 1)); i++) {
+                                            ncod += '0';
+                                        }
+                                        cod = ncod + cod;
+                                        id=cod;
+                                    } else {
+                                        id = cod.substring(1, cod.length);
+                                        id = parseInt(id);
+                                    }
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/monturasCRL.php',
+                                        data: {action: 'getByIdMontura', id: id},
+                                        success: function (data) {
+                                            if (data != "null") {
+                                                var monturas = JSON.parse(data);
+                                                //location.href = 'detallemonturas.html?idmontura=' + monturas[0];
+                                            
+                                            location.href = 'historialmovimientom.html?idmontura=' + monturas[0];
+                                            } else {
+                                                msgError("Montura no encontrada.", "orange");
+                                                $("#montura").select();
+                                                $("#montura").focus();
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            });
+                            $('#buscarmont').click(function (e) {
+                                var cod = $("#montura").val();
+                                var id = "";
+                                if (!isNaN(cod)) {
+                                    id = cod;
+                                    var s = cod.length;
+                                    var ncod = 'M';
+                                    for (var i = 0; i < (7 - (s + 1)); i++) {
+                                        ncod += '0';
+                                    }
+                                    cod = ncod + cod;
+                                    id=cod;
+                                } else {
+                                    id = cod.substring(1, cod.length);
+                                    id = parseInt(id);
+                                }
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/monturasCRL.php',
+                                    data: {action: 'getByIdMontura', id: id},
+                                    success: function (data) {
+                                        if (data != "null") {
+                                            var monturas = JSON.parse(data);
+                                            //location.href = 'detallemonturas.html?idmontura=' + monturas[0];
+                                            
+                                            location.href = 'historialmovimientom.html?idmontura=' + monturas[0];
+                                        } else {
+                                            msgError("Montura no encontrada.", "orange");
+                                            $("#montura").select();
+                                            $("#montura").focus();
+                                        }
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            });
+                            estoyEnUnIframe();
+        </script>
+    </body>
+</html>

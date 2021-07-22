@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="atras" style="display: none;">
+                <button onclick="location.href = 'ingreso.html';" class="icon-atras"></button>
+            </div>
+            <input type="hidden" value="" name="action" id="action">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <label for="Proveedor">Proveedor</label>
+                        <div class="select-triangulo">
+                            <select id="Proveedor" name="Proveedor">
+                            </select>
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        <label for="doc">Documento</label>
+                        <div class="select-triangulo">
+                            <select id="doc" name="Documento">
+                                <option value="Nota_Pedido">Nota Pedido</option>
+                                <option value="Factura">Factura</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td >
+                        <label for="numDoc">Nro.</label>
+                        <input type="text" id="numDoc" name="numDoc"/>
+                    </td >
+                    <td>
+                        <label for="fec">Fecha</label>
+                        <input type="text" id="fec" name="fec" disabled=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-xxs">
+                        <label for="cod">Codigo</label>
+                        <input type="hidden" id="edit"/>
+                        <input type="hidden" id="idp" name="idp"/>
+                        <input type="text" id="cod" name="cod" disabled=""/>
+                    </td>
+                    <!-- td class="col-xs">
+                        <label for="idp">Id</label>
+                        <input type="text" id="idp" name="idp" disabled=""/>
+                    </td >
+                    <td class="ColXXXX">
+                        <label for="prod">Producto</label>
+                        <input type="text" id="prod" name="prod" disabled=""/>
+                    </td-->
+                    <td class="ColXXXX">
+                        <label for="prod">Producto</label>
+                        <div class="select-triangulo">
+                            <select id="prod" name="prod"/>
+                        </div>
+                    </td>
+                    <td>
+                        <label for="costo">Costo</label>
+                        <input type="text" id="costo" name="costo" class="money atr" />
+                    </td>
+
+                    <td>
+                        <label for="venta">Precio de Venta</label>
+                        <input type="text" id="venta" name="venta" class="money atr" />
+                    </td>
+                    <td>
+                        <label for="tope">Precio Mínimo</label>
+                        <input type="text" id="tope" name="tope"  class="money atr"/>
+                    </td>
+                    <td >
+                        <label for="cant" style="color: #00BCD4;margin-left: 2px">Cantidad</label>
+                        <input type="text" id="cant" name="cant" style="border:2px #00BCD4 solid;margin-left: 2px;margin-top: 0px;"  class="atr"/>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            </table>
+            <div class="botones" style="height: 70px">
+                <div class="msg">mensaje</div>
+                <button id="add" class="icon-agregar">Agregar</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColOH2">Codigo</td>
+                        <!-- td class="idCol">ID</td -->
+                        <td class="ColXXXMM">Producto</td>
+                        <td>Cantidad</td>          
+                        <td>Costo</td>
+                        <td>Venta</td>
+                        <td>P.Min.</td>
+                        <td>Acciones</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <div class="botones">
+            <button onclick="location.href = 'detalleingresoProd.html';" type="button" class="icon-nuevo">Nuevo</button>
+            <button type="button" onclick="save();" id="btnS" class="icon-guardar cl-guardar1">Guardar</button>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                $('#cant').focusin(function () {
+                    $('#cant').select();
+                });
+                $('#cant').focusout(function () {
+                    if ($('#cant').val() == "") {
+                    }
+                    else {
+                        $('#cant').val(toInt($('#cant').val()));
+                    }
+                });
+                var ingreso = $_GET('idingreso');
+                var saved = '0';
+                var listaProductos = [];
+                $('#cod').focus();
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/proveedorCRL.php',
+                    data: {action: 'list'},
+                    success: function (data) {
+                        var proveedores = JSON.parse(data);
+                        var string = '<option value=\'a\'>Seleccione...</option>';
+                        for (var i = 0; i < proveedores.length; i++) {
+                            string += '<option value=\'' + proveedores[i][0] + '\'>' + proveedores[i][1] + '</option>';
+                        }
+                        $('#Proveedor').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/productosCRL.php',
+                    data: {action: 'list'},
+                    success: function (data) {
+                        var prods = JSON.parse(data);
+                        var string = '<option value=\'a\'>Seleccione...</option>';
+                        for (var i = 0; i < prods.length; i++) {
+                            string += '<option value=\'' + prods[i][2] + '\'>' + prods[i][1] + '</option>';
+                        }
+                        $('#prod').html(string);
+                    },
+                    error: function () {
+                    }
+                });
+                $('#prod').change(function () {
+                    if ($('#prod').val() != 'a') {
+                        var cod = $('#prod').val();
+                        if (isNaN(cod) && cod.length < 7) {
+                            cod = cod.substring(1);
+                            var s = cod.length;
+                            var ncod = 'P';
+                            for (var i = 0; i < (7 - (s + 1)); i++) {
+                                ncod += '0';
+                            }
+                            cod = ncod + cod;
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'getProductoCod', cod: cod},
+                            success: function (data) {
+                                if (data != "null") {
+                                    var producto = JSON.parse(data);
+                                    $('#cod').val(producto[2]);
+                                    $('#idp').val(producto[0]);
+                                    $('#prod').val(producto[2]);
+                                    $('#costo').val(producto[3]);
+                                    $('#venta').val(producto[4]);
+                                    $('#tope').val(producto[5]);
+                                    $('#cant').val('1');
+                                    $('#cant').focus();
+
+                                } else {
+                                    msgError("Producto no encontrado!.", "orange");
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                        /*$('#cod').val($('#prod').val());
+                         var e = $.Event('keypress');
+                         e.which = 13;
+                         $('#cod').trigger(e);*/
+                    } else {
+                        $('#edit').val('');
+                        $('#idp').val('');
+                        $('#prod').val('');
+                        $('#costo').val('');
+                        $('#cod').val('');
+                        $('#venta').val('');
+                        $('#tope').val('');
+                        $('#cant').val('');
+                    }
+                });
+                if (ingreso != undefined) {
+                    $('#cant').css('margin-top', '-1px');
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ingresoCRL.php',
+                        data: {action: 'getingresop', id: ingreso},
+                        success: function (data) {
+                            var ing = JSON.parse(data);
+                            $('#Proveedor').val(ing[3]);
+                            $('#doc').val(ing[6]);
+                            $('#numDoc').val(ing[7]);
+                            $('#fec').val(ing[1]);
+                            $('#Proveedor').attr('disabled', "");
+                            $('#doc').attr('disabled', "");
+                            $('#numDoc').attr('disabled', "");
+                        },
+                        error: function () {
+                        }
+                    });
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ingresoCRL.php',
+                        data: {action: 'listDetallep', id: ingreso},
+                        success: function (data) {
+                            listaProductos = JSON.parse(data);
+                            listarProductos();
+                            $('#cod').attr('disabled', "");
+                            $('#idp').attr('disabled', "");
+                            $('#prod').attr('disabled', "");
+                            $('#costo').attr('disabled', "");
+                            $('#venta').attr('disabled', "");
+                            $('#tope').attr('disabled', "");
+                            $('#cant').attr('disabled', "");
+                        },
+                        error: function () {
+                        }
+                    });
+                    //---
+                    $('#btnS').attr('style', "display:none;");
+                    $('#add').attr('style', "display:none;");
+                    $('.icon-nuevo').attr('style', "display:none;");
+                    $('.atras').removeAttr('style');
+                    //---
+                }
+                $('#fec').val(fecha());
+                listarProductos();
+                $("#cod").keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        var cod = $("#cod").val();
+                        if (isNaN(cod) && cod.length < 7) {
+                            cod = cod.substring(1);
+                            var s = cod.length;
+                            var ncod = 'P';
+                            for (var i = 0; i < (7 - (s + 1)); i++) {
+                                ncod += '0';
+                            }
+                            cod = ncod + cod;
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'getProductoCod', cod: cod},
+                            success: function (data) {
+                                if (data != "null") {
+                                    var producto = JSON.parse(data);
+                                    $('#cod').val(producto[2]);
+                                    $('#idp').val(producto[0]);
+                                    $('#prod').val(producto[1]);
+                                    $('#costo').val(producto[3]);
+                                    $('#venta').val(producto[4]);
+                                    $('#tope').val(producto[5]);
+                                    $('#cant').val('1');
+                                    $('#cant').focus();
+
+                                } else {
+                                    msgError("Producto no encontrado!.", "orange");
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                    else {
+                        $('#edit').val('');
+                        $('#idp').val('');
+                        $('#cod').val('');
+                        $('#prod').val('');
+                        $('#costo').val('');
+                        $('#venta').val('');
+                        $('#tope').val('');
+                        $('#cant').val('');
+                    }
+                });
+                $('#cant').keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        agregar();
+                    }
+                });
+                $('#add').click(function () {
+                    agregar();
+                });
+                function removeList(num) {
+                    if (confirm('Desea retirar el producto de la lista?')) {
+                        listaProductos.splice(num, 1);
+                        listarProductos();
+                    }
+                }
+                function listarProductos() {
+                    var aux = listaProductos;
+                    var string = '';
+                    for (var i = 0; i < aux.length; i++) {
+                        if (ingreso != undefined || saved == '1') {
+                            string += '<tr ><td class=\"ColOH2\">' + aux[i][0] + '</td>\n\
+                                        <td class=\"ColXXXMM\">' + aux[i][2] + '</td>\n\
+                                        <td class="atr">' + aux[i][3] + '</td>\n\
+                                        <td class="atr">' + aux[i][4] + '</td>\n\
+                                        <td class="atr">' + aux[i][5] + '</td>\n\
+                                        <td class="atr">' + aux[i][6] + '</td>\n\
+                                        <td></td></tr>';
+                        } else {
+                            string += '<tr onclick=\"editCant(\'' + i + '\',event);\">\n\
+                                        <td class=\"ColOH2\">' + aux[i][0] + '</td>\n\
+                                        <td class=\"ColXXXMM\">' + aux[i][2] + '</td>\n\
+                                        <td class="atr">' + aux[i][3] + '</td>\n\
+                                        <td class="atr">' + aux[i][4] + '</td>\n\
+                                        <td class="atr">' + aux[i][5] + '</td>\n\
+                                        <td class="atr">' + aux[i][6] + '</td>\n\
+                                        <td><button class=\"icon-cerrar\" id=\"btnAcciones\" onclick=\"removeList(' + i + ');\"></button></td></tr>';
+                        }
+                    }
+                    for (var i = 0; i < (8 - aux.length); i++) {
+                        string += "<tr><td class=\"ColOH2\"></td><!\-\- td class=\"idCol\"></td \-\->\n\
+                                    <td class=\"ColXXXMM\">&nbsp;</td>\n\
+                                    <td></td>\n\
+                                    <td></td>\n\
+                                    <td></td>\n\
+                                    <td></td>\n\
+                                    <td></td></tr>";
+                    }
+                    $('#data').html(string);
+                    formatoTabla('68px');
+                }
+                function editCant(pos, event) {
+                    var tag; //event.srcElement.tagName || e
+                    if (event.srcElement) {
+                        tag = event.srcElement.tagName;
+                    }
+                    else if (event.target) {
+                        tag = event.target.tagName;
+                    }
+                    if (tag != "BUTTON") {
+                        $('#edit').val(pos);
+                        $('#cod').val(listaProductos[pos][0]);
+                        $('#idp').val(listaProductos[pos][1]);
+                        $('#prod').val(listaProductos[pos][0]);
+                        $('#cant').val(listaProductos[pos][3]);
+                        $('#costo').val(listaProductos[pos][4]);
+                        $('#venta').val(listaProductos[pos][5]);
+                        $('#tope').val(listaProductos[pos][6]);
+                        $('#cant').focus();
+                    }
+                }
+                function limpiar() {
+                    $('#edit').val('');
+                    $('#cod').val('');
+                    $('#idp').val('');
+                    $('#prod').val('');
+                    $('#costo').val('');
+                    $('#venta').val('');
+                    $('#tope').val('');
+                    $('#cant').val('');
+                    $('#cod').focus();
+                }
+                function agregar() {
+                    var edit = $('#edit').val();
+                    var cod = $('#cod').val();
+                    var id = $('#idp').val();
+                    var prod = $('#prod option:selected').text();
+
+                    var costo = $('#costo').val();
+                    var venta = $('#venta').val();
+                    var tope = $('#tope').val();
+                    var cant = $('#cant').val();
+                    cant = toInt(cant);
+                    if (isNaN(costo)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#costo').val('');
+                        $('#costo').focus();
+                    } else if (isNaN(venta)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#venta').val('');
+                        $('#venta').focus();
+                    } else if (isNaN(tope)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#tope').val('');
+                        $('#tope').focus();
+                    } else if (isNaN(cant)) {
+                        msgError("Debe ingresar números!!", "orange");
+                        $('#cant').val('');
+                        $('#cant').focus();
+                    } else if (costo <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#costo').val('');
+                        $('#costo').focus();
+                    } else if (venta <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#venta').val('');
+                        $('#venta').focus();
+                    } else if (tope < 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#tope').val('');
+                        $('#tope').focus();
+                    } else if (cant <= 0) {
+                        msgError("Debe ingresar valores mayores a 0!!", "orange");
+                        $('#cant').val('');
+                        $('#cant').focus();
+                    } else if (prod == "") {
+                        msgError("Debe buscar un producto!!", "orange");
+                        $('#cod').focus();
+                    } else if (cant == "") {
+                        msgError("Debe agregar una cantidad", "orange");
+                        $('#cant').focus();
+                    } else {
+                        for (var i = 0; i < listaProductos.length; i++) {
+                            if (listaProductos[i][0] == cod) {
+                                if (confirm('Producto ya agregado desea agregar mas?')) {
+                                    if (edit == "") {
+                                        cant = parseInt(cant) + parseInt(listaProductos[i][3]);
+                                    }
+                                    edit = i;
+                                } else {
+                                    edit = '/';
+                                }
+                            }
+                        }
+                        var temp = [cod, id, prod, cant, costo, venta, tope];
+                        if (edit === "/") {
+
+                        } else if (edit !== "") {
+                            listaProductos[edit] = temp;
+                        } else {
+                            listaProductos.push(temp);
+                        }
+                        listarProductos();
+                        limpiar();
+                    }
+                }
+                function save() {
+                    var idP = $('#Proveedor').val();
+                    var doc = $('#doc').val();
+                    var numDoc = $('#numDoc').val();
+                    if (idP == "a" || doc == "" || numDoc == "" || listaProductos.length <= 0) {
+                        msgError("Complete todos los datos", "orange");
+                    } else {
+                        if (confirm('Desea Guardar?')) {
+                            var fechas = fecha();
+                            var horas = hora();
+                            var productos = JSON.stringify(listaProductos);
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/ingresoCRL.php',
+                                data: {action: 'insertp', fecha: fechas, hora: horas, id: idP, doc: doc, numDoc: numDoc, productos: productos},
+                                success: function (data) {
+                                    saved = '1';
+                                    $('#Proveedor').attr('disabled', "");
+                                    $('#doc').attr('disabled', "");
+                                    $('#numDoc').attr('disabled', "");
+                                    $('#cod').attr('disabled', "");
+                                    $('#idp').attr('disabled', "");
+                                    $('#prod').attr('disabled', "");
+                                    $('#costo').attr('disabled', "");
+                                    $('#venta').attr('disabled', "");
+                                    $('#tope').attr('disabled', "");
+                                    $('#cant').attr('disabled', "");
+                                    $('#add').attr('style', "background: #BCBCBC;");
+                                    $('#btnS').attr('style', "background: #BCBCBC ;");
+                                    $('#add').attr('disabled', "");
+                                    $('#btnS').attr('disabled', "");
+                                    listarProductos();
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+
+                }
+                $('.money').focusout(function () {
+                    var mon = $(this).val();
+                    if (mon != "" && mon != " " && !isNaN(mon)) {
+                        $(this).val(toDouble(mon));
+                    } else {
+                        $(this).val('0.00');
+                    }
+                });
+                $('#data').css('height', '222px');
+                $('.datatable').css('margin-top', '10px');
+                estoyEnUnIframe();
+        </script>
+    </body>
+</html>

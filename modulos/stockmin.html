@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+            .filtro h2{
+                text-align: left;
+                position: absolute;
+                color: #8B96A6;
+                margin-left: 4px;
+                font-size: 31px;
+                top: 17px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="header-inventario">
+                <div class="filtro">
+                    <h2 id="tituloReporte"></h2>
+                </div>
+                <img src="../img/logo_intercel-negro.png" class="logo-inv">
+            </div>
+            <div class="inv-Repo">
+                <div class="header-inventario-print">
+                    <img  src="../img/logo_sistema.png" class="logo-inv">
+                    <h2 id="tituloReporte2"></h2>
+                </div>
+            </div>
+
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColMMM">Codigo</td>
+                        <!-- td>ID</td -->
+                        <td class="ColXXXXM">Producto</td>
+                        <td>Cant.</td>  
+                        <td>S. Min.</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+
+                </tbody>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <button type="button" onclick="imprimir();" class="icon-imprimir" style="padding-right: 5px;">Imprimir</button>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    var prod = $_GET('t');
+                    if (prod == undefined) {
+                        prod = 'al';
+                    }
+                    limpiarList();
+                    loadInventario();
+                    loadtiturepo();
+
+                    function loadtiturepo() {
+                        var titulo = 'Stock Minimo de Tienda ';
+                        if (prod == 'al') {
+                            titulo = 'Stock Minimo de Almacen ';
+                        }
+                        titulo = titulo.toUpperCase();
+                        $('#tituloReporte').text(titulo);
+                        $('#tituloReporte2').text(titulo);
+                    }
+                    function imprimir() {
+                        var cadena = '<tr class=\"colorHeader\"><td class="ColMS">#</td><td class="ColMM">Cod.</td><!\-\- td>ID</td \-\-><td class="ColXXXXM">Producto</td><td>Cant</td><td>Min</td></tr>';
+                        var string = $('#data').html();
+                        string = cadena + string;
+                        $('#data').html(string);
+                        formatoTabla('64px');
+                        window.print();
+                        loadInventario();
+
+
+                    }
+                    function limpiarList() {
+                        var string = '';
+                        for (var i = 0; i < 12; i++) {
+                            string += "<tr><td class=\"ColMS ch\"></td><td class=\"ColMMM\"></td><!\-\- td></td \-\-><td class=\"ColXXXXM\">&nbsp;</td><td></td><td></td></tr>";
+                        }
+                        $('#data').scrollTop(0);
+                        $('#data').html(string);
+                        $('#contRow').text('');
+                        formatoTabla('64px');
+                    }
+                    function loadInventario() {
+                        loadtiturepo();
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'listSM', tipo: prod},
+                            success: function (data) {
+                                alert
+                                var productos = JSON.parse(data);
+                                var string = '';
+                                var cantidad = 0;
+                                var stockM = 0;
+                                for (var i = 0; i < productos.length; i++) {
+                                    if (prod == "td") {
+                                        cantidad = productos[i][16];
+                                        stockM = productos[i][20];
+                                    } else {
+                                        cantidad = productos[i][17];
+                                        stockM = productos[i][19];
+                                    }
+                                    string += '<tr><td class=\"ColMS atr ch\">' + (i + 1) + '</td><td class=\"ColMMM\">' + productos[i][2] + '</td><!\-\- td>' + productos[i][0] + '</td \-\-><td class=\"ColXXXXM\">' + productos[i][1] + '</td><td  class=\"atr\">' + cantidad + '</td><td  class=\"atr\">' + stockM + '</td></tr>';
+                                }
+                                for (var i = 0; i < (12 - productos.length); i++) {
+                                    string += "<tr><td class=\"ColMS ch\"></td><td class=\"ColMMM\"></td><!\-\- td></td \-\-><td class=\"ColXXXXM\">&nbsp;</td><td></td><td></td></tr><br>";
+                                }
+                                $('#data').scrollTop(0);
+                                $('#data').html(string);
+                                $('#contRow').text('Registros: ' + productos.length);
+                                formatoTabla('64px');
+                            },
+                            error: function () {
+                            }
+                        });
+                        formatoTabla('64px');
+                    }
+                    $('#data').css('height', '333px');
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

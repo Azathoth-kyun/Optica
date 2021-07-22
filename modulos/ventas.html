@@ -1,0 +1,3578 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    <style type="text/css">
+        @import url(http://fonts.googleapis.com/css?family=Share+Tech+Mono);
+
+        .cl-backProd {
+            background: #ec2a2a;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 105px;
+        }
+
+        .cl-backProd2 {
+            background: #ec2a2a;
+            width: 100%;
+            height: 125px;
+            position: absolute;
+            bottom: -2px;
+            left: 0px;
+        }
+
+        .font-money {
+            font-family: "Roboto Mono" !important;
+            font-size: 16px !important;
+        }
+
+        .cl-tituPanel {
+            z-index: 1;
+            position: relative;
+            font-family: 'Roboto Condensed';
+            font-size: 18px !important;
+            font-weight: 400 !important;
+            color: white !important;
+            text-align: center;
+            padding: 11px 0px;
+        }
+
+        .icon-agregar2 {
+            font-family: "Roboto Condensed";
+            padding: 10px 0px 7px 0px !important;
+            margin-right: 10px;
+            font-size: 18px;
+            content: "\e00f";
+            position: absolute;
+            left: 14px;
+            top: 13px;
+        }
+
+        .inputBuscar2 {
+            border: none !important;
+            padding: 10px !important;
+            display: inline-block;
+            width: 269px !important;
+            border-radius: 5px 0 0 5px !important;
+            vertical-align: middle;
+        }
+
+        .btnBuscar2 {
+            display: inline-block;
+            height: 38px;
+            width: 38px;
+            background: #046EAD;
+            vertical-align: middle;
+            margin-left: -5px;
+            position: relative;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .dineroSimbolo {
+            color: #000000 !important;
+            font-size: 22px !important;
+            margin-right: 23px !important;
+            font-family: 'Roboto Mono' !important;
+        }
+
+        .money-2 {
+            border-color: transparent !important;
+            border-radius: 7px !important;
+            padding: 6px 10px !important;
+            background: #B6EC33;
+            width: 135px !important;
+            font-size: 18px !important;
+            text-align: right;
+            font-family: 'Roboto Mono';
+        }
+
+        .content-tarjeta {
+            position: relative;
+            border-bottom: 1px solid black;
+            padding-bottom: 15px;
+        }
+
+        .contv-izquierda {
+            width: 795px;
+        }
+
+        .head-ci {
+            display: none;
+            background: #2979FF;
+            padding: 10px 15px 5px 15px;
+        }
+
+        #estado {
+            display: none;
+            position: absolute;
+            right: 0px;
+            top: -16px;
+            font-weight: normal;
+            font-size: 15px;
+            background-color: #F91919;
+            padding: 7px 9px;
+            border-radius: 6px 6px 0px;
+            color: white;
+        }
+
+        #estado:before {
+            content: "";
+            position: absolute;
+            right: 0px;
+            bottom: -7px;
+            border-bottom: 12px solid transparent;
+            border-right: 15px solid #F91919;
+        }
+
+        #estadop {
+            display: none;
+            position: absolute;
+            right: 0px;
+            top: -10px;
+            font-weight: normal;
+            font-size: 15px;
+            background-color: #F91919;
+            padding: 7px 9px;
+            border-radius: 6px 6px 0px;
+            color: white;
+        }
+
+        #estadop:before {
+            content: "";
+            position: absolute;
+            right: 0px;
+            bottom: -7px;
+            border-bottom: 12px solid transparent;
+            border-right: 15px solid #F91919;
+        }
+
+        #head-titulo-ci {
+            color: gainsboro;
+            font-size: 24px
+        }
+
+        #head-fecha-ci {
+            margin: -10px 0 5px 0;
+            color: white;
+            font-size: 16px
+        }
+
+        .formulario-ci {
+            display: table;
+            width: 100%;
+        }
+
+        .form-row-ci {
+            display: table-row;
+        }
+
+        .form-element {
+            display: table-cell;
+        }
+
+        .form-element input {
+            width: calc(100% - 20px) !important;
+        }
+
+        .globales-ci {
+            width: 400px;
+            display: table;
+        }
+
+        .glob-row-ci {
+            display: table-row;
+            background-color: #8A9AA2;
+            color: white;
+        }
+
+        .glob-element {
+            padding: 4px 0px;
+            width: 132px;
+            display: inline-block;
+            text-align: center;
+            font-size: 15px;
+            font-family: 'Roboto Mono';
+        }
+
+        .colorHeader {
+            color: white;
+        }
+
+        .imp {
+            background: #BCDC0C !important;
+        }
+
+        .totales-ci {
+            width: 200px;
+            display: block;
+            position: absolute;
+            right: 386px;
+            bottom: 25px;
+            border-bottom: 5px solid #6C818C;
+            border-radius: 6px;
+        }
+
+        .tot-row-ci {
+            display: table-row;
+        }
+
+        .tot-element {
+            font-family: 'Roboto Mono';
+            position: relative;
+            top: 0px;
+            display: table-cell;
+            text-align: right;
+            padding: 6px 10px 6px 0px !important;
+        }
+
+        .SignoS {
+            color: #333333;
+            font-size: 17px !important;
+            text-align: left;
+        }
+    </style>
+    <style type="text/css">
+        html,
+        body {
+            height: inherit !important;
+        }
+
+        .contv-derecha {
+            height: calc(100% - 20px);
+            position: absolute;
+            top: 0px;
+            width: 380px;
+            right: 0px;
+            padding: 0px;
+            background-color: white;
+            padding-bottom: 21px;
+        }
+
+        .estado {
+            color: #D9FF05;
+            text-transform: uppercase;
+            font-size: 18px;
+            text-align: center !important;
+            background: #b90a0a;
+            position: relative;
+            padding: 7px 0px;
+            border-radius: 0 0 6px 6px;
+            width: 169px;
+            float: right;
+            margin-right: 9px;
+            margin-bottom: 16px;
+        }
+
+        .entrega-cd {
+            width: 340px;
+            display: table;
+            padding: 0 10px 5px;
+            margin: 0px auto;
+        }
+
+        .entrega-row-cd {
+            display: table-row;
+        }
+
+        .entrega-element {
+            padding: 5px 0;
+            width: 150px;
+            display: table-cell;
+            text-align: center;
+        }
+
+        .entrega-element label {
+            padding-left: 10px;
+            font-size: 16px;
+            font-weight: 400;
+            text-align: left !important;
+        }
+
+        .entrega-element input {
+            outline: none !important;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+
+        }
+
+        .caja-cd {
+            display: table;
+            margin: 0px auto;
+            padding: 11px 20px 5px;
+            height: 240px;
+            width: 320px;
+            background: white;
+            right: 16px;
+            margin-bottom: -2px;
+            border-radius: 0 !important;
+        }
+
+        .caja-row-cd {
+            display: table-row;
+        }
+
+        .caja-element {
+            padding: 5px 10px;
+            background: white;
+            border: 1px solid lightgray;
+            width: 150px;
+            display: table-cell;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .label-caja {
+            color: black !important;
+            width: 92px;
+        }
+
+        .input-caja {
+            color: black;
+            outline: none !important;
+            width: 180px !important;
+            font-size: 27px !important;
+            border: none !important;
+            background: transparent;
+            display: block;
+            text-align: right;
+            font-family: "Roboto Mono";
+        }
+
+        .input-caja2 {
+            font-size: 27px !important;
+            color: #0043FF;
+        }
+
+        .apagar {}
+
+        .efectivo {}
+
+        .tarjeta {
+            margin-bottom: 20px;
+        }
+
+        .paralelo {
+            vertical-align: middle !important;
+            display: inline-block
+        }
+
+        #acuentacaja2 {
+            display: none;
+        }
+
+        .tc {
+            width: 60% !important;
+        }
+
+        .fondoItemCaja {
+            padding: 0px 0px 0px 19px;
+        }
+
+        .tipoTarjeta {
+            width: 150px !important;
+            padding: 8px 30px 8px 13px !important;
+        }
+
+        .refraccion {
+            margin: 0 auto;
+            width: 360px;
+            margin-top: 5px;
+        }
+
+        .refraccion select {
+            border-radius: 7px;
+            border: 2px solid #A4A4A4;
+        }
+
+        .refraccion textarea {
+            border-radius: 7px;
+            border: 2px solid #A4A4A4;
+            width: calc(100% - 20px) !important;
+            height: 56px;
+            padding: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .datatable tr td {
+            font-family: 'Roboto Mono';
+        }
+    </style>
+    <style type="text/css">
+        .icon-caja:before {}
+
+        .panelDock {
+            display: none;
+            position: absolute;
+            right: -400px;
+            height: 100%;
+            width: 378px;
+            background: #ec2a2a;
+            margin-top: -20px;
+        }
+
+        .panel-titulo {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: white;
+            text-align: center;
+            padding: 11px 0px;
+        }
+
+        .materiales {
+            text-align: center;
+            background: white;
+            padding: 0px 15px 20px 15px;
+        }
+
+        .materiales-row {
+            padding: 4px 0px;
+        }
+
+        .materiales-col {
+            width: 49%;
+            height: 48px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .subtitu-materiales {
+            color: #484848 !important;
+            display: block !important;
+            text-align: left;
+            margin-left: 21px;
+            font-size: 15px !important;
+            margin-bottom: 0px !important;
+        }
+
+        .label-select-tipo {
+            display: inline-block !important;
+        }
+
+        .select-tipo {
+            width: 58% !important;
+            margin-left: 36px;
+            display: inline-block !important;
+        }
+
+        .tipo {
+            border: 1px solid #FFB200;
+            border-radius: 5px;
+        }
+
+        .input-material {
+            padding: 6px 4px;
+            border: 1px solid #FFB200;
+            border-radius: 5px;
+            width: 82%;
+        }
+
+        .style-unico1 {
+            width: 100%;
+            margin-bottom: 0px;
+        }
+
+        .style-unico2 {
+            width: 345px !important;
+            -webkit-box-sizing: border-box !important;
+        }
+
+        .style-unico3 {
+            width: 100%;
+            margin-bottom: 1px;
+        }
+
+        .dioptrias-interno {
+            margin-top: 10px;
+            padding: 0px 20px;
+        }
+
+        .dioptrias-OI {
+            width: 160px;
+            padding: 10px 0px;
+            background: white;
+            border-radius: 9px;
+            display: inline-block;
+            padding-bottom: 0px;
+        }
+
+        .dioptrias-OD {
+            width: 160px;
+            padding: 10px 0px;
+            background: white;
+            border-radius: 9px;
+            display: inline-block;
+            padding-bottom: 0px;
+        }
+
+        .titu-OI {
+            background: #ec2a2a;
+            color: white;
+            font-weight: 400;
+            font-size: 16px;
+            padding: 7px 0px;
+            text-align: center;
+            border-radius: 8px 8px 0px 0px;
+            position: relative;
+            top: -11px;
+        }
+
+        .dioptrias {
+            background: #bd1e1e;
+            padding: 14px 0px 26px 0px;
+            text-align: center;
+            position: relative;
+        }
+
+        .content-dioptria {
+            margin-top: 0px;
+            padding: 3px 0 4px 0;
+            border-bottom: 1px dotted #AFADAD;
+        }
+
+        .titu-diop {
+            width: 36px;
+            display: inline-block;
+            text-align: right;
+            font-family: 'Roboto Mono';
+            font-size: 15px;
+        }
+
+        .input-dioptria {
+            position: relative;
+            left: 3px;
+        }
+
+        .input-dioptria2 {
+            font-family: 'Roboto Mono';
+            padding: 3px 4px !important;
+            border: none !important;
+            background: #F7F7F7;
+            width: 48% !important;
+            margin-left: 4px;
+            text-align: right;
+            outline: 0 !important;
+            margin: 2px 0px;
+        }
+
+        .color-white {
+            color: white !important;
+            margin-left: 7px;
+        }
+
+        .precio {
+            border: 0px solid #FFFFFF !important;
+            background: #B6EC33;
+            text-align: right !important;
+        }
+
+        .verde {
+            color: #558C31;
+            font-weight: bold;
+        }
+
+        .franja-naranja {
+            padding: 4px 0px;
+            background: #AFADAD;
+            color: white;
+            position: relative;
+        }
+
+        .color-black {
+            color: black;
+        }
+
+        .btn-agLunas {
+            background: #ec2a2a !important;
+            border-bottom: 5px solid #8b080e !important;
+            color: white !important;
+            margin-top: 14px !important;
+        }
+
+        .union-izq:before {
+            content: " ";
+            background: #AFADAD;
+            width: 21px;
+            height: 100%;
+            position: absolute;
+            margin-right: 7px;
+            left: -11px;
+            top: 0px;
+        }
+
+        .inputlista {
+            padding: 9px 10px !important;
+            background: #F5F5F5;
+            color: #000000;
+            border: 0px !important;
+        }
+
+        .btn-agMonturas {
+            background: #bd1e1e !important;
+            margin-top: 55px !important;
+        }
+    </style>
+    <style>
+        @media print {
+
+            .contv-derecha,
+            .formulario-ci,
+            .botones,
+            .globales-ci,
+            .totales-ci,
+            button {
+                display: none !important;
+            }
+
+            tr {
+                border: none !important;
+            }
+
+            @page {
+                size: auto;
+                size: A4 portrait;
+                margin-top: 2%;
+
+            }
+        }
+
+        .content-boleta {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            background: white;
+            zoom: 300%;
+        }
+
+        .boleta {
+            background: url(../img/boleta.jpg);
+            width: 650px;
+            height: 330px;
+            position: relative;
+            top: 2px;
+            left: 0px;
+            text-align: center;
+
+            font-size: 13pt;
+            font-weight: 400;
+            transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            letter-spacing: 1px;
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+        }
+
+        .bpaciente {
+            position: absolute;
+            top: 10px;
+            left: 117px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .bfecha {
+            position: absolute;
+            top: 10px;
+            right: 5px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .bdetalle {
+            position: absolute;
+            top: 80px;
+            left: 45px;
+            font-size: 12pt;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .bacuenta {
+            position: absolute;
+            bottom: 10px;
+            left: 240px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .bvender {
+            position: absolute;
+            bottom: 10px;
+            left: 420px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .bventan {
+            position: absolute;
+            bottom: 45px;
+            left: 100px;
+            font-size: 10pt;
+            font-family: 'Share Tech Mono', sans-serif;
+
+        }
+
+        .btotal {
+            position: absolute;
+            bottom: 10px;
+            right: 5px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .colVU {
+            width: 20px;
+            text-align: right;
+            padding-right: 30px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .colVD {
+            width: 380px;
+            padding-right: 20px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .colVP {
+            width: 60px;
+            text-align: right;
+            padding-right: 25px;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+
+        .colVI {
+            width: 60px;
+            text-align: right;
+            font-family: 'Share Tech Mono', sans-serif;
+        }
+    </style>
+    <style>
+        #pdg {
+            background: #00BCD4 !important;
+        }
+
+        #pdg ul li label {
+            color: white !important;
+        }
+
+        .btn-agProd {
+            background-color: #bd1e1e !important;
+            border-bottom: 5px solid #b6071e !important;
+            margin-top: 55px !important;
+        }
+
+        #salida {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.56);
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        #cmaster {
+            background: rgba(0, 0, 0, 0);
+            position: absolute;
+            border-radius: 7px;
+            top: -19px;
+            width: 62px;
+            left: 1px;
+            height: 36px;
+            border: none !important;
+        }
+
+        #cvisa {
+            background: rgba(0, 0, 0, 0);
+            position: absolute;
+            border-radius: 7px;
+            top: -19px;
+            width: 62px;
+            left: 68px;
+            height: 36px;
+            border: none !important;
+        }
+
+        #cmaster:hover,
+        #cvisa:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #cmaster:active,
+        #cvisa:active {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        #cmaster:disabled,
+        #cvisa:disabled {
+            background: transparent;
+            cursor: default;
+        }
+    </style>
+    <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-button {
+            width: 8px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: gainsboro;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: gray;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, .6);
+        }
+
+        ::-webkit-scrollbar-thumb:window-inactive {
+            background: rgba(0, 0, 0, .1);
+        }
+    </style>
+    <style>
+        .Msg-DatosSuscripcion {
+            display: none;
+            position: absolute;
+            background: black;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .formularioSuscripcion {
+            position: relative;
+            width: 470px;
+            background-color: #f7f7f7;
+            top: 2px;
+            border-style: outset;
+            margin: 0 auto;
+        }
+
+        .msg3 {
+            position: absolute;
+            left: 0px;
+            top: 22px;
+            color: white;
+            background: #F77474;
+            display: none;
+            padding: 6px 10px;
+            margin: 5px 0 0 1px;
+            border-radius: 7px;
+            font-weight: 400;
+            font-size: 15px;
+            text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.26);
+            z-index: 99999;
+        }
+    </style>
+</head>
+
+<body class="modal" onload="cargando();">
+    <div id="salida" data-bind="" onclick="closePanel();"></div>
+    <div class="panelDock" id="pdp">
+        <div style="height: 100%;margin: 0 auto;background: white;padding: 10px 24px;">
+            <label class="cl-tituPanel">Productos</label>
+            <ul style="width: 100%;list-style: none;">
+                <li style="text-align: center;position: relative;z-index: 1;">
+                    <input type="hidden" id="editP">
+                    <input type="hidden" id="idPrd">
+                    <input type="hidden" id="topeP">
+                    <input type="hidden" id="comprobante" name="comprobante">
+                    <div class="select-triangulo">
+                        <Select id="buscarP" name="buscarP" class="inputBuscar2"></Select>
+                    </div>
+                    <!--<div class="btnBuscar2">
+                            <label class="icon-buscar" style="left: -6px;top: 4px;color: white;position: absolute"></label>
+                        </div>-->
+                </li>
+                <div class="cl-backProd"></div>
+                <li style="margin-bottom: 43px">
+                </li>
+                <li style="position: relative;">
+                    <label for="prod" style="display: inline-block;">Producto</label>
+                    <p id="tdp" style="display: inline-block;font-size: 12px;"></p>
+                    <label id="estadop"></label>
+                    <input type="text" id="prod" disabled="" class="inputlista">
+                </li>
+                <li>
+                    <label for="stockp">Stock</label>
+                    <input type="text" id="stockp" disabled="" class="inputlista">
+                </li>
+                <li>
+                    <label for="precp">Precio</label>
+                    <input type="text" id="precp" class="money inputlista font-money">
+                </li>
+                <li style="margin-bottom: 25px;">
+                    <label for="cantp">Cantidad</label>
+                    <input type="text" id="cantp" class="inputlista font-money">
+                </li>
+                <!--li>
+                        <label for="tope" style="color: #FF5722;">Descuento Mínimo</label>
+                        <input type="text" id="tope" disabled="" name="tope" style="border-color: #FF5722;padding: 10px"  class="money"/>
+                    </li-->
+                <li style="text-align: right;">
+                    <span class="dineroSimbolo">S/.</span>
+                    <input type="text" id="preciop" name="preciop" class="money-2" disabled="" />
+                </li>
+                <li style="position: relative;text-align: center;z-index: 1">
+                    <button type="button" class="icon-agregar btn-agProd" id="addProd"
+                        onclick="agregarProd()">Agregar</button>
+                </li>
+            </ul>
+        </div>
+        <div class="cl-backProd2"></div>
+    </div>
+    <div class="panelDock" id="pdg">
+        <div style="height: 100%;margin: 0 auto;padding: 10px 24px;">
+            <label style="color: white;font-size: 25px; text-align: center;z-index: 1;position: relative">Gastos</label>
+            <input type="hidden" id="idgasto" name="idgasto">
+            <ul style="width: 100%;list-style: none;">
+                <li style="position: relative;">
+                    <label for="lab" style="display: inline-block;">Laboratorio &nbsp;&nbsp;&nbsp;</label>
+                    <input type="text" id="lab" class="inputlista">
+                </li>
+                <li>
+                    <label for="costl">Costo Lunas</label>
+                    <input type="text" id="costl" class="money"
+                        style="font-family: 'Roboto Mono'; font-size: 16px; padding: 8px 10px; border: none;">
+                </li>
+                <li>
+                    <label for="tec">Tecnico</label>
+                    <input type="text" id="tec" class="inputlista">
+                </li>
+                <li>
+                    <label for="costp">Costo Producción</label>
+                    <input type="text" id="costp" class="money"
+                        style="font-family: 'Roboto Mono'; font-size: 16px; padding: 8px 10px; border: none;">
+                </li>
+                <li style="position: relative;text-align: center;z-index: 1">
+                    <button type="button" class="icon-guardar btn-agProd" id="addCost"
+                        onclick="saveGastos()">Guardar</button>
+                    <div id="cargandoGOP" class="loadone"
+                        style="display: none;position: absolute;top: 55px !important;right: 80px;"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panelDock" id="pdl">
+        <div class="panel-titulo">Dioptrias</div>
+        <!--
+            <section class="materiales">
+                <div class="materiales-row">
+                    <div class="materiales-col">
+                        <label class="subtitu-materiales" for="nTipoD">Tipo</label>
+                        <div class="select-triangulo">
+                            <select class="tipo" id="tipoD" name="nTipoD">
+                                <option></option>
+                                <option>MONOFOCALES</option>
+                                <option>BIFOCALES</option>
+                                <option>PROGRESIVOS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="materiales-col">
+                        <label class="subtitu-materiales" for="materialD">Material</label>
+                        <input class="input-material" type="text" id="materialD" name="materialD" list="lstMaterial"/>
+                        <datalist id="lstMaterial">
+                            <option value="CRISTAL">
+                            <option value="POLICARBONATO">
+                            <option value="RESINA">
+                            <option value="CRISTAL PHOTOGRAY">
+                            <option value="CRISTAL PHOTOBROWN">
+                        </datalist>
+                    </div>
+                </div>
+                <div class="materiales-row">
+                    <div class="materiales-col style-unico3">
+                        <label class="subtitu-materiales style-unico1" for="subTipo">Sub Tipo Material</label>
+                        <input class="input-material style-unico2" type="text" id="subTipo" name="subTipo" list="lstvar">
+                        <datalist id="lstvar">
+                            <option value="FLAT TOP">
+                            <option value="ULTRA VIEW HD">
+                            <option value="RESINA">
+                            <option value="TOP HD">
+                            <option value="ALTO INDICE">
+                            <option value="REDUCCION DIAMETRO">
+                            <option value="ULTRA LITE 1.67 HD">
+                            <option value="COLOR">
+                            <option value="TRANSITION">
+                            <option value="TALENT">
+                            <option value="DESCENTRADO">
+                            <option value="OVATION">
+                            <option value="SHORT 2 HD">
+                            <option value="DURAQUARZ">
+                            <option value="INVISIBLE">
+                            <option value="CON COLOR">
+                        </datalist>
+                    </div>
+                </div>
+                <div class="materiales-row">
+                    <div class="materiales-col">
+                        <label class="subtitu-materiales" for="ptrat">1er Tratamiento</label>
+                        <input class="input-material" type="text" id="ptrat" name="ptrat" list="lstrat">
+                        <datalist id="lstrat">
+                            <option value="ANTIREFLEX">
+                            <option value="COLOR-UV">
+                            <option value="COLOR">
+                            <option value="UV">
+                            <option value="FOTOMATIC GRIS">
+                            <option value="REDUCCION">
+                            <option value="DURAQUARZ">
+                            <option value="TRANSITION">
+                        </datalist>
+                    </div>
+                    <div class="materiales-col">
+                        <label class="subtitu-materiales" for="strat">2do Tratamiento</label>
+                        <input class="input-material" type="text" id="strat" name="strat" list="lstrat">
+                    </div>
+                </div>
+            </section>
+            -->
+        <section class="materiales">
+            <div class="materiales-row">
+                <div class="materiales-col style-unico3">
+                    <label class="subtitu-materiales style-unico1" for="lunlaboratorio">Laboratorio</label>
+                    <div class="select-triangulo">
+                        <select class="tipo" id="lunlaboratorio" name="lunlaboratorio">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="materiales-row">
+                <div class="materiales-col style-unico3">
+                    <label class="subtitu-materiales style-unico1" for="lunproducto">Producto</label>
+                    <div class="select-triangulo">
+                        <select class="tipo" id="lunproducto" name="lunproducto">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="materiales-row">
+                <div class="materiales-col style-unico3">
+                    <label class="subtitu-materiales style-unico1" for="lundetalle">Detalle</label>
+                    <div class="select-triangulo">
+                        <select class="tipo" id="lundetalle" name="lundetalle">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="dioptrias">
+            <label class="color-white label-select-tipo" for="nTipoV">Visión</label>
+            <div class="select-triangulo" style="width: 100px; display: inline-block; margin-left: 22px;">
+                <select class="select-tipo" id="tipoV" name="nTipoV" style="border-color: transparent !important;">
+                    <option>CERCA</option>
+                    <option>INTERMEDIO</option>
+                    <option>LEJOS</option>
+                    <option>LEJOS Y CERCA</option>
+                </select>
+            </div>
+            <label class="color-white label-select-tipo" for="nTipoV">Receta</label>
+            <div class="select-triangulo" style="width: 100px; display: inline-block; margin-left: 22px;">
+                <select class="select-tipo" id="receta_type" name="TipoReceta"
+                    style="border-color: transparent !important;">
+                    <option>INTERNA</option>
+                    <option>EXTERNA</option>
+                </select>
+            </div>
+            <div class="dioptrias-interno">
+                <div class="dioptrias-OI">
+                    <div class="titu-OI">Derecha</div>
+                    <div class="content-dioptria" style="margin-top: -9px;">
+                        <span class="titu-diop">Esf.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2" id="esfd" name="esfd" type="text" pattern="[0-9]"
+                                step="0.25">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria">
+                        <span class="titu-diop">Cil.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2" id="cild" name="cild" type="text" pattern="[0-9]"
+                                step="0.25">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria" style="border-bottom:none !important;">
+                        <span class="titu-diop">Eje.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2" id="ejed" name="ejed" type="number"
+                                style="text-align: center !important;">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria franja-naranja union-der">
+                        <span class="titu-diop">DIP.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2 color-black" id="dip" name="dip" type="text"
+                                style="text-align: center;">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria" style="border-bottom: none !important;">
+                        <span class="titu-diop SignoS">S/.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2 precio money" id="preciod" name="preciod" type="number">
+                        </span>
+                    </div>
+                </div>
+
+                <!-- OJO DERECHO -->
+                <div class="dioptrias-OD">
+                    <div class="titu-OI">Izquierda</div>
+                    <div class="content-dioptria" style="margin-top: -9px;">
+                        <span class="titu-diop">Esf.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2" id="esfi" name="esfi" type="text" pattern="[0-9]"
+                                step="0.25">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria">
+                        <span class="titu-diop">Cil.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2" id="cili" name="cili" type="text" pattern="[0-9]"
+                                step="0.25">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria" style="border-bottom:none !important;">
+                        <span class="titu-diop">Eje.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2" id="ejei" name="ejei" type="number"
+                                style="text-align: center !important;">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria franja-naranja union-izq">
+                        <span class="titu-diop">ADD.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2 color-black" id="addd" name="addd" type="text" pattern="[0-9]"
+                                step="0.25">
+                        </span>
+                    </div>
+
+                    <div class="content-dioptria" style="border-bottom: none !important;">
+                        <span class="titu-diop SignoS">S/.</span>
+                        <span class="input-dioptria">
+                            <input class="input-dioptria2 precio money" id="precioi" name="precioi" type="number"
+                                style="text-align: center;">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="icon-agregar btn-agLunas" id="addMontura2"
+                onclick="agregarDioptria()">Agregar</button>
+        </section>
+    </div>
+    <div class="panelDock" id="pdm">
+        <div style="height: 100%;margin: 0 auto;background: white;padding: 10px 24px;">
+            <label class="cl-tituPanel">Monturas</label>
+            <ul style="width: 100%;list-style: none;">
+                <li style="text-align: center;position: relative;z-index: 1;">
+                    <input type="hidden" id="editM">
+                    <input type="hidden" id="idM">
+                    <input type="hidden" id="tope">
+
+                    <input type="text" id="buscar" name="buscar" autocomplete="off" class="inputBuscar2"
+                        placeholder="Codigo">
+
+                    <div class="btnBuscar2">
+                        <label class="icon-buscar" style="left: -6px;top: 4px;color: white;position: absolute"></label>
+                    </div>
+                </li>
+                <div class="cl-backProd"></div>
+                <li style="margin-bottom:47px;">
+                </li>
+                <li style="position: relative;">
+                    <label for="marca" style="display: inline-block;">Marca &nbsp;&nbsp;&nbsp;</label>
+                    <p id="td" style="display: inline-block;font-size: 12px;"></p>
+                    <label id="estado"></label>
+                    <input type="text" id="marca" disabled="" class="inputlista">
+                </li>
+                <li>
+                    <label for="modelo">Modelo</label>
+                    <input type="text" id="modelo" disabled="" class="inputlista">
+                </li>
+                <li>
+                    <label for="tipo">Tipo</label>
+                    <input type="text" id="tipo" disabled="" class="inputlista">
+                </li>
+                <li style="margin-bottom: 25px;">
+                    <label for="color">Color</label>
+                    <input type="text" id="color" disabled="" class="inputlista">
+                </li>
+                <!--li>
+                        <label for="tope" style="color: #FF5722;">Descuento Mínimo</label>
+                        <input type="text" id="tope" disabled="" name="tope" style="border-color: #FF5722;padding: 10px"  class="money"/>
+                    </li-->
+                <li style="text-align: right;">
+                    <span class="dineroSimbolo">S/.</span>
+                    <input type="text" id="precio" name="precio" class="money money-2" />
+                </li>
+                <li style="position: relative;text-align: center;z-index: 1">
+                    <button type="button" class="icon-agregar btn-agMonturas" id="addMontura"
+                        onclick="agregarMontura()">Agregar</button>
+                </li>
+            </ul>
+        </div>
+        <div class="cl-backProd2"></div>
+    </div>
+    <div class="preload">
+        <img src="../img/cargando.gif" class="preload-img">
+    </div>
+    <div id="divGastoDetalle" class="Msg-DatosSuscripcion">
+        <div class="formulario formularioSuscripcion">
+            <table>
+                <tr>
+                    <td colspan="2" style="background-color: #bd1e1e; height: 24px; color: white">
+                        DATOS DEL GASTO <span style="position: absolute; right: -2px; top: 0px;"><a
+                                class="close icon-cerrar" href="#" onclick="cerrarDatosCliente();"
+                                style="background: rgba(17, 17, 17, 0);"></a></span>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" id="iddetalle" name="iddetalle">
+            <input type="hidden" id="idgastodetalle" name="idgastodetalle">
+            <table style="padding: 15px;">
+                <tr>
+                    <td colspan="2">
+                        <label for="descdetalle">Detalle</label>
+                        <input type="text" id="descdetalle" name="descdetalle" readonly="">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="observacion">Observacion</label>
+                        <input type="text" id="observacion" name="observacion">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fechagasto" name="fechagasto">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="proveedor">Proveedor</label>
+                        <div class="select-triangulo">
+                            <select id="proveedor" name="proveedor">
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="tipodocumento">Tipo Documento</label>
+                        <div class="select-triangulo">
+                            <select id="tipodocumento" name="tipodocumento">
+                                <option value="Factura">Factura</option>
+                                <option value="Boleta">Boleta</option>
+                                <option value="Nota_Compra">Nota de Compra</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 30%">
+                        <label for="serie">Serie</label>
+                        <input type="text" id="serie" name="serie">
+                    </td>
+                    <td style="width: 65%">
+                        <label for="numero">Número</label>
+                        <input type="text" id="numero" name="numero">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="costo">Costo</label>
+                        <input type="number" id="costo" name="costo">
+                    </td>
+                </tr>
+            </table>
+            <div class="botones" style="padding: 0px 15px 15px 0px">
+                <div class="msg3">mensaje</div>
+                <button type="submit" id="btnGuardarGasto" class="icon-guardarmodal"
+                    onclick="guardarGastoDetalle();">Guardar</button>
+                <button type="submit" id="btnHabilitarEditar" onclick="habilitarEditar();">Habilitar</button>
+                <div style="display: none;"><button onclick="EliminarGastoDetalle();" id="btneliminargd" type="button"
+                        class="icon-eliminar">Eliminar</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="contv-izquierda">
+        <div class="head-ci">
+            <label id="head-titulo-ci">Registro de Ventas en Optica</label>
+            <label id="head-fecha-ci">miercoles 18 de abril</label>
+        </div>
+        <div class="atras" id="atras-bt">
+            <button onclick="goback();" class="icon-atras"></button>
+        </div>
+        <div class="formulario-ci">
+            <div class="form-row-ci">
+                <div class="form-element">
+                    <label for="nombre">Nombres</label>
+                    <input type="text" id="nombre" name="nombre" autocomplete="off">
+                </div>
+                <div class="form-element">
+                    <label for="apellido">Apellidos</label>
+                    <input type="text" id="apellido" name="apellido" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row-ci">
+                <div class="form-element">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion" name="direccion" autocomplete="off">
+                </div>
+                <div class="form-element">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="botones" style="margin-top: -3px; padding-right: 11px;">
+            <div class="msg"></div>
+            <button class="icon-agregar2" onclick="abrirPanel('g');"
+                style="display: none; font-size: 16px; font-family: 'Roboto Condensed', sans-serif; padding: 12px 0px 7px 0px; margin-right: 5px;"
+                id="btng">GOP</button>
+            <button class="icon-agregar2" onclick="abrirPanel('p');"
+                style="font-size: 16px; font-family: 'Roboto Condensed', sans-serif; padding: 12px 0px 7px 0px; margin-right: 5px;">Productos</button>
+            <button class="icon-agregar2" onclick="abrirPanel('m');"
+                style="font-size: 16px; font-family: 'Roboto Condensed', sans-serif; padding: 12px 0px 7px 0px; margin-right: 5px;">Monturas</button>
+            <button class="icon-agregar2" onclick="abrirPanel('l');"
+                style="font-size: 16px; font-family: 'Roboto Condensed', sans-serif; padding: 12px 0px 7px 0px;">Lunas</button>
+        </div>
+        <div class="tabla" style="position:relative">
+            <table class="datatable" style="margin-top: 9px;">
+                <thead>
+                    <tr>
+                        <td class="ColWC">Cant.</td>
+                        <td>Descripción</td>
+                        <td class="ColWP">Precio</td>
+                        <td class="ColWI">Importe</td>
+                        <td class="ColMM clstdgasto">Gasto</td>
+                        <td class="ColWA">*</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <div class="globales-ci">
+            <div class="glob-row-ci">
+                <div class="glob-element colorHeader">Monturas</div>
+                <div class="glob-element colorHeader">Lunas</div>
+                <div class="glob-element colorHeader">Productos</div>
+                <!--div class="glob-element colorHeader">Descuentos</div-->
+            </div>
+            <div class="glob-row-ci" style="background-color: white; color: black; font-family: 'Roboto Mono';">
+                <div class="glob-element" id="smonturas">0.00</div>
+                <div class="glob-element" id="slunas">0.00</div>
+                <div class="glob-element" id="sproductos">0.00</div>
+                <!--div class="glob-element" id="sdescuentos">0.00</div-->
+            </div>
+        </div>
+        <div class="totales-ci">
+            <div class="tot-row-ci">
+                <div class="tot-element colorHeader"
+                    style="background-color: #8A9AA2 !important;width: 100px;font-size: 15px;">Total</div>
+                <div class="tot-element " id="gtotal" onchange="limp()"
+                    style="height: 28px; width: 100px; background-color: white;">0.00</div>
+                <input type="hidden" id="restatotal" value="0.00" style="width: 25px;">
+            </div>
+            <div class="tot-row-ci">
+                <div class="tot-element colorHeader imp"
+                    style="width: 100px; font-size: 15px; background: #B1D008 !important;">Acuenta</div>
+                <div class="tot-element" style="padding: 0px !important;"><input id="gacuenta" class="money imp"
+                        name="gacuenta" type="text"
+                        style="text-align: right; border: none; outline: none; font-family: 'Roboto Mono'; font-size: 17px; border-radius: 0px !important; height: 25px; padding: 6px 9px 6px 9px !important;">
+                </div>
+            </div>
+            <div class="glob-row-ci">
+                <div class="tot-element colorHeader" style="width: 100px; font-size: 15px; background-color: #8A9AA2;">
+                    Saldo</div>
+                <div class="tot-element" id="gsaldo" style="background: #5E727B;">0.00</div>
+            </div>
+        </div>
+        <button class="icon-guardar" id="saveme" onclick="save();" style="margin-top: 10px;">Guardar</button>
+        <button id="acuentacaja2" class="icon-guardar" onclick="acuenta2();"
+            style="display: none; margin-top: 10px;">Guardar</button>
+        <button id="cancelarb" class="icon-caja" onclick="acuenta();" disabled=""
+            style="margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;">Pagar</button>
+        <button id="impb" class="icon-imprimir" onclick="imprimir('b');" disabled=""
+            style="margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;">Boleta</button>
+        <button id="impr" class="icon-imprimir" onclick="imprimir('r');" disabled=""
+            style="margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;">Recibo</button>
+        <button id="acuentacaja" class="icon-caja" onclick="acuenta1();" disabled=""
+            style="margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;">Acuenta</button>
+        <!--div style="position:absolute;display: table">
+                <div style="display: table-row">
+                    <div style="display: table-cell"> <button class="icon-guardar" onclick="save();">Guardar</button></div>                    
+                </div>
+            </div-->
+    </div>
+    <div class="contv-derecha">
+        <div class="main-cd">
+            <!--
+                <div style="position: absolute;margin: 2px 0px 0px 24px;">
+                    <label for="codvendedor" style="float: left;">Vendedor</label>
+                    <input type="text" id="codvendedor" name="codvendedor" autocomplete="off" style="text-transform: uppercase;width: 92px;float: right;margin-left: 6px;">
+                </div>
+                -->
+            <div class="estado" id="est-venta" style="margin-bottom: 0px;">Pendiente</div>
+            <div class="entrega-cd">
+                <div class="entrega-row-cd">
+                    <div class="entrega-element">
+                        <label for="fec">F. Entrega</label>
+                        <input type="date" id="fec" name="fec">
+                    </div>
+                    <div class="entrega-element">
+                        <label for="hora">Hora</label>
+                        <input type="time" id="hora" name="hora">
+                    </div>
+                </div>
+            </div>
+            <div class="caja-cd" style="padding: 0px 20px 0px;">
+                <div class="fondoItemCaja apagar"
+                    style="border-bottom: 1px solid black; margin-bottom: 10px; padding-bottom: 10px;">
+                    <div class="paralelo">
+                        <label class="label-caja" style="">A Pagar</label>
+                    </div>
+                    <div class="paralelo tc">
+                        <input type="text" id="apg" name="apg" class="input-caja" disabled="" value="0.00">
+                    </div>
+                </div>
+                <div class="fondoItemCaja efectivo">
+                    <div class="paralelo">
+                        <label class="label-caja">Efectivo</label>
+                    </div>
+                    <div class="paralelo tc">
+                        <input type="text" id="ef" name="ef" class="input-caja input-caja2 money" value="0.00">
+                    </div>
+                </div>
+                <div class="fondoItemCaja tarjeta">
+                    <div class="paralelo">
+                        <label class="label-caja" style="vertical-align: middle !important;">Tarjeta</label>
+                    </div>
+                    <div class="paralelo tc">
+                        <input type="text" id="tr" name="tr" class="input-caja input-caja2 money" value="0.00">
+                    </div>
+                </div>
+                <div class="content-tarjeta">
+                    <img src="../img/visa.png" style="height: 38px">
+                    <button type="button" id="cvisa" onclick="selectTarjeta('v')"></button>
+                    <button type="button" id="cmaster" onclick="selectTarjeta('M')"></button>
+                    <div class="select-triangulo"
+                        style="display: inline-block; position: relative; top: -13px; right: -33px; width: 149px;">
+                        <select id="tipt" style="height: 38px;" class="tipoTarjeta">
+                            <option value=""></option>
+                            <option value="Visa">Visa</option>
+                            <option value="Master Card">Master Card</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!--
+                <div class="refraccion">
+                    <label for="razonventa">Razon Social:</label>
+                    <div class="select-triangulo">
+                        <select id="razonventa" style="height: 38px; text-transform: uppercase;" class="tipoTarjeta">
+                        </select>
+                    </div>
+                </div>
+                -->
+            <div class="refraccion">
+                <!-- <label for="com">Refracción</label> -->
+                <label for="com">Vendedor</label>
+                <div class="select-triangulo">
+                    <select id="listre" name="listre">
+                    </select>
+                </div>
+            </div>
+            <div class="refraccion">
+                <label for="com">Comentario</label>
+                <textarea id="com" name="com" style="height: 8px;"></textarea>
+            </div>
+            <div class="refraccion">
+                <b>
+                    <p id="kind_receta" style="display: none; font-size: 20px; color:rgb(8, 105, 37);">SKERE</p>
+                </b>
+            </div>
+            <!-- <div class="refraccion">
+                <label for="com">Pasar por Optometra:</label>
+                <select id="poptometra" name="poptometra" style="width: 40px">
+                    <option value="0">NO</option>
+                    <option value="1">SI</option>
+                </select>
+            </div> -->
+        </div>
+    </div>
+    <div class="content-boleta">
+        <div class="boleta">
+            <div class="bpaciente"></div>
+            <div class="bfecha"></div>
+            <div class="bdetalle">
+                <table class="btbld" id="vtbl">
+                </table>
+            </div>
+            <div class="bacuenta"></div>
+            <div class="bvender"></div>
+            <div class="bventan"></div>
+            <div class="btotal"></div>
+        </div>
+    </div>
+    <div class="bloqueo">
+        <div class="advertenciaMainContant2">
+            <div class="titleMainCpontent">
+                <p class="titleAdvertencia">Advertencia</p>
+            </div>
+            <div class="contenidoMain">
+                <p class="textMainAlert">el código ingresado no es válido</p>
+                <p class="textDescription">Por favor, verifique el dato <br /> y vuelva a ingresarlo</p>
+                <input type="text" id="sim" name="sim" style="width: 10px;">
+                <span style="cursor: pointer; position: absolute; left: 30px; top: 190px;" class="btnAceptar"
+                    onclick="$('.bloqueo').css('display', 'none');">Aceptar</span>
+
+                <figure class="imgAdvertenciaContent">
+                    <img src="../img/icoAdvertencia2.svg" class="imgAdvertencia">
+                </figure>
+            </div>
+        </div>
+    </div>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script language="javascript" src="../js/fancywebsocket.js"></script>
+    <script>
+        function goback() {
+            window.parent.resizeModal(1262, 645);
+            location.href = 'dia.html?t=' + tiendamano + '&time=' + tiempo;
+        }
+    </script>
+    <script>
+        var tuser = "";
+        var tiempo = new Date().getTime();
+        var tiendamano = $_GET('idtienda');
+        console.log(tiendamano);
+        $('#fec').val(fechaG());
+        $('#hora').val(horaG());
+        window.parent.resizeModal(1150, 598);
+        if ($_GET('cod') != undefined) {
+            window.parent.ChangeModalTittle($_GET('cod'), $_GET('tienda'));
+            tiendamano = $_GET('tienda');
+            console.log(tiendamano);
+        }
+
+        $('#atras-bt').css('display', 'none');
+        if (tiendamano != undefined) {
+            $('#atras-bt').removeAttr('style');
+        }
+
+        $('#gacuenta').val('0.00');
+
+        $.ajax({
+            type: 'POST',
+            url: '../crl/tiendasCRL.php',
+            data: { action: 'getTrabajadores' },
+            success: function (data) {
+                var vendedor = JSON.parse(data);
+                console.log(vendedor);
+                var string = '<option value=\"0\">Seleccione...</option>';
+                for (var i = 0; i < vendedor.length; i++) {
+                    var aux = i + 1;
+                    string += '<option value=\"' + vendedor[i].vendedor + '\">' + vendedor[i].vendedor + '</option>';
+                }
+                $('#listre').html(string);
+            },
+            error: function () {
+            }
+        });
+        /*
+        $.ajax({
+            type: 'POST',
+            url: '../crl/ventaCRL.php',
+            data: {action: 'getRazonSocialVenta'},
+            success: function (data) {
+                var razonventa = JSON.parse(data);
+                var string="";
+                for(var i=0; i<razonventa.length; i++){
+                    string += '<option value="'+razonventa[i].idrazon+'">'+razonventa[i].razonsocial+'</option>';
+                }
+                
+                $('#razonventa').html(string);
+            },
+            error: function () {
+            }
+        });
+        */
+        $.ajax({
+            type: 'POST',
+            url: '../crl/productosCRL.php',
+            data: { action: 'listProductosConStockByTienda' },
+            success: function (data) {
+                var prods = JSON.parse(data);
+                //var string = '<option value=\'a\'>Seleccione...</option>';
+                var string = '';
+                for (var i = 0; i < prods.length; i++) {
+                    string += '<option value=\'' + prods[i][2] + '\'>' + prods[i][1] + '</option>';
+                }
+                $('#buscarP').html(string);
+                $('#buscarP').val("");
+            },
+            error: function () {
+            }
+        });
+
+        function selectTarjeta(t) {
+            if (t == 'v') {
+                $('#tipt').val('Visa');
+            } else {
+                $('#tipt').val('Master Card');
+            }
+        }
+        function closePanel() {
+            var p = $('#salida').attr('data-bind');
+            abrirPanel(p);
+        }
+        function abrirPanel(a) {
+            $('#salida').attr('data-bind', a);
+            if (a == "l") {
+                $('#pdl').css('z-index', '100');
+                $('#pdm').css('z-index', '99');
+                $('#pdp').css('z-index', '99');
+                $('#pdg').css('z-index', '99');
+                $('#pdm').animate({ right: -400 }, "200");
+                $('#pdp').animate({ right: -400 }, "200");
+                $('#pdg').animate({ right: -400 }, "200");
+                $('#pdm').fadeOut(200);
+                $('#pdp').fadeOut(200);
+                $('#pdg').fadeOut(200);
+                if (($('#pdl').css('right')).charAt(0) == '-') {
+                    $('#pdl').fadeIn(0);
+                    $('#pdl').animate({ right: 0 }, "200");
+                    $('#salida').fadeIn(600);
+                } else {
+                    $('#pdl').animate({ right: -400 }, "200");
+                    $('#pdl').fadeOut(200);
+                    $('#salida').fadeOut(600);
+                }
+            }
+            else if (a == "m") {
+                $('#pdl').css('z-index', '99');
+                $('#pdm').css('z-index', '100');
+                $('#pdp').css('z-index', '99');
+                $('#pdg').css('z-index', '99');
+                $('#pdl').animate({ right: -400 }, "200");
+                $('#pdp').animate({ right: -400 }, "200");
+                $('#pdg').animate({ right: -400 }, "200");
+                $('#pdl').fadeOut(200);
+                $('#pdp').fadeOut(200);
+                $('#pdg').fadeOut(200);
+
+                if (($('#pdm').css('right')).charAt(0) == '-') {
+                    $('#pdm').fadeIn(0);
+                    $('#pdm').animate({ right: 0 }, "200");
+                    $('#salida').css('display', 'block');
+                } else {
+                    $('#pdm').animate({ right: -400 }, "200");
+                    $('#pdm').fadeOut(200);
+                    $('#salida').css('display', 'none');
+                }
+            }
+            else if (a == "p") {
+                $('#pdl').css('z-index', '99');
+                $('#pdm').css('z-index', '99');
+                $('#pdg').css('z-index', '99');
+                $('#pdp').css('z-index', '100');
+                $('#pdl').animate({ right: -400 }, "200");
+                $('#pdm').animate({ right: -400 }, "200");
+                $('#pdg').animate({ right: -400 }, "200");
+                $('#pdl').fadeOut(200);
+                $('#pdm').fadeOut(200);
+                $('#pdg').fadeOut(200);
+                if (($('#pdp').css('right')).charAt(0) == '-') {
+                    $('#pdp').fadeIn(0);
+                    $('#pdp').animate({ right: 0 }, "200");
+                    $('#salida').css('display', 'block');
+                } else {
+                    $('#pdp').animate({ right: -400 }, "200");
+                    $('#pdp').fadeOut(200);
+                    $('#salida').css('display', 'none');
+                }
+            }
+            else if (a == "g") {
+                $('#pdl').css('z-index', '99');
+                $('#pdm').css('z-index', '99');
+                $('#pdp').css('z-index', '99');
+                $('#pdg').css('z-index', '100');
+                $('#pdl').animate({ right: -400 }, "200");
+                $('#pdm').animate({ right: -400 }, "200");
+                $('#pdp').animate({ right: -400 }, "200");
+                $('#pdl').fadeOut(200);
+                $('#pdm').fadeOut(200);
+                $('#pdp').fadeOut(200);
+                if (($('#pdg').css('right')).charAt(0) == '-') {
+                    $('#pdg').fadeIn(0);
+                    $('#pdg').animate({ right: 0 }, "200");
+                    $('#salida').css('display', 'block');
+                } else {
+                    $('#pdg').animate({ right: -400 }, "200");
+                    $('#pdg').fadeOut(200);
+                    $('#salida').css('display', 'none');
+                }
+            }
+        }
+        var venta = $_GET('idventa');
+        var idtienda = $_GET('idtienda');
+        //alert(venta);
+        //alert(':'+idtienda+':');
+        if (idtienda == undefined) {
+            idtienda = 0;
+        }
+        var med = $_GET('med');
+        var isPacuenta = false;
+        var listaProductos = [];
+        var fecVen = '';
+        listarProductos();
+        $('#nombre').focus();
+
+        function imprimir(t) {
+            var tipoB = '';
+            if (t == 'b') {
+                tipoB = 'boleta';
+                if ($("#comprobante").val() == "boleta") {
+                    msgError("Ya se ha impreso una boleta para el cliente", "orange");
+                } else {
+                    generarImprimir(tipoB);
+                }
+            } else if (t == 'r') {
+                tipoB = 'recibo';
+                generarImprimir(tipoB);
+            }
+
+        }
+
+        function generarImprimir(tipoB) {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/ventaCRL.php',
+                data: {
+                    action: 'tipoB',
+                    tipoB: tipoB,
+                    id: venta
+                },
+                success: function () {
+
+                }
+            });
+            $('.content-boleta').css('display', 'block');
+            $('.bpaciente').html(($('#apellido').val() + ', ' + $('#nombre').val()));
+            $('.bfecha').html(fecVen);
+            var vacuenta = parseFloat($('#gtotal').html()) - parseFloat($('#gsaldo').html());
+            $('.bacuenta').html(toDouble(vacuenta));
+            //$('.bvender').html(getUN());
+            //$('.bventan').html('VENTA:' + codVenta(venta));
+            $('.btotal').html($('#gtotal').html());
+            $('.bvender').html($('#gsaldo').html());
+            var aux = listaProductos;
+            var string = '';
+            for (var i = 0; i < aux.length; i++) {
+                string += '<tr>\n\
+            <td class="colVU">' + aux[i][1] + '</td>\n\
+            <td  class="colVD">' + aux[i][2] + '</td>\n\
+            <td  class="colVP">' + aux[i][3] + '</td>\n\
+            <td  class="colVI">' + aux[i][4] + '</td>\n\
+        </tr>';
+            }
+            $('#vtbl').html(string);
+            window.print();
+
+            $('.content-boleta').css('display', 'none');
+        }
+
+        function codVenta(id) {
+            var cod = id;
+            var s = cod.length;
+            var ncod = 'V';
+            for (var i = 0; i < (9 - (s + 1)); i++) {
+                ncod += '0';
+            }
+            cod = ncod + cod;
+            return cod;
+        }
+        var tempgasto = ["", "", "", "", "", "", ""];
+        function listarProductos() {
+            var monturas = 0;
+            var lunas = 0;
+            var producto = 0;
+            var aux = listaProductos;
+            var string = '';
+            for (var i = 0; i < aux.length; i++) {
+                if (aux[i][0] == 'M') {
+                    monturas = monturas + parseFloat(aux[i][4]);
+                } else if (aux[i][0] == 'D') {
+                    lunas = lunas + parseFloat(aux[i][4]);
+                } else if (aux[i][0] == 'P') {
+                    producto = producto + parseFloat(aux[i][4]);
+                }
+                if (venta != undefined) {
+                    var opengasto = "";
+                    var ccolor = "";
+                    if (aux[i][7] == 1) {
+                        ccolor = "green";
+                        if (aux[i][0] == "D") {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/gastodetalleventaCRL.php',
+                                data: { action: 'getDetalleGasto', iddetalle: aux[i][5] },
+                                success: function (data) {
+                                    var detgasto = JSON.parse(data);
+                                    if (detgasto.length > 0) {
+                                        tempgasto = [detgasto[0].fecha, detgasto[0].idproveedor, detgasto[0].serie, detgasto[0].correlativo, detgasto[0].monto, detgasto[0].observacion, detgasto[0].tipodocumento];
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    } else {
+                        ccolor = "red";
+                    }
+
+                    if (aux[i][1] > 0) {
+                        opengasto += '<center><div style="width: 16px;height: 16px;background-color: ' + ccolor + ';border-radius: 8px;" onclick="openModalGastoDetalle(\'' + aux[i][5] + '\',\'' + aux[i][2] + '\',\'' + aux[i][6] + '\',\'' + aux[i][0] + '\');"></div></center>';
+                    }
+                    string += '<tr>\n\
+                    <td class=\"ColWC atr\">' + aux[i][1] + '</td>\n\
+                    <td>' + aux[i][2] + '</td>\n\
+                    <td class=\"ColWP atr ojazo2\">' + aux[i][3] + '</td>\n\
+                    <td class=\"ColWI atr\">' + aux[i][4] + '</td>\n\
+                    <td class=\"ColMM clstdgasto\">'+ opengasto + '</td>\n\
+                    <td class=\"ColWA\"></td></tr>';
+                }
+                else {
+                    string += '<tr onclick=\"editCant(\'' + i + '\',event);\">\n\
+                <td class=\"ColWC atr\">' + aux[i][1] + '</td>\n\
+                <td>' + aux[i][2] + '</td>\n\
+                <td class=\"ColWP atr ojazo3\">' + aux[i][3] + '</td>\n\
+                <td class=\"ColWI atr\">' + aux[i][4] + '</td>\n\
+                <td class=\"ColMM clstdgasto\">&nbsp;</td>\n\
+                <td class=\"ColWA\"><button id=\"btnAcciones\" onclick=\"removeList(' + i + ');\" class=\"icon-cerrar\"></button></td></tr>';
+                }
+            }
+            $('#smonturas').html(toDouble(monturas));
+            $('#slunas').html(toDouble(lunas));
+            $('#sproductos').html(toDouble(producto));
+            for (var i = 0; i < (7 - aux.length); i++) {
+                string += '<tr><td class=\"ColWC\">&nbsp;</td><td></td><td class=\"ColWP ojazo4\"></td><td class=\"ColWI\"><td class=\"ColMM clstdgasto\">&nbsp;</td></td><td class=\"ColWA\"></td></tr>';
+            }
+            $('#data').html(string);
+            formatoTabla('485px');
+            validarUserGasto();
+        }
+
+        function validarUserGasto() {
+            //if (tuser == 'Mensajeria' && estadoventa!="anulado") {
+            //$('.clstdgasto').css("display", "");
+            //}else{
+            $('.clstdgasto').css("display", "none");
+            //}
+        }
+
+        function openModalGastoDetalle(iddetalle, descripcion, idgastodetalle, tipo, idtienda) {
+            idgasto = idgastodetalle;
+            if (tuser == "Mensajeria") {
+                $('#btnHabilitarEditar').css('display', 'none');
+                $('#btnGuardarGasto').css('display', 'block');
+            } else if (tuser == "Administrador") {
+                $('#btnHabilitarEditar').css('display', 'block');
+                $('#btnGuardarGasto').css('display', 'none');
+            }
+            editar = 1;
+            $('.icon-guardarmodal').attr('disabled', '');
+            $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+            $('#btneliminargd').attr('disabled', '');
+            $('#btneliminargd').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+            document.getElementById('divGastoDetalle').style.display = "block";
+            $('#iddetalle').val(iddetalle);
+            $('#descdetalle').val(descripcion);
+            $('#fechagasto').val(fechaG());
+            $('#proveedor').val(0);
+            $('#observacion').val('');
+            $('#tipodocumento').val('Factura');
+            $('#serie').val('');
+            $('#numero').val('');
+            $('#costo').val(0);
+
+            if (idgastodetalle == 'null') {
+                $('#idgastodetalle').val(0);
+            } else {
+                $('#idgastodetalle').val(idgastodetalle);
+            }
+            $.ajax({
+                type: 'POST',
+                url: '../crl/gastodetalleventaCRL.php',
+                data: { action: 'getDetalleGasto', iddetalle: iddetalle },
+                success: function (data) {
+                    var detgasto = JSON.parse(data);
+
+                    if (detgasto.length > 0) {
+                        $('#fechagasto').val(detgasto[0].fecha);
+                        $('#proveedor').val(detgasto[0].idproveedor);
+                        $('#serie').val(detgasto[0].serie);
+                        $('#numero').val(detgasto[0].correlativo);
+                        $('#costo').val(detgasto[0].monto);
+                        $('#observacion').val(detgasto[0].observacion);
+                        $('#tipodocumento').val(detgasto[0].tipodocumento);
+                        $('#btneliminargd').removeAttr('disabled');
+                        $('#btneliminargd').removeAttr('style');
+
+                        if (detgasto[0].editar == 1) {
+                            $('.icon-guardarmodal').removeAttr('disabled');
+                            $('.icon-guardarmodal').removeAttr('style');
+                            editar = 1;
+                        } else {
+                            $('.icon-guardarmodal').attr('disabled', '');
+                            $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                            editar = 0;
+                        }
+                    } else {
+                        $('.icon-guardarmodal').removeAttr('disabled');
+                        $('.icon-guardarmodal').removeAttr('style');
+                    }
+                    if (tuser == "Mensajeria") {
+                        $('#btnHabilitarEditar').css('display', 'none');
+                        $('#btnGuardarGasto').css('display', 'block');
+                    } else if (tuser == "Administrador") {
+                        $('#btnHabilitarEditar').css('display', 'block');
+                        $('#btnGuardarGasto').css('display', 'none');
+                    }
+                },
+                error: function () {
+                    $('.icon-guardarmodal').removeAttr('disabled');
+                    $('.icon-guardarmodal').removeAttr('style');
+                    if (tuser == "Mensajeria") {
+                        $('#btnHabilitarEditar').css('display', 'none');
+                        $('#btnGuardarGasto').css('display', 'block');
+                    } else if (tuser == "Administrador") {
+                        $('#btnHabilitarEditar').css('display', 'block');
+                        $('#btnGuardarGasto').css('display', 'none');
+                    }
+                }
+            });
+            if (tuser == "Mensajeria") {
+                $('#btnHabilitarEditar').css('display', 'none');
+                $('#btnGuardarGasto').css('display', 'block');
+            } else if (tuser == "Administrador") {
+                $('#btnHabilitarEditar').css('display', 'block');
+                $('#btnGuardarGasto').css('display', 'none');
+            }
+        }
+
+        function openModalGastoDetalle2(iddetalle, descripcion, idgastodetalle, tipo) {
+            $('.icon-guardarmodal').attr('disabled', '');
+            $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+            $('#btneliminargd').attr('disabled', '');
+            $('#btneliminargd').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+            document.getElementById('divGastoDetalle').style.display = "block";
+            $('#iddetalle').val(iddetalle);
+            $('#descdetalle').val(descripcion);
+            $('#fechagasto').val(fechaG());
+            $('#proveedor').val(0);
+            $('#observacion').val('');
+            $('#tipodocumento').val('Factura');
+            $('#serie').val('');
+            $('#numero').val('');
+            $('#costo').val(0);
+
+            if (idgastodetalle == 'null') {
+                $('#idgastodetalle').val(0);
+            } else {
+                $('#idgastodetalle').val(idgastodetalle);
+            }
+            $.ajax({
+                type: 'POST',
+                url: '../crl/gastodetalleventaCRL.php',
+                data: { action: 'getDetalleGasto', iddetalle: iddetalle },
+                success: function (data) {
+                    var detgasto = JSON.parse(data);
+                    if (detgasto.length > 0) {
+                        $('#fechagasto').val(detgasto[0].fecha);
+                        $('#proveedor').val(detgasto[0].idproveedor);
+                        $('#serie').val(detgasto[0].serie);
+                        $('#numero').val(detgasto[0].correlativo);
+                        $('#costo').val(detgasto[0].monto);
+                        $('#observacion').val(detgasto[0].observacion);
+                        $('#tipodocumento').val(detgasto[0].tipodocumento);
+                        $('#btneliminargd').removeAttr('disabled');
+                        $('#btneliminargd').removeAttr('style');
+                    } else {
+                        if (tipo == 'D' && tempgasto[0] != "") {
+                            $('#fechagasto').val(tempgasto[0]);
+                            $('#proveedor').val(tempgasto[1]);
+                            $('#serie').val(tempgasto[2]);
+                            $('#numero').val(tempgasto[3]);
+                            $('#costo').val(tempgasto[4]);
+                            $('#observacion').val(tempgasto[5]);
+                            $('#tipodocumento').val(tempgasto[6]);
+                        }
+                        $('#idgastodetalle').val(0);
+                    }
+                    $('.icon-guardarmodal').removeAttr('disabled');
+                    $('.icon-guardarmodal').removeAttr('style');
+                },
+                error: function () {
+                    $('.icon-guardarmodal').removeAttr('disabled');
+                    $('.icon-guardarmodal').removeAttr('style');
+                }
+            });
+
+        }
+
+        function cerrarDatosCliente() {
+            document.getElementById("divGastoDetalle").style.display = "none";
+            $('#iddetalle').val(0);
+            $('#idgastodetalle').val(0);
+            $('#fechagasto').val(fechaG());
+            $('#proveedor').val(0);
+            $('#serie').val("");
+            $('#numero').val("");
+            $('#costo').val("");
+        }
+
+        $('#buscar').keyup(function (e) {
+            if (e.keyCode == 13) {
+                var cod = $("#buscar").val();
+                if (!isNaN(cod)) {
+                    var s = cod.length;
+                    var ncod = 'M';
+                    for (var i = 0; i < (7 - (s + 1)); i++) {
+                        ncod += '0';
+                    }
+                    cod = ncod + cod;
+                }
+                $('#buscar').val(cod);
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/monturasCRL.php',
+                    data: { action: 'getVDat', codigo: cod },
+                    success: function (data) {
+                        LimpiarMontura();
+                        if (data != "null") {
+                            var montura = JSON.parse(data);
+                            $('#buscar').val(montura[0]);
+                            $('#marca').val(montura[1]);
+                            $('#modelo').val(montura[2]);
+                            $('#tipo').val(montura[3]);
+                            $('#color').val(montura[4]);
+                            $('#tope').val(montura[5]);
+                            $('#precio').val(montura[6]);
+                            $('#td').text('TD: ' + montura[5]);
+                            if (montura[7] + "" != "null") {
+                                // $('#tope').attr("disabled", "");
+                                $('#precio').attr("disabled", "");
+                                $('#addMontura').attr("disabled", "");
+                                $('#addMontura').attr("style", "background:#BCBCBC !important; border-bottom: 5px solid #B1B0B0; color:white;");
+                                $('#estado').css('display', 'block');
+                                $('#estado').text('En movimiento');
+                                $('#buscar').select();
+                            }
+                            else if (montura[8] + "" != "null") {
+                                //$('#tope').attr("disabled", "");
+                                $('#precio').attr("disabled", "");
+                                $('#addMontura').attr("disabled", "");
+                                $('#addMontura').attr("style", "background:#BCBCBC !important; border-bottom: 5px solid #B1B0B0; color:white;");
+                                $('#estado').css('display', 'block');
+                                $('#estado').text('Vendido!');
+                                $('#buscar').select();
+                            } else {
+                                $('#precio').focus();
+                            }
+                        }
+                        else {
+                            $('#estado').css('display', 'block');
+                            $('#estado').text('Montura No Existe');
+                            //$('#buscar').blur();
+                            $('#buscar').val(cod);
+                            $('#buscar').select();
+                        }
+                    },
+                    error: function () {
+                        msgError("Error del Sistema.", "red");
+                    }
+                });
+            }
+        });
+        $('#buscar').focusin(function () {
+            LimpiarMontura();
+        });
+        function LimpiarMontura() {
+            //$('#tope').removeAttr("disabled");
+            $('#precio').removeAttr("disabled");
+            $('#addMontura').removeAttr("disabled");
+            $('#addMontura').removeAttr('style');
+            $('#estado').css('display', 'none');
+            $('#estado').text('');
+            $('#td').text('');
+            //$('#action').val('');
+            $('#buscar').val('');
+            $('#marca').val('');
+            $('#modelo').val('');
+            $('#tipo').val('');
+            $('#color').val('');
+            $('#tope').val('');
+            $('#precio').val('');
+            $('#td').val('');
+        }
+        function LimpiarProd() {
+            $('#precp').removeAttr("disabled");
+            $('#cantp').removeAttr("disabled");
+            $('#addProd').removeAttr("disabled");
+            $('#addProd').removeAttr("style");
+            $('#buscarP').val('');
+            $('#idP').val('');
+            $('#prod').val('');
+            $('#precp').val('');
+            $('#stockp').val('');
+            $('#preciop').val('');
+            $('#tdp').text('');
+            $('#topeP').text('');
+            $('#cantp').val('');
+            $('#estadop').text('');
+            $('#estadop').css('display', 'none');
+        }
+        function agregarMontura() {
+            if ($('#marca').val() != "") {
+                //var id = $('#idM').val();
+                var cod = $('#buscar').val();
+                var marca = $('#marca').val();
+                var modelo = $('#modelo').val();
+                var tipom = $('#tipo').val();
+                var color = $('#color').val();
+                var tipo = "M";
+                var prod = "COD: " + $('#buscar').val() + "-" + $('#modelo').val() + "-" + $('#marca').val() + "-" + $('#tipo').val();
+                var cant = 1;
+                var precio = $('#precio').val();
+                var tope = $('#tope').val();
+                var importe = 0;
+                var edit = $('#editM').val();
+                if (isNaN(precio)) {
+                    msgError("Debe ingresar números en el precio", "orange");
+                    $('#prec').val('');
+                    $('#prec').focus();
+                } else if (precio < 0) {
+                    msgError("El precio debe ser mayor a 0", "orange");
+                    $('#prec').val('');
+                    $('#prec').focus();
+                } else if (parseFloat(precio) < parseFloat(tope)) {
+                    msgError("El precio ingresado es menor al tope de descuento", "orange");
+                    $('#prec').focus();
+                } else {
+                    if (edit === "") {
+                        for (var i = 0; i < listaProductos.length; i++) {
+                            if (listaProductos[i][5] == cod) {
+                                msgError('Montura ya agregado', "orange");
+                                edit = '/';
+                            }
+                        }
+                    }
+                    //['C', '', tipoVision + '/' + material + '/' + subtipo + '/' + ptrat + '/' + strat, '0.00', '0.00'];
+                    importe = cant * precio;
+                    var temp = [tipo, cant, prod, precio, toDouble(importe), cod, marca, modelo, tipom, color, precio, tope];
+                    if (edit === "/") {
+                    } else if (edit !== "") {
+                        listaProductos[edit] = temp;
+                    } else {
+                        listaProductos.push(temp);
+                    }
+                    var total = 0;
+                    for (var i = 0; i < listaProductos.length; i++) {
+                        total = total + parseFloat(listaProductos[i][4]);
+                    }
+                    //alert(total);
+                    $('#gtotal').html(toDouble(total));
+                    $('#gsaldo').html(toDouble(total));
+                    listarProductos();
+                    LimpiarMontura();
+                    abrirPanel('m');
+                    $('#gacuenta').val('0.00');
+                    $('#gacuenta').focus();
+                    $('#gacuenta').select();
+
+                    $('#apg').val('0.00');
+                    $('#ef').val('0.00');
+                    $('#tr').val('0.00');
+                }
+            } else {
+                msgError("El codigo de montura no existe", "orange");
+            }
+        }
+        function agregarDioptria() {
+            //var tipo = $('#tipoD').val();
+            //var material = $('#materialD').val();
+            //var subtipo = $('#subTipo').val();
+            //var ptrat = $('#ptrat').val();
+            //var strat = $('#strat').val();
+            var lunlaboratorio = $('#lunlaboratorio').val();
+            var lunproducto = $('#lunproducto').val();
+            var lundetalle = $('#lundetalle').val();
+
+            var tipoV = $('#tipoV').val();
+
+            var esfi = $('#esfi').val();
+            var cili = $('#cili').val();
+            var ejei = $('#ejei').val();
+            var dip = $('#dip').val();
+            var precioi = $('#precioi').val();
+            var esfd = $('#esfd').val();
+            var cild = $('#cild').val();
+            var ejed = $('#ejed').val();
+            var addd = $('#addd').val();
+            var preciod = $('#preciod').val();
+
+            /*
+            if (tipo == "") {
+                msgError("Debe ingresar un Tipo", "orange");
+                $('#tipoD').val('');
+                $('#tipoD').focus();
+            } else if (material == "") {
+                msgError("Debe ingresar un Material", "orange");
+                $('#materialD').val('');
+                $('#materialD').focus();
+            } else 
+            */
+            if (tipoV == "") {
+                msgError("Debe ingresar un Tipo de Vision", "orange");
+                $('#tipoV').val('');
+                $('#tipoV').focus();
+            } else if (esfd == "" & cild == "" & ejed == "") {
+                msgError("Debe ingresar una dioptria Derecha", "orange");
+                $('#esfd').val('');
+                $('#esfd').focus();
+            } else if (esfi == "" & cili == "" & ejei == "") {
+                msgError("Debe ingresar una dioptria Izquierda", "orange");
+                $('#esfi').val('');
+                $('#esfi').focus();
+            } else if (dip == "") {
+                msgError("Debe ingresar el dip", "orange");
+                $('#dip').val('');
+                $('#dip').focus();
+            } else if (tipoV = "LEJOS Y CERCA" & addd == "") {
+                msgError("Debe ingresar la Adición", "orange");
+                $('#addd').val('');
+                $('#addd').focus();
+            } else if (preciod == "") {
+                msgError("Debe ingresar un Precio", "orange");
+                $('#preciod').val('');
+                $('#preciod').focus();
+            } else if (precioi == "") {
+                msgError("Debe ingresar un Precio", "orange");
+                $('#precioi').val('');
+                $('#precioi').focus();
+            } else {
+                var temp = ['D', 1, 'ODe: ESF ' + esfd + ' CIL ' + cild + ' EJE ' + ejed, preciod, preciod, 'ODe', "", "", "", "", "", tipoV, esfd, cild, ejed, dip, addd, preciod];
+                var temp2 = ['D', 1, 'OIz: ESF ' + esfi + ' CIL ' + cili + ' EJE ' + ejei, precioi, precioi, 'OIz', "", "", "", "", "", tipoV, esfi, cili, ejei, dip, addd, precioi];
+                var temp3 = ['C', '', 'COD:' + lunproducto + ' DIP: ' + dip + ' ADD: ' + addd + ', ' + $('#tipoV').val() + ', ' + lundetalle, '0.00', '0.00'];
+
+                /*if (edit === "/") {
+                 } else if (edit !== "") {
+                 listaProductos[edit] = temp;
+                 } else {*/
+                listaProductos.push(temp);
+                listaProductos.push(temp2);
+                listaProductos.push(temp3);
+                //}
+                var total = 0;
+                for (var i = 0; i < listaProductos.length; i++) {
+                    total = total + parseFloat(listaProductos[i][4]);
+                }
+                $('#gtotal').html(toDouble(total));
+                listarProductos();
+                LimpiarDioptrias();
+                abrirPanel('l');
+                $('#gacuenta').val('0.00');
+                $('#gacuenta').focus();
+                $('#gacuenta').select();
+
+                $('#apg').val('0.00');
+                $('#ef').val('0.00');
+                $('#tr').val('0.00');
+            }
+        }
+        function agregarProd() {
+            var tope = $('#topeP').val();
+            var stock = $('#stockp').val();
+            var edit = $('#editP').val();
+            var cod = $('#buscarP').val();
+            var id = $('#idPrd').val();
+            var prod = $('#prod').val();
+            var precio = $('#precp').val();
+            var cant = $('#cantp').val();
+            cant = toInt(cant);
+            var importe = 0;
+            if (prod == "") {
+                msgError("Debe buscar un producto!!", "orange");
+                $('#buscarP').focus();
+            } else if (isNaN(cant)) {
+                msgError("Debe ingresar números!!", "orange");
+                $('#cantp').val('');
+                $('#cantp').focus();
+            } else if (isNaN(precio)) {
+                msgError("Debe ingresar números!!", "orange");
+                $('#precp').val('');
+                $('#precp').focus();
+            } else if (precio < 0) {
+                msgError("Debe ingresar valores mayores a 0!!", "orange");
+                $('#precp').val('');
+                $('#precp').focus();
+            } else if (cant <= 0) {
+                msgError("Debe ingresar valores mayores a 0!!", "orange");
+                $('#cantp').val('');
+                $('#cantp').focus();
+            } else if (parseFloat(precio) < parseFloat(tope)) {
+                msgError("El precio ingresado es menor al tope de descuento", "orange");
+                $('#precp').focus();
+            } else if (parseInt(cant) > parseInt(stock)) {
+                msgError("stock insuficiente!!", "orange");
+                $('#cantp').val('');
+                $('#cantp').focus();
+            } else if (cant == "") {
+                msgError("Debe agregar una cantidad", "orange");
+                $('#cantp').focus();
+            } else {
+                if (edit === "") {
+                    for (var i = 0; i < listaProductos.length; i++) {
+                        if (listaProductos[i][0] == cod) {
+                            if (confirm('Producto ya agregado desea agregar mas?')) {
+                                if (edit == "") {
+                                    cant = parseInt(cant) + parseInt(listaProductos[i][3]);
+                                }
+                                edit = i;
+                            } else {
+                                edit = '/';
+                            }
+                        }
+                    }
+                }
+                importe = cant * precio;
+                var temp = ['P', cant, prod, precio, toDouble(importe), id];
+                if (edit === "/") {
+                } else if (edit !== "") {
+                    listaProductos[edit] = temp;
+                } else {
+                    listaProductos.push(temp);
+                }
+                var total = 0;
+                for (var i = 0; i < listaProductos.length; i++) {
+                    total = total + parseFloat(listaProductos[i][4]);
+                }
+                $('#gtotal').html(toDouble(total));
+                listarProductos();
+                LimpiarProd();
+                abrirPanel('p');
+                $('#gacuenta').val('0.00');
+                $('#gacuenta').focus();
+                $('#gacuenta').select();
+                $('#gsaldo').html(toDouble(total));
+
+                $('#apg').val('0.00');
+                $('#ef').val('0.00');
+                $('#tr').val('0.00');
+            }
+        }
+        function LimpiarDioptrias() {
+            //$('#tipoD').val('');
+            //$('#materialD').val('');
+            //$('#subTipo').val('');
+            //$('#ptrat').val('');
+            //$('#strat').val('');
+            $('#lunlaboratorio').val('0');
+            $('#lunproducto').val('0');
+            $('#lundetalle').val('0');
+            $('#tipoV').val('');
+            $('#esfi').val('');
+            $('#cili').val('');
+            $('#ejei').val('');
+            $('#dip').val('');
+            $('#precioi').val('');
+            $('#esfd').val('');
+            $('#cild').val('');
+            $('#ejed').val('');
+            $('#addd').val('');
+            $('#preciod').val('');
+        }
+        function toMedida(val) {
+            var num;
+            if (val == "") {
+                num = '+0.00';
+            } else if (val.substr(0, 1) == '+' || val.substr(0, 1) == '-') {
+                num = val.substring(1, val.length);
+                if (num == "") {
+                    num = '0.00';
+                }
+                num = toDouble(num);
+                if (num == 'NaN') {
+                    num = '0.00';
+                }
+                num = val.substr(0, 1) + "" + num;
+            } else {
+                num = toDouble(val);
+                if (num == 'NaN') {
+                    num = '0.00';
+                }
+                num = "+" + num;
+            }
+            return num;
+        }
+        function removeList(num) {
+            if (confirm('Desea retirar el item de la lista?')) {
+                listaProductos.splice(num, 1);
+                listarProductos();
+                var total = 0;
+                for (var i = 0; i < listaProductos.length; i++) {
+                    total = total + parseFloat(listaProductos[i][4]);
+                }
+                //alert(total);
+                $('#gtotal').html(toDouble(total));
+                $('#gacuenta').val('0.00');
+                $('#gsaldo').html(toDouble(total));
+
+                $('#apg').val('0.00');
+                $('#ef').val('0.00');
+                $('#tr').val('0.00');
+            }
+        }
+        function limp() {
+            $('#gacuenta').val('0.00');
+            $('#gsaldo').html('0.00');
+            $('#apg').val('0.00');
+            $('#ef').val('0.00');
+            $('#tr').val('0.00');
+        }
+        $('.money').focusout(function () {
+            var mon = $(this).val();
+            if (mon != "" && mon != " " && !isNaN(mon) && parseFloat(mon) >= 0) {
+                $(this).val(toDouble(mon));
+            }
+            else {
+                $(this).val('0.00');
+            }
+        });
+        $('#data').attr('style', 'height: 193px; border-radius: 0;');
+
+        $('#esfd,#esfi,#cild,#cili,#addd').focusout(function () {
+            if ($(this).val() != "") {
+                $(this).val(toMedida($(this).val()));
+            }
+        });
+        $('#ejed,#ejei').focusout(function () {
+            if ($(this).val() != "") {
+                if (isNaN(parseInt($(this).val()))) {
+                    $(this).val('0');
+                } else {
+                    $(this).val(parseInt($(this).val()));
+                }
+            }
+        });
+        $('#gacuenta').keyup(function () {
+            if (!isPacuenta) {
+                var ingreso = parseFloat($('#gacuenta').val());
+                if (!isNaN(ingreso)) {
+                    var total = $('#gtotal').html();
+                    var saldo = parseFloat(total) - $('#restatotal').val() - ingreso;
+                    if (saldo < 0) {
+                        $('.textMainAlert').html('Acuenta mayor al total');
+                        $('.bloqueo').css("display", "block");
+                        $('#gacuenta').val('0.00');
+                        $('#gacuenta').select();
+                        $('#sim').focus();
+                    } else {
+                        $('#gsaldo').html(toDouble(saldo));
+                    }
+                }
+                if (ingreso >= 0) {
+
+                } else {
+                    $('.textMainAlert').html('Acuenta no puede ser negativo');
+                    $('.bloqueo').css("display", "block");
+                    $('#gacuenta').val('0.00');
+                    $('#gacuenta').select();
+                    $('#sim').focus();
+                    $('#apg').val('0.00');
+                    $('#ef').val('0.00');
+                    $('#tr').val('0.00');
+                }
+            }
+        });
+
+        $('#tipt').change(function () {
+            if ($('#tipt').val() == "") {
+                $('#ef').val($('#apg').val());
+                $('#tr').val(0);
+                $('#cvisa').attr('disabled', '');
+                $('#cmaster').attr('disabled', '');
+                $('#tipt').attr('disabled', '');
+            }
+        });
+        $('#tipt').val('');
+        $('#cvisa').attr('disabled', '');
+        $('#cmaster').attr('disabled', '');
+        $('#tipt').attr('disabled', '');
+        $('#gacuenta').focusout(function () {
+
+            if (!isPacuenta) {
+                var gacta = parseFloat($('#gacuenta').val());
+
+                if (gacta > 0) {
+
+                    $('#apg').val($('#gacuenta').val());
+                    $('#ef').val($('#gacuenta').val());
+                    $('#tr').val('0.00');
+                    $('#tipt').val('');
+                    $('#cvisa').attr('disabled', '');
+                    $('#cmaster').attr('disabled', '');
+                    $('#tipt').attr('disabled', '');
+                    $('#ef').focus();
+                    $('#ef').select();
+                    var ingreso = parseFloat($('#gacuenta').val());
+
+                    if (!isNaN(ingreso)) {
+                        var total = $('#gtotal').html();
+                        var saldo = parseFloat(total) - $('#restatotal').val() - ingreso;
+
+                        if (saldo < 0) {
+                            $('.textMainAlert').html('Acuenta mayor al total');
+                            $('.bloqueo').css("display", "block");
+                            $('#gacuenta').val('0.00');
+                            $('#gacuenta').select();
+                            $('#sim').focus();
+                        } else {
+                            $('#gsaldo').html(toDouble(saldo));
+                        }
+                    }
+                } else if (gacta < 0) {
+                    $('.textMainAlert').html('Acuenta no puede ser negativo');
+                    $('.bloqueo').css("display", "block");
+                    var total = $('#gtotal').html();
+                    $('#gacuenta').val('0.00');
+                    $('#gsaldo').html(toDouble(total - $('#restatotal').val()));
+                    $('#sim').select();
+
+                    $('#apg').val('0.00');
+                    $('#ef').val('0.00');
+                    $('#tr').val('0.00');
+                } else {
+                    var total = $('#gtotal').html();
+                    $('#gacuenta').val('0.00');
+                    $('#gsaldo').html(toDouble(total - $('#restatotal').val()));
+                    $('#sim').select();
+
+                    $('#apg').val('0.00');
+                    $('#ef').val('0.00');
+                    $('#tr').val('0.00');
+                }
+            } else {
+
+            }
+        });
+
+        $('#ef').keyup(function () {
+            var ingreso = parseFloat($('#ef').val());
+            if (!isNaN(ingreso) && ingreso >= 0) {
+                var total = $('#apg').val();
+                var tr = $("#tr").val();
+                var saldo = parseFloat(total) - ingreso;
+                if (saldo < 0) {
+                    $('.textMainAlert').html('Efectivo mayor al total');
+                    $('.bloqueo').css("display", "block");
+                    $('#ef').val(toDouble(total - tr));
+                    $('#ef').select();
+                    $('#sim').focus();
+                } else {
+                    $('#tr').val(toDouble(saldo));
+                }
+            } else {
+                $('.textMainAlert').html('Efectivo no puede ser negativo');
+                $('.bloqueo').css("display", "block");
+                $('#ef').val($('#apg').val());
+                $('#ef').select();
+                $('#sim').focus();
+                $('#tr').val('0.00');
+            }
+        });
+
+        $('#tr').keyup(function () {
+            var ingreso = parseFloat($('#tr').val());
+
+            if (!isNaN(ingreso) && ingreso >= 0) {
+                var total = $('#apg').val();
+
+                if (total - ingreso < 0) {
+                    $('.textMainAlert').html('No permitido');
+                    $('.bloqueo').css("display", "block");
+                    $('#tr').val('0.00');
+                    $('#tr').select();
+                    $("#ef").val(toDouble($('#apg').val()));
+                    $('#sim').focus();
+                } else {
+                    $("#ef").val(toDouble(total - ingreso));
+                }
+            } else {
+                $('.textMainAlert').html('tarjeta no puede ser negativo');
+                $('.bloqueo').css("display", "block");
+                $('#ef').val($('#apg').val());
+                $('#tr').val('0.00');
+                $('#tr').select();
+                $('#sim').focus();
+            }
+        });
+
+        $('.form-element input').focusout(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+        function save() {
+            if (isPacuenta) {
+                var fva = fecha();
+                var hva = hora();
+                var apga = parseFloat($('#apg').val());
+                var efectivoa = parseFloat($('#ef').val());
+                var tarjetaa = parseFloat($('#tr').val());
+                var tipota = $('#tipt').val();
+                var saldo = apga - (parseFloat(efectivoa + tarjetaa));
+                if (tarjetaa == 0) {
+                    tipota = '';
+                }
+                if (apga != parseFloat(efectivoa + tarjetaa)) {
+                    msgError("Pago insuficiente.", "orange");
+                    $('#ef').focus();
+                } else {
+                    if (confirm('desea guardar?')) {
+                        alert("PROCESANDO...");
+                        $('#saveme').css('display', 'none');
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/ventaCRL.php',
+                            data: {
+                                action: 'inserta',
+                                fv: fva,
+                                hv: hva,
+                                saldo: toDouble(saldo),
+                                efectivo: toDouble(efectivoa),
+                                tarjeta: toDouble(tarjetaa),
+                                tipot: tipota,
+                                id: venta
+                            },
+                            success: function (dat) {
+                                //alert('Pago actualizado con exito!!');
+                                location.href = 'ventas.html?idventa=' + venta + '&idtienda=' + idtienda;
+                                //window.parent.closeModal();
+                                //location.href = 'movimiento.html?alta=true';
+                                $('.icon-imprimir').removeAttr('disabled');
+                                $('.icon-imprimir').removeAttr('style');
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                var nombre = $('#nombre').val();
+                var apellido = $('#apellido').val();
+                var direccion = $('#direccion').val();
+                var telefono = $('#telefono').val();
+                var fv = fecha();
+                var hv = hora();
+                var fe = $('#fec').val();
+                var he = $('#hora').val();
+                var total = $('#gtotal').html();
+                var saldo = $('#gsaldo').html();
+                var efectivo = $('#ef').val();
+                var tarjeta = $('#tr').val();
+                var tipot = $('#tipt').val();
+                var estado = 'pendiente';
+                var documento = $('#receta_type').val();
+                var numDoc = $('#poptometra').val();
+                var refraccion = $('#listre').val();
+                var observacion = $('#com').val();
+                var fc = '';
+                var anulado = '';
+                var descAnulado = '';
+                var productos = JSON.stringify(listaProductos);
+
+                //var razonventa = $('#razonventa').val();
+                //var codvendedor = $('#codvendedor').val();
+
+                var tipocompro = "";
+                if (parseFloat(tarjeta) > 0) {
+                    tipocompro = "boleta";
+                }
+
+                //alert(fe + '-' + he + '-' + $('#fec').val() + '.');
+                if (tarjeta == "0.00") {
+                    tipot = '';
+                }
+                if (nombre == '') {
+                    msgError("Ingrese un nombre", "orange");
+                    $('#nombre').focus();
+                }
+                else if (apellido == '') {
+                    msgError("Ingrese un apellido", "orange");
+                    $('#apellido').focus();
+                }
+                else if (listaProductos.length <= 0) {
+                    msgError("La Lista esta vacia", "orange");
+                    //$('#nombre').focus();
+                }
+                else if (fe == '') {
+                    msgError("Ingrese una Fecha de entrega", "orange");
+                    $('#fec').focus();
+                }
+                else if (he == '') {
+                    msgError("Ingrese una hora de entrega", "orange");
+                    $('#hora').focus();
+                }
+                else if (parseFloat(tarjeta) > 0 && tipot == '') {
+                    msgError("Ingrese una Tarjeta", "orange");
+                    $('#tipot').focus();
+                } else if (((parseFloat($('#tr').val())) + (parseFloat($('#ef').val()))) != parseFloat($('#apg').val())) {
+                    msgError("La suma del efectivo más tarjeta debe ser igual al total a pagar", "orange");
+                    $('#ef').focus();
+                }
+                else {
+                    if (confirm('desea guardar?')) {
+                        alert("PROCESANDO...");
+                        $('#cancelarb').css('display', 'none');
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/ventaCRL.php',
+                            data: {
+                                action: 'insert',
+                                nombre: nombre,
+                                apellido: apellido,
+                                direccion: direccion,
+                                telefono: telefono,
+                                fv: fv,
+                                hv: hv,
+                                fe: toFecha(fe),
+                                he: he,
+                                total: total,
+                                estado: estado,
+                                documento: documento,
+                                numDoc: numDoc,
+                                refraccion: refraccion,
+                                observacion: observacion,
+                                fc: fc,
+                                anulado: anulado,
+                                descAnulado: descAnulado,
+                                productos: productos,
+                                saldo: saldo,
+                                efectivo: efectivo,
+                                tarjeta: tarjeta,
+                                tipot: tipot,
+                                tipocompro: tipocompro,
+                                razonventa: 1,
+                                codvendedor: 1
+                            },
+                            success: function (data) {
+                                //alert(data);
+                                //alert('Venta completada con exito!!');
+                                //location.href = 'ventas.html';
+                                location.href = 'ventas.html?idventa=' + data + '&idtienda=' + idtienda;
+                                //window.parent.closeModal();
+                                //location.href = 'movimiento.html?alta=true';
+                                $('.icon-imprimir').removeAttr('disabled');
+                                $('.icon-imprimir').removeAttr('style');
+
+                                if (saldo > 0) {
+                                    var obj = '{'
+                                        + '"update" : "sendGasto"'
+                                        + '}';
+                                    //alert(obj);
+                                    send(obj);// array JSON
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        function acuenta() {
+            isPacuenta = true;
+            $('#apg').val($('#gsaldo').html());
+            $('#ef').removeAttr('readonly');
+            $('#tr').removeAttr('readonly');
+            // $('#gacuenta').removeAttr('readonly');
+            $('.icon-caja').attr('disabled', '');
+            $('.icon-caja').attr('style', ' background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+            $('#ef').focus();
+            $('#ef').select();
+            $('#acuentacaja2').css('display', 'none');
+            $('#saveme').removeAttr('disabled');
+            $('#saveme').removeAttr('style');
+        }
+        function acuenta1() {
+            $('#gacuenta').removeAttr('readonly');
+            $('#gacuenta').focus();
+            $('#gacuenta').select();
+            $('#ef').removeAttr('readonly');
+            $('#tr').removeAttr('readonly');
+            $('#saveme').css('display', 'none');
+            $('#cancelarb').css('display', 'none');
+            $('#cancelarb').attr('disabled', '');
+            $('#acuentacaja').css('display', 'none');
+            $('#acuentacaja2').removeAttr('disabled');
+            $('#acuentacaja2').removeAttr('style');
+            $('#acuentacaja2').css('margin-top', '10px');
+            $('#acuentacaja2').css('display', 'inline');
+            console.log(venta);
+        }
+        function acuenta2() {
+            var saldo = $('#gsaldo').html();
+            var fv = fecha();
+            var hv = hora();
+            var efectivo = $('#ef').val();
+            var tarjeta = $('#tr').val();
+            var tipot = $('#tipt').val();
+            var id = venta;
+            console.log(id);
+            $.ajax({
+                type: 'POST',
+                url: '../crl/ventaCRL.php',
+                data: { action: 'updateacuenta', id: id, saldo: saldo, fv: fv, hv: hv, efectivo: efectivo, tarjeta: tarjeta, tipot: tipot },
+                success: function (data) {
+                    alert("EXITO");
+                },
+                error: function () {
+                }
+            })
+        }
+        var estadoventa = "";
+        if (venta != undefined) {
+            //alert(venta);
+            $.ajax({
+                type: 'POST',
+                url: '../crl/ventaCRL.php',
+                data: { action: 'get', id: venta },
+                success: function (data) {
+                    var ing = JSON.parse(data);
+                    var f = new Date();
+                    //alert(ing[10]);
+                    var ests = ing[10];
+                    estadoventa = ests;
+                    var acuentas = ing[20];
+                    $('#nombre').val(ing[1]);
+                    $('#apellido').val(ing[2]);
+                    $('#direccion').val(ing[3]);
+                    $('#telefono').val(ing[4]);
+                    $('#hora').val(ing[8]);
+                    fecVen = (f.getDate() + "/" + (f.getMonth() + 1) + "/" + f.getFullYear());
+                    $('#fec').val(toFechaG(ing[7]));
+                    $('#listre').val(ing[13]);
+                    if ((ing[11] == "") || (ing[11] == " ") || (ing[11] == null)) {
+                        
+                    }else{
+                        $('#kind_receta').text("RECETA " + ing[11]);
+                        $('#kind_receta').css("display", "");
+                    }
+                    $('#com').val(ing[14]);
+                    $('#gtotal').html(ing[9]);
+                    $('#restatotal').val(ing[9] - acuentas);
+                    $('#lab').val(ing[24]);
+                    $('#idgasto').val(ing[26]);
+                    //$('#razonventa').val(ing[27]);
+                    //$('#codvendedor').val(ing[28]);
+                    $('#comprobante').val(ing[25]);
+                    $('#costl').val(ing[22]);
+                    $('#costp').val(ing[21]);
+                    $('#tec').val(ing[23]);
+                    $('#gsaldo').html(acuentas);
+                    $('#gacuenta').val('0.00');
+                    $('#est-venta').html(ests.capitalize());
+                    $('.icon-caja').removeAttr('disabled');
+                    $('.icon-caja').removeAttr('style');
+
+                    //$('#razonventa').attr('disabled', '');
+                    //$('#codvendedor').attr('disabled', '');
+
+                    //aca
+                    //$('#impb').removeAttr('disabled');
+                    //$('#impb').removeAttr('style');
+                    //$('#impb').attr('disabled', '');
+                    //$('#impb').attr('style', ' margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+                    if ($_GET('coddia') != undefined) {
+                        window.parent.ChangeModalTittleTexto("Punto de Venta / " + $_GET('coddia') + " / A cuenta: " + toDouble($('#restatotal').val()));
+                    }
+
+                    $('#addCost').removeAttr('disabled');
+                    $('.icon-caja').attr('style', ' margin-top: 10px;');
+
+                    if (ests == 'cancelado') {
+                        $('.icon-caja').attr('disabled', '');
+                        $('.icon-caja').attr('style', ' margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                        $('#est-venta').attr('style', ' color: white !important;');
+                        $('#impr').attr("disabled", "");
+                        $('#impr').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                        $('#impb').attr("disabled", "");
+                        $('#impb').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                        //No imprimir comprobante
+                    } else if (ests == 'anulado') {
+                        $('.icon-caja').attr('disabled', '');
+                        $('.icon-caja').attr('style', ' margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                        $('#est-venta').attr('style', ' color: #FF5722 !important;');
+                    }
+                    /*if (parseFloat(acuentas) == 0) {
+                     $('.icon-caja').attr('disabled', '');
+                     $('.icon-caja').attr('style', ' margin-top: 10px; background: #BCBCBC;');
+                     $('#est-venta').attr('style', ' color: #64D713 !important;');
+                     }
+                     if (ing[12] != "") {
+                     $('.icon-imprimir').attr('disabled', '');
+                     $('.icon-imprimir').attr('style', ' margin-top: 10px; background: #BCBCBC;');
+                     }*/
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/proveedorCRL.php',
+                        data: { action: 'list' },
+                        success: function (data) {
+                            var lista = JSON.parse(data);
+                            var string = '<option value="0">Seleccione..</option>';
+                            for (var i = 0; i < lista.length; i++) {
+                                string += '<option value="' + lista[i].idproveedor + '">' + lista[i].razonsocial + '</option>';
+                            }
+
+                            $('#proveedor').html(string);
+                        },
+                        error: function () {
+                        }
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/usuarioCRL.php',
+                        data: { action: 'getTipous' },
+                        success: function (data) {
+                            tuser = data;
+                            if (data == 'Administrador') {
+                                $('#btng').removeAttr('style');
+                                $('#btng').removeAttr('disabled');
+                                $('#cancelarb').attr("disabled", "");
+                                $('#cancelarb').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                $('#impb').attr("disabled", "");
+                                $('#impb').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                $('#impr').attr("disabled", "");
+                                $('#impr').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                            } else if (data == 'Mensajeria') {
+                                $('#cancelarb').attr("disabled", "");
+                                $('#cancelarb').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                $('#impb').attr("disabled", "");
+                                $('#impb').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                $('#impr').attr("disabled", "");
+                                $('#impr').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                            } else {
+                                $('.icon-imprimir').removeAttr('disabled');
+                                $('.icon-imprimir').removeAttr('style');
+                                $('.icon-imprimir').attr('style', ' margin-top: 10px;');
+                                if (ests == 'cancelado') {
+                                } else if (ests == 'anulado') {
+                                    $('.icon-imprimir').attr('disabled', '');
+                                    $('.icon-imprimir').attr('style', ' margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                }
+                                if (ing[25] == "boleta") {
+                                    //$('#impb').removeAttr('disabled');
+                                    //$('#impb').removeAttr('style');
+                                    $('#impb').attr('disabled', '');
+                                    $('#impb').attr('style', ' margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                                }
+                            }
+
+                            validarUserGasto();
+                        },
+                        error: function () {
+                        }
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ventaCRL.php',
+                        data: { action: 'isPagoConTarjeta', idventa: venta },
+                        success: function (data) {
+
+                            if (data == "des") {
+                                //$('#impb').removeAttr('disabled');
+                                //$('#impb').removeAttr('style');
+                                $('#impr').attr('disabled', '');
+                                $('#impr').attr('style', ' margin-top: 10px; background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                            }
+                        },
+                        error: function () {
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+            // $.ajax({
+            //     type: 'POST',
+            //     url: '../crl/ventaCRL.php',
+            //     data: { action: 'listDetalle', id: venta },
+            //     success: function (data) {
+            //         listaProductos = JSON.parse(data);
+            //         listarProductos();
+            //     },
+            //     error: function () {
+            //     }
+            // });
+
+            $('.icon-agregar2').attr('disabled', '');
+            $('.icon-guardar').attr('disabled', '');
+            $('.icon-agregar2').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+            $('.icon-guardar').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+            $('#gacuenta').attr('readonly', '');
+            $('#ef').attr('readonly', '');
+            $('#tr').attr('readonly', '');
+            $('#tipt').attr('disabled', '');
+            $('#hora').attr('disabled', '');
+            $('#fec').attr('disabled', '');
+            $('#nombre').attr('disabled', '');
+            $('#apellido').attr('disabled', '');
+            $('#direccion').attr('disabled', '');
+            $('#telefono').attr('disabled', '');
+            $('#refrac').attr('disabled', '');
+            $('#com').attr('disabled', '');
+            $('#listre').attr('disabled', '');
+
+            /*$('#cod').attr("disabled", "");
+             $('#tiend').attr("disabled", "");
+             $('#btnS').attr("disabled", "");
+             $('#btnS').attr("style", "background:#BCBCBC;color:white;");
+             isDisabled = true;*/
+        }
+        loadProductos();
+        function loadProductos() {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/ventaCRL.php',
+                data: { action: 'listDetalle', id: venta },
+                success: function (data) {
+                    listaProductos = JSON.parse(data);
+                    console.log(venta);
+                    console.log(listaProductos);
+                    listarProductos();
+                },
+                error: function () {
+                }
+            });
+        }
+
+        if (med != undefined) {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/medicionCRL.php',
+                data: {
+                    action: 'getMedida',
+                    id: med
+                },
+                success: function (data) {
+                    var mediciones = JSON.parse(data);
+                    $('#nombre').val(mediciones[2]);
+                    $('#apellido').val(mediciones[1]);
+                    //Borrado direccion
+                    $('#telefono').val(mediciones[6]);
+                },
+                error: function () {
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: '../crl/medicionCRL.php',
+                data: {
+                    action: 'detalle',
+                    id: med
+                },
+                success: function (data) {
+                    var detalle = JSON.parse(data);
+                    $('#tipoD').val(detalle[0][2]);
+                    $('#materialD').val(detalle[0][3]);
+                    $('#subTipo').val(detalle[0][4]);
+                    $('#ptrat').val(detalle[0][5]);
+                    $('#strat').val(detalle[0][6]);
+                    $('#tipoV').val(detalle[0][7]);
+                    $('#receta_type').val("INTERNA");
+
+                    $('#esfi').val(detalle[1][8]);
+                    $('#cili').val(detalle[1][9]);
+                    $('#ejei').val(detalle[1][10]);
+
+                    $('#esfd').val(detalle[0][8]);
+                    $('#cild').val(detalle[0][9]);
+                    $('#ejed').val(detalle[0][10]);
+
+                    $('#dip').val(detalle[0][14]);
+                    $('#addd').val(detalle[0][13]);
+                },
+                error: function () {
+                }
+            });
+            abrirPanel('l');
+            $('#preciod').focus();
+        }
+        $('#tr,#ef').keyup(function () {
+            var tr = parseFloat($('#tr').val());
+            if (tr > 0) {
+                if ($('#tipt').val() == '') {
+                    $('#tipt').val('Visa');
+                }
+
+                $('#cmaster').removeAttr('disabled');
+                $('#cvisa').removeAttr('disabled');
+                $('#tipt').removeAttr('disabled');
+            } else {
+                $('#tr').val('0.00');
+                $('#tipt').val('');
+                $('#cvisa').attr('disabled', '');
+                $('#cmaster').attr('disabled', '');
+                $('#tipt').attr('disabled', '');
+            }
+        });
+        $('#telefono').focusout(function () {
+            $('#fec').focus();
+        });
+        $('#hora').focusout(function () {
+            $('#gacuenta').focus();
+            $('#gacuenta').select();
+        });
+        $('#refrac').focusout(function () {
+            $('#listre').val($('#listre').val().toUpperCase());
+        });
+        $('#com').focusout(function () {
+            $('#com').val($('#com').val().toUpperCase());
+            $('#nombre').focus();
+            $('#nombre').select();
+        });
+        $('#tr').focusout(function () {
+            var tr = parseFloat($('#tr').val());
+            if (tr > 0) {
+                $('#tipt').focus();
+                $('#tipt').select();
+            } else {
+                $('#refrac').focus();
+                $('#tipt').val('');
+                $('#cvisa').attr('disabled', '');
+                $('#cmaster').attr('disabled', '');
+                $('#tipt').attr('disabled', '');
+                $('#sim').focus();
+
+                $('#ef').val($('#apg').val());
+            }
+        });
+        var effoc = 0;
+        $('#ef').focusout(function () {
+            var tr = parseFloat($('#ef').val());
+            if (tr >= 0) {
+            } else {
+                $('#tr').val('0.00');
+            }
+        });
+
+        //Aca poner focus
+
+        $("#buscarP").change(function () {
+            // if (e.keyCode == 13) {
+            //if ($('#prod').val() != 'a') {
+            var cod = $("#buscarP").val();
+            if (isNaN(cod) && cod.length < 7) {
+                cod = cod.substring(1);
+                var s = cod.length;
+                var ncod = 'P';
+                for (var i = 0; i < (7 - (s + 1)); i++) {
+                    ncod += '0';
+                }
+                cod = ncod + cod;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '../crl/productosCRL.php',
+                data: { action: 'getProductoCodV', cod: cod },
+                success: function (data) {
+                    // alert(data);
+                    if (data != "null") {
+                        var producto = JSON.parse(data);
+                        $('#buscarP').val(producto[2]);
+                        $('#idPrd').val(producto[0]);
+                        $('#prod').val("COD: " + producto[2] + " " + producto[1]);
+                        $('#precp').val(producto[4]);
+                        $('#stockp').val(producto[8]);
+                        $('#preciop').val(producto[4]);
+                        $('#tdp').text('TD: ' + producto[5]);
+                        $('#topeP').val(producto[5]);
+                        $('#cantp').val('1');
+                        $('#precp').focus();
+                        $('#precp').select();
+                        $('#estadop').text('');
+                        $('#estadop').css('display', 'none');
+                        if (parseInt(producto[8]) == 0) {
+                            $('#precp').attr("disabled", "");
+                            $('#cantp').attr("disabled", "");
+                            $('#cantp').val('');
+                            $('#preciop').val('');
+                            $('#addProd').attr("disabled", "");
+                            $('#addProd').attr("style", "background:#BCBCBC !important; border-bottom: 5px solid #B1B0B0; color:white;");
+                            $('#estadop').text('Stock insuficiente');
+                            $('#estadop').css('display', 'block');
+                            $('#buscar').select();
+                        } else {
+                            $('#precp').removeAttr("disabled");
+                            $('#cantp').removeAttr("disabled");
+                            $('#addProd').removeAttr("disabled");
+                            $('#addProd').removeAttr("style");
+                            $('#estadop').text('');
+                            $('#estadop').css('display', 'none');
+                        }
+                    } else {
+                        $('#estadop').text('Producto No Existe');
+                        $('#estadop').css('display', 'block');
+                        //$('#buscar').blur();
+                        $('#buscarP').val(cod);
+                        $('#buscarP').select();
+                    }
+                },
+                error: function () {
+                }
+            });
+            /*}
+             else {
+             $('#idPrd').val("");
+             $('#prod').val("");
+             $('#precp').val("");
+             $('#stockp').val("");
+             $('#preciop').val("");
+             $('#tdp').text("");
+             $('#topeP').val("");
+             $('#cantp').val("");
+             $('#estadop').text("");
+             }*/
+        });
+        $('#buscarP').focusin(function () {
+            LimpiarProd();
+        });
+        $('#precp').focusout(function () {
+            var precio = parseFloat($('#precp').val());
+            var cantidad = parseInt($('#cantp').val());
+            $('#preciop').val(toDouble(precio * cantidad));
+        });
+        $('#cantp').focusout(function () {
+            var precio = parseFloat($('#precp').val());
+            var cantidad = parseInt($('#cantp').val());
+            $('#preciop').val(toDouble(precio * cantidad));
+        });
+        function saveGastos() {
+            var cod = venta;
+            var id = "";
+            if (!isNaN(cod)) {
+                id = cod;
+                var s = cod.length;
+                var ncod = 'V';
+                for (var i = 0; i < (9 - (s + 1)); i++) {
+                    ncod += '0';
+                }
+                cod = ncod + cod;
+            } else {
+                id = cod.substring(1, cod.length);
+                id = parseInt(id);
+            }
+            var codventa = cod;
+            //alert(codventa);
+            if ($('#idgasto').val() == "0") {
+                var lab = $('#lab').val();
+                var cl = $('#costl').val();
+                var cp = $('#costp').val();
+                var tec = $('#tec').val();
+
+                if (lab == "" && tec == "" && (cl == "" || parseFloat(cl) == 0) && (cp == "" || parseFloat(cp) == 0)) {
+                    msgError("Los campos no pueden ser vacíos", "orange");
+                } else if ((lab != "" && cl == "")) {
+                    msgError("Debe ingresar un costo de laboratorio", "orange");
+                } else if (lab == "" && (cl != "" && parseFloat(cl) > 0)) {
+                    msgError("Debe ingresar el nombre del laboratorio", "orange");
+                } else if ((tec != "" && cp == "")) {
+                    msgError("Debe ingresar un costo de producción", "orange");
+                } else if (tec == "" && (cp != "" && parseFloat(cp) > 0)) {
+                    msgError("Debe ingresar el nombre del técnico", "orange");
+                } else {
+                    document.getElementById('cargandoGOP').style.display = "block";
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ventaCRL.php',
+                        data: { action: 'SaveGastosGOP', id: venta, codventa: codventa, lab: lab, cl: cl, cp: cp, tec: tec, idtienda: idtienda },
+                        success: function (data) {
+                            if (data == 'OK') {
+                                msgError("Exito!, GOP guardado", "#94D613");
+                                abrirPanel('g');
+                            } else {
+                                alert('Error, Actualize');
+                            }
+                            document.getElementById('cargandoGOP').style.display = "none";
+                        },
+                        error: function () {
+                            alert('Error, Actualize');
+                            document.getElementById('cargandoGOP').style.display = "none";
+                        }
+                    });
+                }
+            } else {
+                var idgasto = $('#idgasto').val();
+                var lab = $('#lab').val();
+                var cl = $('#costl').val();
+                var cp = $('#costp').val();
+                var tec = $('#tec').val();
+
+                if (lab == "" && tec == "" && (cl == "" || parseFloat(cl) == 0) && (cp == "" || parseFloat(cp) == 0)) {
+                    msgError("Los campos no pueden ser vacíos", "orange");
+                } else if ((lab != "" && cl == "")) {
+                    msgError("Debe ingresar un costo de laboratorio", "orange");
+                } else if (lab == "" && (cl != "" && parseFloat(cl) > 0)) {
+                    msgError("Debe ingresar el nombre del laboratorio", "orange");
+                } else if ((tec != "" && cp == "")) {
+                    msgError("Debe ingresar un costo de producción", "orange");
+                } else if (tec == "" && (cp != "" && parseFloat(cp) > 0)) {
+                    msgError("Debe ingresar el nombre del técnico", "orange");
+                } else {
+                    document.getElementById('cargandoGOP').style.display = "block";
+                    $.ajax({
+                        type: 'POST',
+                        url: '../crl/ventaCRL.php',
+                        data: { action: 'UpdGastosGOP', id: venta, lab: lab, cl: cl, cp: cp, tec: tec, idtienda: idtienda, idgasto: idgasto },
+                        success: function (data) {
+                            if (data == 'OK') {
+                                msgError("Exito!, GOP actualizado", "#94D613");
+                                abrirPanel('g');
+                            } else {
+                                alert('Error, Actualize');
+                            }
+                            document.getElementById('cargandoGOP').style.display = "none";
+                        },
+                        error: function () {
+                            alert('Error, Actualize');
+                            document.getElementById('cargandoGOP').style.display = "none";
+                        }
+                    });
+                }
+            }
+        }
+
+        //Laboratorio producto venta
+        loadSelectLabs();
+        function loadSelectLabs() {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/laboratorioCRL.php',
+                data: { action: 'listLaboratorios' },
+                success: function (data) {
+                    var lista = JSON.parse(data);
+                    var string = '<option value=\"0\">Seleccione...</option>';
+                    for (var i = 0; i < lista.length; i++) {
+                        string += '<option value=\"' + lista[i].idprodlab + '\">' + lista[i].prodlab + '</option>';
+                    }
+                    $('#lunlaboratorio').html(string);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        $('#lunlaboratorio').change(function () {
+            loadSelectProds();
+            var string = '<option value=\"0\">Seleccione...</option>';
+            $('#lundetalle').html(string);
+            loadSelectDets();
+        });
+        function loadSelectProds() {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/laboratorioCRL.php',
+                data: { action: 'listProductos', padre: $('#lunlaboratorio').val() },
+                success: function (data) {
+                    var lista = JSON.parse(data);
+                    var string = '<option value=\"0\">Seleccione...</option>';
+                    for (var i = 0; i < lista.length; i++) {
+                        string += '<option value=\"' + lista[i].idprodlab + '\">' + lista[i].prodlab + '</option>';
+                    }
+                    $('#lunproducto').html(string);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        $('#lunproducto').change(function () {
+            loadSelectDets();
+        });
+        function loadSelectDets() {
+            $.ajax({
+                type: 'POST',
+                url: '../crl/laboratorioCRL.php',
+                data: { action: 'listDetalle', padre: $('#lunproducto').val() },
+                success: function (data) {
+                    var lista = JSON.parse(data);
+                    var string = '<option value=\"0\">Seleccione...</option>';
+                    for (var i = 0; i < lista.length; i++) {
+                        string += '<option value=\"' + lista[i].prodlab + '\">' + lista[i].prodlab + '</option>';
+                    }
+                    $('#lundetalle').html(string);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function guardarGastoDetalle() {
+            if (editar == 1) {
+                if ($('#costo').val() >= 0) {
+                    if ($('#idgastodetalle').val() == "0") {
+                        $('.icon-guardarmodal').attr('disabled', '');
+                        $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/gastodetalleventaCRL.php',
+                            data: {
+                                action: 'SaveGastosDetalle',
+                                iddetalle: $('#iddetalle').val(),
+                                idgastodetalle: $('#idgastodetalle').val(),
+                                fecha: $('#fechagasto').val(),
+                                serie: $('#serie').val(),
+                                correlativo: $('#numero').val(),
+                                costo: $('#costo').val(),
+                                idproveedor: $('#proveedor').val(),
+                                descripcion: $('#descdetalle').val(),
+                                observacion: $('#observacion').val(),
+                                tipodocumento: $('#tipodocumento').val(),
+                                tienda: idtienda
+                            },
+                            success: function (data) {
+                                if (data == 'OK') {
+                                    msgError("Exito!, Gasto guardado", "#94D613");
+                                    loadProductos();
+                                } else {
+                                    alert('Error, Actualize');
+                                }
+
+                                $('.icon-guardarmodal').removeAttr('disabled');
+                                $('.icon-guardarmodal').removeAttr('style');
+                                document.getElementById('divGastoDetalle').style.display = "none";
+                                //document.getElementById('cargandoGOP').style.display = "none";
+                            },
+                            error: function () {
+                                alert('Error, Actualize');
+                                //document.getElementById('cargandoGOP').style.display = "none";
+                            }
+                        });
+                    } else {
+                        document.getElementById('cargandoGOP').style.display = "block";
+                        $('.icon-guardarmodal').attr('disabled', '');
+                        $('.icon-guardarmodal').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/gastodetalleventaCRL.php',
+                            data: {
+                                action: 'UpdateGastosDetalle',
+                                iddetalle: $('#iddetalle').val(),
+                                idgastodetalle: $('#idgastodetalle').val(),
+                                fecha: $('#fechagasto').val(),
+                                serie: $('#serie').val(),
+                                correlativo: $('#numero').val(),
+                                costo: $('#costo').val(),
+                                idproveedor: $('#proveedor').val(),
+                                descripcion: $('#descdetalle').val(),
+                                observacion: $('#observacion').val(),
+                                tipodocumento: $('#tipodocumento').val(),
+                                tienda: idtienda
+                            },
+                            success: function (data) {
+                                if (data == 'OK') {
+                                    msgError("Exito!, Gasto actualizado", "#94D613");
+                                    loadProductos();
+                                } else {
+                                    alert('Error, Actualize');
+                                }
+
+                                $('.icon-guardarmodal').removeAttr('disabled');
+                                $('.icon-guardarmodal').removeAttr('style');
+                                document.getElementById('divGastoDetalle').style.display = "none";
+                            },
+                            error: function () {
+                                alert('Error, Actualize');
+                            }
+                        });
+                    }
+                } else {
+                    msgError("Debe ingresar un costo", "orange");
+                }
+            }
+        }
+
+        function EliminarGastoDetalle() {
+            if (confirm('¿Desea eliminar el gasto?')) {
+                $('#btneliminargd').attr('disabled', '');
+                $('#btneliminargd').attr('style', '  background: #BCBCBC; border-bottom: 5px solid #B1B0B0;');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '../crl/gastodetalleventaCRL.php',
+                    data: {
+                        action: 'DeleteGastosDetalle',
+                        iddetalle: $('#iddetalle').val()
+                    },
+                    success: function (data) {
+                        if (data == 'OK') {
+                            msgError("Exito!, Gasto eliminado", "#94D613");
+                            loadProductos();
+                        } else {
+                            alert('Error, Actualize');
+                        }
+
+                        $('.icon-guardarmodal').removeAttr('disabled');
+                        $('.icon-guardarmodal').removeAttr('style');
+                        $('#btneliminargd').removeAttr('disabled');
+                        $('#btneliminargd').removeAttr('style');
+                        document.getElementById('divGastoDetalle').style.display = "none";
+                        //document.getElementById('cargandoGOP').style.display = "none";
+                    },
+                    error: function () {
+                        alert('Error, Actualize');
+                        //document.getElementById('cargandoGOP').style.display = "none";
+                    }
+                });
+            }
+        }
+
+        estoyEnUnIframe();
+    </script>
+</body>
+
+</html>

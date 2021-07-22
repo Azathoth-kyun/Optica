@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    <style>
+        .tabs {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 300px;
+            background: #F5F5F5;
+            height: 100%;
+        }
+
+        .tabs input[type='radio'] {
+            position: absolute;
+            z-index: 1000;
+            width: 120px;
+            height: 40px;
+            left: 0px;
+            top: 0px;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            cursor: pointer;
+        }
+
+        .tabs input[type='radio']#tab-2 {
+            left: 120px;
+        }
+
+        .tabs .labels {
+            background: #E6E8E8;
+            line-height: 40px;
+            position: relative;
+            padding: 0 20px;
+            float: left;
+            width: 110px;
+            color: #6C818C !important;
+            text-align: center;
+            box-shadow: inset 0px -3px 26px #D6D6D6;
+        }
+
+        .tabs input[type='radio']:hover+.labels {
+            background: #F5F5F5;
+        }
+
+        .tabs input[type='radio']:checked+.labels {
+            background: #F5F5F5;
+            z-index: 6;
+            box-shadow: none;
+        }
+
+        .clear-shadow {
+            clear: both;
+        }
+
+        .content {
+            background: #FFAB00;
+            position: relative;
+            z-index: 5;
+        }
+
+        .content .divc {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0;
+            width: 100%;
+            transition: opacity linear 0.1s;
+        }
+
+        .tabs input[type='radio'].tab-selector-1:checked~.content .content-1,
+        .tabs input[type='radio'].tab-selector-2:checked~.content .content-2 {
+            z-index: 100;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            transition: opacity ease-out 0.2s 0.1s;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-button {
+            width: 8px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: gainsboro;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: gray;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, .6);
+        }
+
+        ::-webkit-scrollbar-thumb:window-inactive {
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .mfind {
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .mfind .icon-buscar {
+            margin-left: -2px;
+            cursor: pointer;
+        }
+
+        #buscar {
+            height: 21px;
+            border: none !important;
+            padding: 10px 60px 10px 10px;
+            width: calc(100% - 112px);
+        }
+
+        .content-2 .add-ls {
+            height: 358px;
+        }
+
+        .content-2 .add-cont {
+            background: #FFFFFF;
+        }
+
+        .NonC {
+            background: transparent !important;
+        }
+
+        #btnTotal {
+            display: inline-block;
+            width: 98px;
+            color: white;
+            text-align: center;
+            border-radius: 8px 0px 0px 8px;
+            cursor: pointer;
+        }
+
+
+        #btnFaltantes {
+            display: inline-block;
+            width: 98px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            margin-left: -4px;
+        }
+
+        #btnVerificadas {
+            display: inline-block;
+            width: 98px;
+            color: white;
+            text-align: center;
+            border-radius: 0px 8px 8px 0px;
+            cursor: pointer;
+            margin-left: -4px;
+        }
+
+        .btnSelect {
+            background: #6C818C;
+        }
+
+        .btnUnSelect {
+            background: #ABBBC3;
+        }
+
+        .btnSelectVer {
+            background: #ABBBC3;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+            }
+
+            body {
+                background: #fff;
+                color: #000;
+
+            }
+
+            .botones,
+            .tabs,
+            .modalbox,
+            .formulario,
+            .header-inventario,
+            .datatable thead {
+                display: none !important;
+            }
+
+            .inv-Repo {
+                position: relative !important;
+                top: 7px;
+                padding-bottom: 30px;
+            }
+
+            .cont-dad {
+                position: static !important;
+                right: 305px;
+                width: 100% !important;
+                top: 55px;
+            }
+
+            .ch {
+                background: #123268 !important;
+            }
+
+            .datatable {
+                border-collapse: collapse;
+                border-spacing: 0;
+                /*page-break-inside: avoid;*/
+            }
+
+            .datatable tbody {
+                display: table;
+                page-break-inside: auto;
+            }
+
+            .datatable tr {
+                border: 1px solid #ccc;
+                display: table-row-group;
+            }
+
+            .ch {
+                color: black;
+            }
+
+            .colorHeader {
+                -webkit-print-color-adjust: exact;
+                -moz-print-color-adjust: exact;
+                color: white;
+                background-color: rgba(30, 136, 229, 0.45) !important;
+            }
+
+            .close {
+                background: teal;
+                width: 10px;
+                height: 10px;
+                position: relative;
+            }
+
+            .close:after {
+                content: '';
+                height: 10px;
+                border-left: 2px solid #fff;
+                position: absolute;
+                transform: rotate(45deg);
+                left: 28px;
+            }
+
+            .close:before {
+                content: '';
+                height: 10px;
+                border-left: 2px solid #fff;
+                position: absolute;
+                transform: rotate(-45deg);
+                left: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body class="modal" onload="cargando();">
+    <div>
+        <div class="cont-dad" style="position: absolute;right: 15px !important;width: 607px;top: 15px;">
+            <div class="preload">
+                <img src="../img/cargando.gif" class="preload-img">
+            </div>
+            <div id="cargando" class="loadone" style="display: none;position: absolute; left: 47%; top: 40%;"></div>
+            <input type="hidden" id="fechageth" name="fechageth">
+            <input type="hidden" id="horageth" name="horageth">
+            <div class="tabla">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <td class="ColMS" style="width: 34px">#</td>
+                            <td style="width: 300px;">Cliente</td>
+                            <td style="width: 150px;">Tienda</td>
+                        </tr>
+                    </thead>
+                    <tbody id="data">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        function abrirOpto(id, nombre, apellidos) {
+            console.log(id);
+            console.log(nombre);
+            console.log(apellidos);
+            location.href = 'medicion.html?id=' + id + '&nombre=' + nombre + '&apellidos=' + apellidos;
+        }
+
+        function chaupac(id){
+            $.ajax({
+                type: 'POST',
+                url: '../crl/medicionCRL.php',
+                data: { action: 'chaupac', id:id},
+                success: function(data){
+                    alert('PACIENTE ELIMINADO CON EXITO');
+                    buscar();
+                },
+                error: function(){
+
+                }
+            })
+        }
+
+        function buscar() {
+            var string = '';
+            $.ajax({
+                type: 'POST',
+                url: '../crl/ventaCRL.php',
+                data: { action: 'clienteopto' },
+                success: function (data) {
+                    var lista = JSON.parse(data);
+                    console.log(lista);
+                    for (var i = 0; i < lista.length; i++) {
+                        string += '<tr>\n\
+                                    <td  class=\"ColMS atr ch\" style="width: 34px">' + (i + 1) + '</td>\n\
+                                    <td class=\"ColSM\" id="valorventa'+ (i + 1) + '" style="display: none; width: 400px;">' + lista[i][0] + '</td>\n\
+                                    <td onclick=\"abrirOpto(' + lista[i][0] + ', \'' + lista[i][2] + '\', \'' + lista[i][3] + '\');\" class=\"ColSM\" style="width: 300px;">' + lista[i][1] + '</td>\n\
+                                    <td style="width: 200px;">' + lista[i][4] + '<div onclick=\"chaupac(' + lista[i][0] + ');\" style="left: 200px;" class="close">X</div>  </td>\n\
+                                    </tr>';
+                    }
+                    $('#data').html(string);
+                }
+            })
+        }
+        buscar();
+        estoyEnUnIframe();
+    </script>
+</body>
+
+</html>

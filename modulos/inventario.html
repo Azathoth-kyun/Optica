@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style>
+
+            .tabs {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                width: 300px;
+                background: #F5F5F5;
+                height: 100%;
+            }
+            .tabs input[type='radio'] {
+                position: absolute;
+                z-index: 1000;
+                width: 120px;
+                height: 40px;
+                left: 0px;
+                top: 0px;
+                opacity: 0;
+                filter: alpha(opacity=0);
+                cursor: pointer;
+            }
+            .tabs input[type='radio']#tab-2{
+                left: 120px;
+            }
+            .tabs .labels {
+                background: #E6E8E8;
+                line-height: 40px;
+                position: relative;
+                padding: 0 20px;
+                float: left;
+                width: 110px;
+                color: #6C818C !important;
+                text-align: center;
+                box-shadow: inset 0px -3px 26px #D6D6D6;
+            }
+
+            .tabs input[type='radio']:hover + .labels  {
+                background: #F5F5F5;
+            }
+            .tabs input[type='radio']:checked + .labels  {
+                background: #F5F5F5;
+                z-index: 6;
+                box-shadow: none;
+            }
+
+            .clear-shadow {
+                clear: both;
+            }
+
+            .content {
+                background:#FFAB00;
+                position: relative;
+                z-index: 5;
+            }
+
+            .content .divc {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                opacity: 0;
+                width: 100%;
+                transition: opacity linear 0.1s;
+            }
+
+            .tabs input[type='radio'].tab-selector-1:checked ~ .content .content-1,
+            .tabs input[type='radio'].tab-selector-2:checked ~ .content .content-2{
+                z-index: 100;
+                filter: alpha(opacity=100);
+                opacity: 1;
+                transition: opacity ease-out 0.2s 0.1s;
+            }
+
+            ::-webkit-scrollbar{
+                width: 5px;
+            }
+            ::-webkit-scrollbar-button{
+                width:8px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track{
+                background:gainsboro;
+                -webkit-border-radius: 10px; 
+                border-radius: 10px; 
+            }
+            ::-webkit-scrollbar-thumb{
+                background:gray;
+                border-radius: 10px;
+                -webkit-border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:rgba(0,0,0,.6);
+            }
+            ::-webkit-scrollbar-thumb:window-inactive {
+                background: rgba(0,0,0,.1);
+            }
+            .mfind{
+                margin-left: 10px;
+                position: relative;
+            }
+            .mfind .icon-buscar{
+                margin-left: -2px;
+                cursor: pointer;
+            }
+            #buscar{
+                height: 21px;
+                border: none !important;
+                padding: 10px 60px 10px 10px;
+                width: calc(100% - 112px);
+            }
+            .content-2 .add-ls{
+                height: 358px;
+            }
+            .content-2 .add-cont{
+                background: #FFFFFF;
+            }
+            .NonC{
+                background: transparent !important;
+            }
+            #btnTotal{
+                display: inline-block;
+                width: 98px;
+                color: white;
+                text-align: center;
+                border-radius: 8px 0px 0px 8px;
+                cursor: pointer;
+            }
+            #btnFaltantes{
+                display: inline-block;
+                width: 98px;
+                color: white;
+                text-align: center;
+                cursor: pointer;
+                margin-left: -4px;
+            }
+            #btnVerificadas{
+                display: inline-block;
+                width: 98px;
+                color: white;
+                text-align: center;
+                border-radius: 0px 8px 8px 0px;
+                cursor: pointer;
+                margin-left: -4px;
+            }
+            .btnSelect{
+                background: #6C818C;
+            }
+            .btnUnSelect{
+                background: #ABBBC3;
+            }
+            .btnSelectVer{
+                background: #ABBBC3;
+            }
+            @media print{
+                @page {
+                    size: A4 portrait;
+                }
+                body { 
+                    background: #fff; 
+                    color: #000; 
+
+                }
+
+                .botones,
+                .tabs,
+                .modalbox,
+                .formulario,
+                .header-inventario,
+                .datatable thead{
+                    display: none !important;
+                }
+                
+                .inv-Repo{
+                    position: relative !important;
+                    top:7px;
+                    padding-bottom: 30px;
+                }
+                .cont-dad{
+                    position: static !important;
+                    right: 305px;
+                    width: 100% !important;
+                    top: 55px;
+                }
+                .ch{
+                    background: #123268 !important;
+                }
+                .datatable { 
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    /*page-break-inside: avoid;*/
+                }
+                .datatable tbody{
+                    display: table;
+                    page-break-inside: auto;
+                }
+                .datatable tr{
+                    border:1px solid #ccc;
+                    display: table-row-group;
+                }
+                .ch{
+                    color: black;
+                }
+                .colorHeader{
+                    -webkit-print-color-adjust: exact;
+                    -moz-print-color-adjust: exact;
+                    color: white;
+                    background-color: rgba(30, 136, 229, 0.45) !important;
+                }
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        
+        <div id="Modal" class="modalbox" style="display: block;z-index: 10;height: 25px;width: 1183px;position: absolute;top: 12px;box-shadow: 0 10px 35px 5px rgba(0, 0, 0, 0);">
+            <h2><span id="modalTitulo">Inventario de Almacen</span><a href="#" title="Cerrar" class="close icon-cerrar" onclick="closeModalFrame();"></a></h2>
+        </div>
+        <div>
+            <section class="tabs" style="margin-top: 35px; left: 0;">
+                <div id="blockttl"></div>
+                <input id="tab-10" type="radio" name="radio-sethist" class="tab-selector-2" disabled=""/>
+                <label for="tab-10" class="tab-label-2 labels " style="width: 260px;background: #F5F5F5;">Historial de Inventario</label>
+                
+                <div class="content-2 divc">
+                    <label class="add-titu"></label>
+                    <ul id="listaHistorial" style="height: 550px; margin-top: 15px">
+                    </ul>
+                </div>
+            </section>
+            <div class="cont-dad" style="position: absolute;right: 305px;width: 607px;top: 55px;">
+                <div class="preload">
+                    <img src="../img/cargando.gif" class="preload-img">
+                </div>
+                <div class="formulario">
+                    <div class="atras">
+                        <div style="position: absolute; top: 10px; right: 0px; width: 294px; height: 30px; border-radius: 8px;">
+                            <div id="blocklabel" style="position: absolute; width: 293px; height: 31px; display: none;"></div>
+                            <label id="btnTotal" class="btnSelect">Total</label>
+                            <label id="btnFaltantes" class="btnUnSelect">Faltantes</label>
+                            <label id="btnVerificadas" class="btnUnSelect">Verificadas</label>
+                        </div>
+                    </div>
+                    <input type="hidden" value="" name="action" id="action">
+                    <table style="width: 270px;">
+                        <tr>
+                            <td>
+                                <label>Tienda : </label>
+                            </td>
+                            <td style="width: 200px;">
+                                <div class="select-triangulo">
+                                    <select id="tiend" name="tiend">
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="cargando" class="loadone" style="display: none;position: absolute; left: 47%; top: 40%;"></div>
+                <input type="hidden" id="fechageth" name="fechageth">
+                <input type="hidden" id="horageth" name="horageth">
+                <div class="tabla">
+                    <table class="datatable">
+                        <thead>
+                            <tr>
+                                <td class="ColMS" style="width: 34px">Item</td>
+                                <td style="width: 60px;">Codigo</td>
+                                <td style="width: 416px;">Montura</td>
+                                <!--td class="ColOH">Tienda</td-->          
+                                <td class="ColMM" style="width: 57px;"></td>
+                            </tr>
+                        </thead>
+                        <tbody id="data">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="botones">
+                    <div id="totalTotal" class="add-item mfind" style="float: left; margin-top: 15px;">
+                        <label class="add-nom NonC" style="width: 45px;">Total:</label>
+                        <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                        <div class="add-cont" style="background: #FFFFFF">
+                            <label id="txtGTotaldown" style="color:#1A55DA !important"></label>
+                        </div>
+                    </div>
+                    <div id="totalFaltantes" class="add-item mfind" style="float: left; margin-top: 15px;">
+                        <label class="add-nom NonC" style="width: 70px;">Faltantes:</label>
+                        <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                        <div class="add-cont" style="background: #FFFFFF">
+                            <label id="txtGdownTotalFdown" style="color:red !important"></label>
+                        </div>
+                    </div>
+                    <div id="totalVerificadas" class="add-item mfind" style="display: none; float: left; margin-top: 15px;">
+                        <label class="add-nom NonC" style="width: 70px;">Verificadas</label>
+                        <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                        <div class="add-cont" style="background: #FFFFFF">
+                            <label id="txtGdownTotalVdown" style="color:#07BB07 !important"></label>
+                        </div>
+                    </div>
+                    <div class="msg" style="left: 155px; top: 8px;">mensaje</div>
+                    <button type="button" onclick="guardarHistorial();" id="btnGuardar" class="icon-guardar cl-guardar1" style="float: right;display: block; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Guardar</button>
+                    <button type="button" onclick="actualizando();" id="btnActualizar" class="icon-nuevo cl-guardar1" style="float: right;display: none; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Actualizar</button>
+                    <button type="button" onclick="imprimir();" id="btnS" class="icon-imprimir cl-guardar1" style="float: right;display: none; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Imprimir</button>
+                    <button type="button" onclick="imprimirTotal();" id="btnSTotal" class="icon-imprimir cl-guardar1" style="float: right;display: block; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Imprimir</button>
+                    <button type="button" onclick="imprimirVer();" id="btnSVer" class="icon-imprimir cl-guardar1" style="float: right;display: none; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Imprimir</button>
+                    <button type="button" onclick="imprimirFalthist();" id="btnSFalthist" class="icon-imprimir cl-guardar1" style="float: right;display: none; background:#BCBCBC;border-bottom: 5px solid #A7A6A6;margin-top: 12px;background-color: #bd1e1e; border-bottom: 5px solid #b6071e;">Imprimir</button>
+                    
+                </div>
+            </div>
+            <section class="tabs" style="margin-top: 35px">
+                <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" />
+                <label for="tab-1" class="tab-label-1 labels ">Check</label>
+
+                <input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
+                <label for="tab-2" class="tab-label-2 labels ">Resumen</label>
+                <div class="clear-shadow"></div>
+
+                <div class="content">
+                    <div class="content-1 divc">
+                        <label class="add-titu">Buscar:</label>
+                        <div class="add-item mfind">
+                            <input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo">
+                            <div class="add-cont cl-btnBusca2" >
+                                <label class="icon-buscar" onclick="busc();"></label>
+                            </div>
+                        </div>
+                        <ul class="add-ls">
+
+                        </ul>
+                    </div>
+                    <div class="content-2 divc">
+                        <br>
+                        <div class="add-item mfind">
+                            <label class="add-nom NonC">Total</label>
+                            <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                            <div class="add-cont" style="background: #FFFFFF">
+                                <label id="txtGTotal" style="color:#1A55DA !important"></label>
+                            </div>
+                        </div>
+                        <div class="add-item mfind">
+                            <label class="add-nom  NonC">Verificadas</label>
+                            <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                            <div class="add-cont" style="background: #FFFFFF">
+                                <label id="txtGTotalV" style="color:#07BB07 !important"></label>
+                            </div>
+                        </div>
+                        <div class="add-item mfind">
+                            <label class="add-nom  NonC">Faltantes</label>
+                            <!--input type="text" id="buscar" name="buscar" class="add-nom" placeholder="Codigo"-->
+                            <div class="add-cont" style="background: #FFFFFF">
+                                <label id="txtGTotalF" style="color:red !important"></label>
+                            </div>
+                        </div>
+                        <label class="add-titu">Cantidad de Faltantes:</label>
+                        <ul class="add-ls" style="height: 345px;">
+
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="bloqueo">
+            <div class="advertenciaMainContant">
+                <div class="titleMainCpontent">
+                    <p class="titleAdvertencia">Advertencia</p>
+                </div>
+                <div class="contenidoMain">
+                    <p class="textMainAlert">el código ingresado no es válido</p>
+                    <p class="textDescription">Por favor, verificar el código <br /> y vuelva a ingresarlo</p>
+                    <a href="#" class="btnAceptar" onclick="$('.bloqueo').css('display', 'none');
+                            $('#buscar').focus();">Aceptar</a>
+
+                    <figure class="imgAdvertenciaContent">
+                        <img src="../img/icoAdvertencia2.svg" class="imgAdvertencia">
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+            window.parent.hiddenWindowTittle();
+            window.parent.cargarpanelconfig();
+                        var prod = $_GET('t');
+                        var listaProductos = [];
+                        var verificados = [];
+                        var contador = 0;
+                        var listTiendas = [];
+                        var tprev;
+                        window.parent.resizeModal(1180, 635);
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/tiendasCRL.php',
+                            data: {action: 'listarTiendasSelect'},
+                            success: function (data) {
+                                var tienda = JSON.parse(data);
+                                var string = '<option value=\"0\">Seleccione...</option>';
+                                string = '';
+                                for (var i = 0; i < tienda.length; i++) {
+                                    string += '<option value=\"' + tienda[i][0] + '\">' + tienda[i][1] + '</option>';
+                                    listTiendas[tienda[i][0]]=tienda[i][1];
+                                }
+                                $('#tiend').html(string);
+                                if (prod != '1') {
+                                    $('#tiend').attr('disabled', '');
+                                }
+                                $('#tiend').val(prod);
+                                tprev = $('#tiend').val();
+                                listarHistorial();
+                            },
+                            error: function () {
+                            }
+                        });
+                        iniciar();
+                        function listarProductos(estado) {
+                            var aux = listaProductos;
+                            $('#datos-env').text(listaProductos.length);
+                            var string = '';
+                            if (estado == 'faltantes') {
+                                var c=0;
+                                for (var i = 0; i < aux.length; i++) {
+                                    
+                                    var clase = "class=\"unCheck\"";
+                                    for (var j = 0; j < verificados.length; j++) {
+                                        if (aux[i][0] == verificados[j][0]) {
+                                            clase = "class=\"check\"";
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (clase == "class=\"unCheck\"") {
+                                        string += '<tr>\n\
+                                       <td  class=\"ColMS atr ch\" style="width: 34px">' + (c + 1) + '</td>\n\
+                                       <td class=\"ColSM\" style="width: 60px;">' + aux[i][0] + '</td>\n\
+                                       <td style="width: 416px;">' + aux[i][1] + '</td>\n\
+                                       <td class="ColMM" style="width: 53px;"><div ' + clase + '></div></td>\n\
+                                       </tr>';
+                                        c++;
+                                        
+                                        
+                                    }
+                                }
+                            }else if (estado == 'verificados') {
+                                var c=0;
+                                for (var i = 0; i < aux.length; i++) {
+                                    
+                                    var clase = "class=\"unCheck\"";
+                                    for (var j = 0; j < verificados.length; j++) {
+                                        if (aux[i][0] == verificados[j][0]) {
+                                            clase = "class=\"check\"";
+                                            break;
+                                        }
+                                    }
+                                    if (clase == "class=\"check\"") {
+                                        string += '<tr>\n\
+                                       <td  class=\"ColMS atr ch\" style="width: 34px">' + (c + 1) + '</td>\n\
+                                       <td class=\"ColSM\" style="width: 60px;">' + aux[i][0] + '</td>\n\
+                                       <td style="width: 416px;">' + aux[i][1] + '</td>\n\
+                                       <td class="ColMM" style="width: 53px;"><div ' + clase + '></div></td>\n\
+                                       </tr>';
+                                        c++;
+                                        
+                                        
+                                    }
+                                }
+                            }else {
+                                for (var i = 0; i < aux.length; i++) {
+                                    var clase = "class=\"unCheck\"";
+                                    for (var j = 0; j < verificados.length; j++) {
+                                        if (aux[i][0] == verificados[j][0]) {
+                                            clase = "class=\"check\"";
+                                            break;
+                                        }
+                                    }
+                                    string += '<tr>\n\
+                                       <td  class=\"ColMS atr ch\" style="width: 34px">' + (i + 1) + '</td>\n\
+                                       <td class=\"ColSM\" style="width: 60px;">' + aux[i][0] + '</td>\n\
+                                       <td style="width: 416px;">' + aux[i][1] + '</td>\n\
+                                       <td style="width: 53px;"><div ' + clase + '></div></td>\n\
+                                       </tr>';
+                                }
+                
+                            }
+                            for (var i = 0; i < (16 - aux.length); i++) {
+                                string += '<tr>\n\
+                                   <td  class=\"ColMS  atr ch\" style="width: 34px"></td>\n\
+                                   <td class=\"ColSM\" style="width: 60px;"></td>\n\
+                                   <!\-\- td class=\"idCol\"></td \-\->\n\
+                                   <td style="width: 416px;">&nbsp;</td>\n\
+                                   <\!\-\-td  class=\"ColOH\"></td\-\->\n\
+                                   <td class=\"ColMM\" style="width: 53px;"><div></div></td></tr>';
+                            }
+                            $('#data').html(string);
+                            //$("#data").animate({scrollTop: $('#data')[0].scrollHeight}, 1000);
+                            //formatoTabla('390px');
+                        }
+                        var faltantes = [];
+                        function listarfaltantes() {
+                            faltantes = [];
+                            for (var i = 0; i < listaProductos.length; i++) {
+                                var add = true;
+                                for (var j = 0; j < verificados.length; j++) {
+                                    if (listaProductos[i][0] == verificados[j][0]) {
+                                        add = false;
+                                        break;
+                                    }
+                                }
+                                if (add) {
+                                    faltantes.push([listaProductos[i][0], listaProductos[i][2]]);
+                                }
+                            }
+                            //alert(listaProductos.length);
+                            $('#txtGTotal').text(listaProductos.length);
+                            $('#txtGTotaldown').text(listaProductos.length);
+                            $('#txtGTotalV').text(verificados.length);
+                            $('#txtGTotalF').text(faltantes.length);
+                            $('#txtGdownTotalFdown').text(faltantes.length);
+                            $('#txtGdownTotalVdown').text(verificados.length);
+                            
+                            var lista = [];
+                            for (var i = 0; i < faltantes.length; i++) {
+                                var isnew = true;
+                                var edit = -1;
+                                for (var j = 0; j < lista.length; j++) {
+                                    if (faltantes[i][1] == lista[j][0]) {
+                                        isnew = false;
+                                        edit = j;
+                                    }
+                                }
+                                if (isnew) {
+                                    lista.push([faltantes[i][1], 1]);
+                                } else {
+                                    var a = lista[edit][1];
+                                    a = a + 1;
+                                    lista[edit][1] = a;
+                                }
+                            }
+                            $(".content-2 .add-ls").html("");
+                            for (var i = 0; i < lista.length; i++) {
+                                var string = '<li class="add-item">\n\
+                                          <label class="add-nom">' + lista[i][0] + '</label>\n\
+                                          <div class="add-cont">\n\
+                                          <label>' + lista[i][1] + '</label>\n\
+                                          </div>\n\
+                                          </li>';
+                                $(".content-2 .add-ls").append(string);
+                            }
+                            $(".content-2 .add-ls").animate({scrollTop: $('.content-2 .add-ls')[0].scrollHeight}, 1000);
+                        }
+                        //aca lista
+                        function listarVerificado() {
+                            $(".content-1 .add-ls").html("");
+                            for (var i = 0; i < verificados.length; i++) {
+                                var string = '<li class="add-item">\n\
+                                          <label class="add-nom">' + verificados[i][0] + '</label>\n\
+                                          <div class="add-cont cl-pointVerde">\n\
+                                          </div>\n\
+                                          </li>';
+                                $(".content-1 .add-ls").append(string);
+                            }
+                            $(".content-1 .add-ls").animate({scrollTop: $('.content-1 .add-ls')[0].scrollHeight}, 1000);
+                        }
+                        function iniciar() {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/monturasCRL.php',
+                                data: {action: 'listxtienda', tienda: prod},
+                                success: function (data) {
+                                    //alert(data);
+                                    listaProductos = JSON.parse(data);
+                                    listarfaltantes();
+                                    listarProductos('total');
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                        function imprimir() {
+                            if($('#data').html()!=""){
+                                var cadena = "<tr style='border:0'><td colspan='4'>LISTA DE MONTURAS/ARMAZONES FALTANTES</td> </tr>\n\
+                                        <tr style='border:0'><td colspan='4'>ÓPTICA "+listTiendas[$('#tiend').val()]+"</td></tr>\n\
+                                        <tr class=\"colorHeader\">\n\
+                                       <td  class=\"ColMS\">#</td>\n\
+                                       <td class=\"ColSM\">cod.</td>\n\
+                                       <td>Montura</td>\n\
+                                       <td class=\"ColMM\"></td></tr>";
+                                       
+                                var string = $('#data').html();
+                                string = cadena + string;
+                                $('#data').html(string);
+                                //formatoTabla('390px');
+                                window.print();
+                                listarProductos('faltantes');
+                            }else{
+                                msgError("No hay datos para impresión", "#FFAA0F");
+                            }
+                        }
+                        function imprimirTotal() {
+                            if($('#data').html()!=""){
+                                var cadena = "<tr style='border:0'><td colspan='4'>LISTA TOTAL DE MONTURAS/ARMAZONES </td> </tr>\n\
+                                        <tr style='border:0'><td colspan='4'>ÓPTICA "+listTiendas[$('#tiend').val()]+"</td></tr>\n\
+                                        <tr class=\"colorHeader\">\n\
+                                       <td  class=\"ColMS\">#</td>\n\
+                                       <td class=\"ColSM\">cod.</td>\n\
+                                       <td>Montura</td>\n\
+                                       <td class=\"ColMM\"></td></tr>";
+                                var string = $('#data').html();
+                                string = cadena + string;
+                                $('#data').html(string);
+                                //formatoTabla('390px');
+                                window.print();
+                                listarProductos('total');
+                            }else{
+                                msgError("No hay datos para impresión", "#FFAA0F");
+                            }
+                        }
+                        function imprimirVer() {
+                            if($('#data').html()!=""){
+                                var cadena = "<tr style='border:0;'><td colspan='4'>LISTA DE MONTURAS/ARMAZONES VERIFICADAS</td></tr>\n\
+                                        <tr style='border:0;'><td colspan='4'>ÓPTICA "+listTiendas[$('#tiend').val()]+"</td></tr>\n\
+                                        <tr class=\"colorHeader\">\n\
+                                       <td  class=\"ColMS\">#</td>\n\
+                                       <td class=\"ColSM\">cod.</td>\n\
+                                       <td>Montura</td>\n\
+                                       <td class=\"ColMM\"></td></tr>";
+                                var string = $('#data').html();
+                                string = cadena + string;
+                                $('#data').html(string);
+                                //formatoTabla('390px');
+                                window.print();
+                                listarProductos('verificados');
+                            }else{
+                                msgError("No hay datos para impresión", "#FFAA0F");
+                            }
+                        }
+                        $('#buscar').keyup(function (e) {
+                            if (e.keyCode == 13) {
+                                var cod = $("#buscar").val();
+                                if (!isNaN(cod)) {
+                                    var s = cod.length;
+                                    var ncod = 'M';
+                                    for (var i = 0; i < (7 - (s + 1)); i++) {
+                                        ncod += '0';
+                                    }
+                                    cod = ncod + cod;
+                                }
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/monturasCRL.php',
+                                    data: {action: 'getMonInv', codigo: cod, tienda: prod},
+                                    success: function (data) {
+                                        if (data != "null") {
+                                            var montura = JSON.parse(data);
+                                            var temp = [montura[0], montura[1]];
+                                            var agg = true;
+                                            for (var i = 0; i < verificados.length; i++) {
+                                                if (verificados[i][0] == montura[0]) {
+                                                    agg = false;
+                                                }
+                                            }
+                                            if (agg) {
+                                                console.log(temp);
+                                                verificados.push(temp);
+                                                contador++;
+                                                console.log(verificados);
+                                                listarVerificado();
+                                                listarfaltantes();
+                                                listarProductos('total');
+                                                $('#buscar').focus();
+                                            } else {
+                                                $('.textMainAlert').text('el código ya fue ingresado');
+                                                $('.textDescription').html('Por favor, verificar <br/> el código de la montura.');
+                                                $('.bloqueo').css("display", "block");
+                                                $('#buscar').select();
+                                                $('#buscar').blur();
+                                            }
+                                        } else {
+                                            $('.textMainAlert').text('el código ingresado no es valido');
+                                            $('.textDescription').html('Por favor, verificar el código <br/>escaneado y vuelva a escanearlo');
+                                            $('.bloqueo').css("display", "block");
+                                            $('#buscar').select();
+                                            $('#buscar').blur();
+                                        }
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            }
+                        });
+                        function busc() {
+                            var cod = $("#buscar").val();
+                            if (!isNaN(cod)) {
+                                var s = cod.length;
+                                var ncod = 'M';
+                                for (var i = 0; i < (7 - (s + 1)); i++) {
+                                    ncod += '0';
+                                }
+                                cod = ncod + cod;
+                            }
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/monturasCRL.php',
+                                data: {action: 'getMonInv', codigo: cod, tienda: prod},
+                                success: function (data) {
+                                    if (data != "null") {
+                                        var montura = JSON.parse(data);
+                                        var temp = [montura[0], montura[1]];
+                                        var agg = true;
+                                        for (var i = 0; i < verificados.length; i++) {
+                                            if (verificados[i][0] == montura[0]) {
+                                                agg = false;
+                                            }
+                                        }
+                                        if (agg) {
+                                            verificados.push(temp);
+                                            contador++;
+                                            console.log(verificados);
+                                            listarVerificado();
+                                            listarfaltantes();
+                                            listarProductos('total');
+                                            $('#buscar').focus();
+                                        } else {
+                                            $('.textMainAlert').text('el código ya fue ingresado');
+                                            $('.textDescription').html('Por favor, verificar <br/> el código de la montura.');
+                                            $('.bloqueo').css("display", "block");
+                                            $('#buscar').select();
+                                            $('#buscar').blur();
+                                        }
+                                    } else {
+                                        $('.textMainAlert').text('el código ingresado no es valido');
+                                        $('.textDescription').html('Por favor, verificar el código <br/>escaneado y vuelva a intentarlo');
+                                        $('.bloqueo').css("display", "block");
+                                        $('#buscar').select();
+                                        $('#buscar').blur();
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+
+                        }
+                        $('body').keyup(function (e) {
+                            if (e.keyCode == 27) {
+                                $('.bloqueo').css("display", "none");
+                                $('#buscar').focus();
+                            }
+                        });
+                        
+                        $('#tiend').change(function () {
+                            listarHistorial();
+                            
+                            document.getElementById('btnSTotal').style.display = "block";
+                            document.getElementById('btnSFalthist').style.display = "none";
+                            document.getElementById('btnSVer').style.display = "none";
+                            document.getElementById('btnS').style.display = "none";
+                            
+                            document.getElementById("tab-1").checked=1;
+                            document.getElementById("tab-1").disabled=false;
+                            document.getElementById('blocklabel').style.display = "none";
+                            document.getElementById("tab-2").checked=0;
+                            if(verificados.length>0){
+                                if(confirm('El inventario ha sido iniciado. Está seguro que desea cambiar de tienda?')){
+                                    prod = $('#tiend').val();
+                                    verificados = [];
+                                    iniciar();
+                                    listarVerificado();
+                                    listarfaltantes();
+                                    listarProductos('total');
+                                    $('#btnTotal').attr('class', 'btnSelect');
+                                    $('#btnFaltantes').attr('class', 'btnUnSelect');
+                                    $('#btnVerificadas').attr('class', 'btnUnSelect');
+                                    $('#buscar').focus();
+                                    tprev=$('#tiend').val();
+                                }else{
+                                    $('#tiend').val(tprev);
+                                }
+                            }else{
+                                prod = $('#tiend').val();
+                                verificados = [];
+                                iniciar();
+                                listarVerificado();
+                                listarfaltantes();
+                                listarProductos('total');
+                                $('#btnTotal').attr('class', 'btnSelect');
+                                $('#btnFaltantes').attr('class', 'btnUnSelect');
+                                $('#btnVerificadas').attr('class', 'btnUnSelect');
+                                $('#buscar').focus();
+                                tprev=$('#tiend').val();
+                            }
+                        });
+                        $("#buscar").focusin(function () {
+                            $('#buscar').val('');
+                        });
+                        document.getElementById('totalFaltantes').style.display = "none";
+                        $('#btnTotal').click(function () {
+                            document.getElementById('totalTotal').style.display = "block";
+                            document.getElementById('totalFaltantes').style.display = "none";
+                            document.getElementById('totalVerificadas').style.display = "none";
+                            
+                            document.getElementById('btnS').style.display = "none";
+                            document.getElementById('btnSTotal').style.display = "block";
+                            document.getElementById('btnSVer').style.display = "none";
+                            
+                            var estado = $('#btnTotal').attr('class');
+                            if (estado == 'btnUnSelect') {
+                                $('#btnTotal').attr('class', 'btnSelect');
+                                $('#btnFaltantes').attr('class', 'btnUnSelect');
+                                $('#btnVerificadas').attr('class', 'btnUnSelect');
+                                listarProductos('total');
+                            }
+                        });
+                        $('#btnFaltantes').click(function () {
+                            document.getElementById('totalTotal').style.display = "none";
+                            document.getElementById('totalFaltantes').style.display = "block";
+                            document.getElementById('totalVerificadas').style.display = "none";
+                            
+                            document.getElementById('btnS').style.display = "none";
+                            document.getElementById('btnSTotal').style.display = "none";
+                            document.getElementById('btnSVer').style.display = "none";
+                            
+                            var estado = $('#btnFaltantes').attr('class');
+                            if (estado == 'btnUnSelect') {
+                                $('#btnFaltantes').attr('class', 'btnSelect');
+                                $('#btnTotal').attr('class', 'btnUnSelect');
+                                $('#btnVerificadas').attr('class', 'btnUnSelect');
+                                listarProductos('faltantes');
+                            }
+                        });
+                        $('#btnVerificadas').click(function () {
+                            document.getElementById('totalTotal').style.display = "none";
+                            document.getElementById('totalFaltantes').style.display = "none";
+                            document.getElementById('totalVerificadas').style.display = "block";
+                            
+                            document.getElementById('btnS').style.display = "none";
+                            document.getElementById('btnSTotal').style.display = "none";
+                            document.getElementById('btnSVer').style.display = "block";
+                            document.getElementById('btnSFalthist').style.display = "none";
+                            
+                            var estado = $('#btnVerificadas').attr('class');
+                            if (estado == 'btnUnSelect') {
+                                $('#btnFaltantes').attr('class', 'btnUnSelect');
+                                $('#btnTotal').attr('class', 'btnUnSelect');
+                                $('#btnVerificadas').attr('class', 'btnSelect');
+                                listarProductos('verificados');
+                            }
+                        });
+                        
+                        function closeModalFrame(){
+                            if(verificados.length>0){
+                                if(confirm('El inventario ha sido iniciado. Está seguro que desea salir?')){
+                                    window.parent.closeModal();
+                                }
+                            }else{
+                                window.parent.closeModal();
+                            }
+                        }
+                        
+                        function imprimirFalthist() {
+                            if($('#data').html()!=""){
+                                var cadena = "<tr style='border:0'><td colspan='4'>LISTA DE MONTURAS/ARMAZONES FALTANTES</td> </tr>\n\
+                                        <tr style='border:0'><td colspan='4'>ÓPTICA "+listTiendas[$('#tiend').val()]+"</td></tr>\n\
+                                        <tr style='border:0'><td colspan='4'>Fecha "+$('#fechageth').val()+" / Hora "+$('#horageth').val()+"</td></tr>\n\
+                                        <tr class=\"colorHeader\">\n\
+                                       <td  class=\"ColMS\">#</td>\n\
+                                       <td class=\"ColSM\">cod.</td>\n\
+                                       <td>Montura</td>\n\
+                                       <td class=\"ColMM\"></td></tr>";
+                                var string = $('#data').html();
+                                string = cadena + string;
+                                $('#data').html(string);
+                                //formatoTabla('390px');
+                                window.print();
+                                imprimirHistorialFaltantes();
+                            }else{
+                                msgError("No hay datos para impresión", "#FFAA0F");
+                            }
+                        }
+                        var stringHistorial="";
+                        function getHistorial(idhistorial, total, totalv, totalf, fecha, hora){
+                            if(verificados.length>0){
+                                if(confirm('El inventario ha sido iniciado. Seguro que desea salir?')){
+                                    cargarDataHistorial(idhistorial, total, totalv, totalf, fecha, hora);
+                                }
+                            }else{
+                                cargarDataHistorial(idhistorial, total, totalv, totalf, fecha, hora);
+                            }
+                        }
+                        function actualizando(){
+                            prod = $('#tiend').val();
+                            iniciar();
+                            listarVerificado();
+                            listarProductos('total');
+                            document.getElementById('blocklabel').style.display = "none";
+                            document.getElementById("btnGuardar").style.display="block";
+                            document.getElementById("btnActualizar").style.display="none";
+                            $('#btnTotal').attr('class', 'btnSelect');
+                            $('#btnFaltantes').attr('class', 'btnUnSelect');
+                            $('#btnVerificadas').attr('class', 'btnUnSelect');
+                            document.getElementById("tab-1").disabled=false;
+                            $('#buscar').focus();
+                            tprev=$('#tiend').val();
+                        }
+                        function cargarDataHistorial(idhistorial, total, totalv, totalf, fecha, hora){
+                            $("#data").html("");
+                            stringHistorial="";
+                            $("#fechageth").val(fecha);
+                            $("#horageth").val(hora);
+
+                            document.getElementById('btnS').style.display = "none";
+                            document.getElementById('btnSTotal').style.display = "none";
+                            document.getElementById('btnSVer').style.display = "none";
+                            document.getElementById('btnSFalthist').style.display = "block";
+
+                            document.getElementById('cargando').style.display = 'block';
+                            $('#btnFaltantes').attr('class', 'btnSelect');
+                            $('#btnTotal').attr('class', 'btnUnSelect');
+                            $('#btnVerificadas').attr('class', 'btnUnSelect');
+
+                            document.getElementById("btnGuardar").style.display="none";
+                            document.getElementById("btnActualizar").style.display="block";
+
+                            document.getElementById("tab-1").checked=0;
+                            document.getElementById("tab-1").disabled=true;
+                            document.getElementById("tab-2").checked=1;
+
+                            document.getElementById('blocklabel').style.display = "block";
+                            //document.getElementById("btnFaltantes").style.marginRight = "98px";
+                            //document.getElementById('btnFaltantes').style.cssFloat = "right";
+                            //document.getElementById('btnVerificadas').style.display = "none";
+
+                            document.getElementById('totalTotal').style.display = "none";
+                            document.getElementById('totalFaltantes').style.display = "block";
+                            document.getElementById('totalVerificadas').style.display = "none";
+
+                            $('#txtGTotal').text(total);
+                            $('#txtGTotaldown').text(total);
+                            $('#txtGTotalV').text(totalv);
+                            $('#txtGTotalF').text(totalf);
+                            $('#txtGdownTotalFdown').text(totalf);
+                            $('#txtGdownTotalVdown').text(totalv);
+                            var aux = listaProductos;
+                            var aux_list= [];
+                            var aux_list2= [];
+                            var auxx= [];
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/inventarioCRL.php',
+                                data: {action: 'listarDetalleInventario', idhistorial: idhistorial},
+                                success: function (data) {
+                                    var lista = JSON.parse(data);
+                                    for (let index = 0; index < lista.length; index++) {
+                                        aux_list.push(lista[index][1]);
+                                    }
+                                    for (let index = 0; index < aux.length; index++) {
+                                        aux_list2.push(aux[index][0]);
+                                    }
+                                    console.log(aux_list);
+                                    console.log(aux_list2);
+                                    aux_list2= aux_list2.filter(function(item){
+                                        return !aux_list.includes(item);
+                                    });
+                                    console.log(aux_list2);
+                                    console.log(aux);
+                                    verificados= [];
+                                    for (let i = 0; i < aux_list2.length; i++) {
+                                        for (let index = 0; index < aux.length; index++) {
+                                            if(aux_list2[i]==aux[index][0]){
+                                                auxx.push(aux[index]);
+                                            }
+                                        }
+                                    }
+                                    for (q=0;q<auxx.length;q++){
+                                        verificados.push(auxx[q]);
+                                    }
+                                    console.log(verificados);
+                                    if(totalv!=verificados.length){
+                                        alert('DATOS EN PROCESO, RECARGAR LA PAGINA POR FAVOR');
+                                        $("#btnActualizar").attr("disabled", true);
+                                        document.getElementById('btnActualizar').style.display = "none";;
+                                    }
+                                    // listarVerificado();
+                                    // for (var i = 0; i < aux_list.length; i++) {
+                                    // var string = '<li class="add-item">\n\
+                                    //         <label class="add-nom">' + aux_list[i][0] + '</label>\n\
+                                    //         <div class="add-cont cl-pointVerde">\n\
+                                    //         </div>\n\
+                                    //         </li>';
+                                    // $(".content-1 .add-ls").append(string);
+                                    // }
+                                    for (var i = 0; i < lista.length; i++) {
+                                        stringHistorial += '<tr>\n\
+                                        <td  class=\"ColMS atr ch\" style="width: 34px">' + (i + 1) + '</td>\n\
+                                        <td class=\"ColSM\" style="width: 60px;">' + lista[i].idmonturas + '</td>\n\
+                                        <td style="width: 416px;">' + lista[i].montura + '</td>\n\
+                                        <td class="ColMM" style="width: 53px;"><div class="unCheck"></div></td>\n\
+                                        </tr>';
+                                    }
+                                    imprimirHistorialFaltantes();
+                                },
+                                error: function () {
+                                    
+                                }
+                            });
+                            
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/inventarioCRL.php',
+                                data: {action: 'listarFaltantesByMarca', idhistorial: idhistorial},
+                                success: function (data) {
+                                    var lista = JSON.parse(data);
+
+                                    $(".content-2 .add-ls").html("");
+                                    for (var i = 0; i < lista.length; i++) {
+                                        var string = '<li class="add-item">\n\
+                                                  <label class="add-nom">' + lista[i].marca + '</label>\n\
+                                                  <div class="add-cont">\n\
+                                                  <label>' + lista[i].total + '</label>\n\
+                                                  </div>\n\
+                                                  </li>';
+                                        $(".content-2 .add-ls").append(string);
+                                    }
+                                    $(".content-2 .add-ls").animate({scrollTop: $('.content-2 .add-ls')[0].scrollHeight}, 1000);
+                                    
+                                },
+                                error: function () {
+                                    
+                                }
+                            });
+                            
+                        }
+                        
+                        function imprimirHistorialFaltantes(){
+                            $('#data').html(stringHistorial);
+                            document.getElementById('cargando').style.display = 'none';
+                        }
+                        
+                        function listarHistorial(){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/inventarioCRL.php',
+                                data: {action: 'listarHistorialInventario', idtienda: $('#tiend').val()},
+                                success: function (data) {
+                                    var lista = JSON.parse(data);
+                                    
+                                    $("#listaHistorial").html("");
+                                    for (var i = 0; i < lista.length; i++) {
+                                        var string = '<li class="add-item">\n\
+                                                  <label class="add-nom" onclick="getHistorial('+lista[i].idhistorial+', '+lista[i].total+', '+lista[i].totalverificados+', '+lista[i].totalfaltantes+', \''+toFecha(lista[i].fecha)+'\', \''+lista[i].hora+'\')" style="cursor:pointer;">' + toFecha(lista[i].fecha) + '</label>\n\
+                                                  <div class="add-cont" style="width: 50px;">\n\
+                                                  <label>' + lista[i].hora + '</label>\n\
+                                                  </div>\n\
+                                                  </li>';
+                                        $("#listaHistorial").append(string);
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+
+                        function guardarHistorial(){
+                            if (verificados.length <= 0) {
+                                msgError("No hay monturas verificadas", "#FFAA0F");
+                                $('#buscar').focus();
+                            }  else {
+                                if (confirm('Desea Guardar?')) {
+                                    //var fechas = fecha();
+                                    //var horas = hora();
+                                    var faltan = JSON.stringify(faltantes);
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/inventarioCRL.php',
+                                        data: {action: 'registroHistInventario', faltantes: faltan, total: listaProductos.length, totalv: verificados.length, totalf: faltantes.length, idtienda: $('#tiend').val()},
+                                        success: function (data) {
+                                            if (data == "OK") {
+                                                msgError("Exito!, Inventario guardado", "#94D613");
+                                                listarHistorial();
+                                            } else {
+                                                msgError("Error!, porfavor intentelo otra vez", "#F77474");
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        
+                        $('#data').css('height', '430px');
+                        estoyEnUnIframe();
+        </script>
+    </body>
+</html>

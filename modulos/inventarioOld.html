@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <div class="header-inventario">
+                <div class="filtro">
+                    <table>
+                        <tr style="height: 70px;">
+                            <td style="width: 120px">
+                                <label for="carac">Categoria</label>
+                                <div class="select-triangulo">
+                                    <select id="carac" onchange="loadCombos();limpiarList();" >
+                                        <option value="0">Todos</option>
+                                        <option value="tipo">Tipo</option>
+                                        <option value="clasificacion">Clasificación</option>
+                                        <option value="marca">marca</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td style="width: 180px">
+                                <label for="tipo">Característica</label>
+                                <div class="select-triangulo">
+                                    <select id="tipo" onchange="limpiarList();" >
+                                    </select>
+                                </div>
+                            </td>
+                            <td style="width: 60px"><button type="button" class="icon-buscar" id="find" onclick="loadInventario();"></button></td>
+                            <td><label id="contRow"></label></td>
+                        </tr>
+                    </table><label id="contRow"></label>
+                </div>
+                <img src="../img/logo_intercel-negro.png" class="logo-inv">
+            </div>
+            <div class="inv-Repo">
+                <div class="header-inventario-print">
+                    <img  src="../img/logo_sistema.png" class="logo-inv">
+                    <h2 id="tituloReporte"></h2>
+                </div>
+            </div>
+            <table style="margin-top: 15px;" id="rfind">
+                <tr >
+                    <td class="col-xs">
+                        <label for="cod">Codigo</label>
+                        <input type="text" id="cod" name="cod"/>
+                    </td>
+                    <!-- td class="col-xs">
+                        <label for="idp">Id</label>
+                        <input type="text" id="idp" name="idp" disabled=""/>
+                    </td -->
+                    <td class="ColXXXX">
+                        <label for="prod">Producto</label>
+                        <input type="text" id="prod" name="prod" disabled=""/>
+                    </td>
+                    <td>
+                        <label for="costo">Costo</label>
+                        <input type="text" id="costo" name="costo" disabled=""/>
+                    </td>
+
+                    <td>
+                        <label for="pxm">PxM</label>
+                        <input type="text" id="pxm" name="pxm" disabled=""/>
+                    </td>
+                    <td >
+                        <label for="pxp">PxP</label>
+                        <input type="text" id="pxp" name="pxp" disabled=""/>
+                    </td>
+                    <td>
+                        <label for="pvp">PvP</label>
+                        <input type="text" id="pvp" name="pvp" disabled=""/>
+                    </td>
+                    <td>
+                        <label for="tope">Tope</label>
+                        <input type="text" id="tope" name="tope" disabled=""/>
+                    </td>
+                    <td >
+                        <label for="cant">Cantidad</label>
+                        <input type="text" id="cant" name="cant" disabled=""/>
+                    </td>
+                    <td >
+                        <label for="sm">Stock Min.</label>
+                        <input type="text" id="sm" name="sm" disabled=""/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColMMM">Codigo</td>
+                        <!-- td>ID</td -->
+                        <td class="ColXXXXM">Producto</td>
+                        <td>Costo</td> 
+                        <td>PxM</td> 
+                        <td>PxP</td> 
+                        <td>PvP</td> 
+                        <td>Desc. Min.</td> 
+                        <td>Cant.</td>  
+                        <td>S. Min.</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+
+                </tbody>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <button type="button" onclick="imprimir();" class="icon-imprimir" style="padding-right: 5px;">Imprimir</button>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    var prod = $_GET('t');
+                    if (prod == undefined) {
+                        prod = 'al';
+                    }
+                    limpiarList();
+                    loadCombos();
+                    loadtiturepo();
+                    
+                    function loadtiturepo() {
+                        var titulo = 'Reporte de Tienda ';
+                        if (prod == 'al') {
+                            titulo = 'Reporte de Almacén ';
+                        }
+                        var categoria = $('#carac').val();
+                        if (categoria == "0") {
+                            titulo += 'Total.';
+                        } else {
+                            categoria = $('#carac option:selected').text();
+                            var tipo = $('#tipo option:selected').text();
+                            titulo += categoria + ' ' + tipo;
+                        }
+                        titulo = titulo.toUpperCase();
+                        $('#tituloReporte').text(titulo);
+                    }
+                    function imprimir() {
+                        var cadena = '<tr class=\"colorHeader\"><td class="ColMS">#</td><td class="ColMM">Cod.</td><!\-\- td>ID</td \-\-><td class="ColXXXXM">Producto</td><td>Costo</td><td>PxM</td><td>PxP</td><td>PvP</td><td>Min</td><td>Cant</td><td>S Min.</td></tr>';
+                        var string = $('#data').html();
+                        string = cadena + string;
+                        $('#data').html(string);
+                        formatoTabla('64px');
+                        window.print();
+                        loadInventario();
+
+
+                    }
+                    function loadCombos() {
+                        var categoria = $('#carac').val();
+                        if (categoria == "0") {
+                            $('#tipo').html('');
+                            $('#tipo').attr('disabled', '');
+                            loadInventario();
+                        } else {
+                            $('#tipo').removeAttr('disabled');
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/caracteristicasCRL.php',
+                                data: {action: 'listTipo', TipoCaracteristicas: categoria},
+                                success: function (data) {
+                                    var caracter = JSON.parse(data);
+                                    var string = '';
+                                    for (var i = 0; i < caracter.length; i++) {
+                                        string += '<option value="' + caracter[i][1] + '">' + caracter[i][1] + '</option>';
+                                    }
+                                    $('#tipo').html(string);
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+                    function limpiarList() {
+                        var string = '';
+                        for (var i = 0; i < 12; i++) {
+                            string += "<tr><td class=\"ColMS ch\"></td><td class=\"ColMMM\"></td><!\-\- td></td \-\-><td class=\"ColXXXXM\">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+                        }
+                        $('#data').scrollTop(0);
+                        $('#data').html(string);
+                        $('#contRow').text('');
+                        formatoTabla('64px');
+                    }
+                    function loadInventario() {
+                        loadtiturepo();
+                        var categoria = $('#carac').val();
+                        var tipo = $('#tipo').val();
+                        if (categoria != '0') {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/productosCRL.php',
+                                data: {action: 'listXcategoria', cat: categoria, tipo: tipo},
+                                success: function (data) {
+                                    var productos = JSON.parse(data);
+                                    var string = '';
+                                    var cantidad = 0;
+                                    var stockM = 0;
+                                    for (var i = 0; i < productos.length; i++) {
+                                        if (prod == "td") {
+                                            cantidad = productos[i][16];
+                                            stockM = productos[i][20];
+                                        } else {
+                                            cantidad = productos[i][17];
+                                            stockM = productos[i][19];
+                                        }
+                                        string += '<tr><td class=\"ColMS atr ch\">' + (i + 1) + '</td><td class=\"ColMMM\">' + productos[i][2] + '</td><!\-\- td>' + productos[i][0] + '</td \-\-><td class=\"ColXXXXM\">' + productos[i][1] + '</td><td  class=\"atr\">' + productos[i][11] + '</td><td  class=\"atr\">' + productos[i][12] + '</td><td  class=\"atr\">' + productos[i][13] + '</td><td  class=\"atr\">' + productos[i][14] + '</td><td  class=\"atr\">' + productos[i][15] + '</td><td  class=\"atr\">' + cantidad + '</td><td  class=\"atr\"  contenteditable=\"true\" onblur=\"guardarSM(\'' + productos[i][0] + '\',$(this));\">' + stockM + '</td></tr>';
+                                    }
+                                    for (var i = 0; i < (12 - productos.length); i++) {
+                                        string += "<tr><td class=\"ColMS ch\"></td><td class=\"ColMMM\"></td><!\-\- td></td \-\-><td class=\"ColXXXXM\">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><br>";
+                                    }
+                                    $('#data').scrollTop(0);
+                                    $('#data').html(string);
+                                    $('#contRow').text('Registros: ' + productos.length);
+                                    formatoTabla('64px');
+                                },
+                                error: function () {
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/productosCRL.php',
+                                data: {action: 'list'},
+                                success: function (data) {
+                                    var productos = JSON.parse(data);
+                                    var string = '';
+                                    var cantidad = 0;
+                                    var stockM = 0;
+                                    for (var i = 0; i < productos.length; i++) {
+                                        if (prod == "td") {
+                                            cantidad = productos[i][16];
+                                            stockM = productos[i][20];
+                                        } else {
+                                            cantidad = productos[i][17];
+                                            stockM = productos[i][19];
+                                        }
+                                        string += '<tr><td class=\"ColMS atr ch\">' + (i + 1) + '</td><td class=\"ColMMM\">' + productos[i][2] + '</td><!\-\- td>' + productos[i][0] + '</td \-\-><td class=\"ColXXXXM\">' + productos[i][1] + '</td><td  class=\"atr\">' + productos[i][11] + '</td><td  class=\"atr\">' + productos[i][12] + '</td><td  class=\"atr\">' + productos[i][13] + '</td><td  class=\"atr\">' + productos[i][14] + '</td><td  class=\"atr\">' + productos[i][15] + '</td><td  class=\"atr\">' + cantidad + '</td><td  class=\"atr\"  contenteditable=\"true\" onblur=\"guardarSM(\'' + productos[i][0] + '\',$(this));\">' + stockM + '</td></tr>';
+                                    }
+                                    for (var i = 0; i < (12 - productos.length); i++) {
+                                        string += "<tr><td class=\"ColMS ch\"></td><td class=\"ColMMM\"></td><!\-\- td></td \-\-><td class=\"ColXXXXM\">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+                                    }
+                                    $('#data').scrollTop(0);
+                                    $('#data').html(string);
+                                    $('#contRow').text('Registros: ' + productos.length);
+                                    formatoTabla('64px');
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                        formatoTabla('64px');
+                    }
+                    function guardarSM(id, txt) {
+                        var txts = txt.text();
+                        txts = txts.replace(/\s+/g, '');
+
+                        if (isNaN(txts) || txts == "") {
+                            alert('Ingrese un valor valido!!');
+                            txt.text('0');
+                            txt.focus();
+                            txt.select();
+                        }
+                        txts = toInt(txts);
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'updateSM', id: id, tx: txts, tp: prod},
+                            success: function (data) {
+                                if (data == 'OK') {
+                                    txt.text(txts);
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                    $(function () {
+                        $("#cod").focusin(function () {
+                            $('#cod').val('');
+                            $('#idp').val('');
+                            $('#prod').val('');
+                            $('#cant').val('');
+                            $('#costo').val('');
+                            $('#pxm').val('');
+                            $('#pxp').val('');
+                            $('#pvp').val('');
+                            $('#tope').val('');
+                            $('#sm').val('');
+                        });
+                        
+                        $("#cod").keyup(function (e) {
+                            if (e.keyCode == 13) {
+                                var cod = $("#cod").val();
+                                if (!isNaN(cod)) {
+                                    var s = cod.length;
+                                    var ncod = 'P';
+                                    for (var i = 0; i < (8 - (s + 1)); i++) {
+                                        ncod += '0';
+                                    }
+                                    cod = ncod + cod;
+                                }
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '../crl/productosCRL.php',
+                                    data: {action: 'getProductoCod', cod: cod},
+                                    success: function (data) {
+                                        var producto = JSON.parse(data);
+                                        var cantidad = 0;
+                                        var stockM = 0;
+                                        if (prod == "td") {
+                                            cantidad = producto[16];
+                                            stockM = producto[20];
+                                        } else {
+                                            cantidad = producto[17];
+                                            stockM = producto[19];
+                                        }
+                                        $('#cod').val(producto[2]);
+                                        $('#idp').val(producto[0]);
+                                        $('#prod').val(producto[1]);
+                                        $('#cant').val(cantidad);
+                                        $('#costo').val(producto[11]);
+                                        $('#pxm').val(producto[12]);
+                                        $('#pxp').val(producto[13]);
+                                        $('#pvp').val(producto[14]);
+                                        $('#tope').val(producto[15]);
+                                        $('#sm').val(stockM);
+                                        $('#cant').focus();
+                                    },
+                                    error: function () {
+                                    }
+                                });
+                            } else {
+                                $('#idp').val('');
+                                $('#prod').val('');
+                                $('#cant').val('');
+                                $('#costo').val('');
+                                $('#pxm').val('');
+                                $('#pxp').val('');
+                                $('#pvp').val('');
+                                $('#tope').val('');
+                            }
+                        });
+                    });
+                    $('#data').css('height', '333px');
+                    $('#find').css('margin-top', '33px');
+                    //estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <input type="hidden" id="id" name="id" />
+            <table>
+                <tr>
+                    <td>
+                        <label for="cod">Codigo</label>
+                        <input type="text" id="cod" name="cod" disabled=""/>
+                    </td>
+                    <td  class="ColXXXX">
+                        <label for="desc">Descripcion</label>
+                        <input type="text" id="desc" name="desc"/>
+                    </td>
+                    <td>
+                        <label for="costo">Costo</label>
+                        <input type="text" id="costo" name="costo" class="money"/>
+                    </td>
+                    <td>
+                        <label for="venta">Precio de Venta</label>
+                        <input type="text" id="venta" name="venta" class="money"/>
+                    </td>
+                    <td>
+                        <label for="tope">Precio Mínimo</label>
+                        <input type="text" id="tope" name="tope" class="money"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="botones">
+                <div class="msg">mensaje</div>
+                <!--button type="button" onclick="Limpiar()" class="icon-nuevo">Nuevo</button-->
+                <button type="button" class="icon-nuevo" onclick="Limpiar()">Nuevo</button>
+                <button type="button" onclick="guardar();" class="icon-guardar">Guardar</button>
+            </div>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColSM">COD</td>
+                        <td>Descripción</td>
+                        <!--td class="ColSM">Stock</td-->
+                        <td class="ColSM">Costo</td>
+                        <td class="ColSM">Venta</td>
+                        <td class="ColSM">P.Min.</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                    var inicio;
+                    getCodigo();
+                    loadproductos();
+                    function loadproductos() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'list'},
+                            success: function (data) {
+                                var productos = JSON.parse(data);
+                                var string = '';
+                                for (var i = 0; i < productos.length; i++) {
+                                    string += '<tr onclick=\"getProducto(\'' + productos[i][0] + '\');\">\n\
+                                                   <td class=\"ColMS atr ch\">' + (i + 1) + '</td>\n\
+                                                   <td class=\"ColSM\">' + productos[i][2] + '</td>\n\
+                                                   <td>' + productos[i][1] + '</td>\n\\n\
+                                                   <td class=\"ColSM  atr \">' + productos[i][3] + '</td>\n\
+                                                   <td class=\"ColSM atr \">' + productos[i][4] + '</td>\n\
+                                                   <td class=\"ColSM atr \">' + productos[i][5] + '</td></tr>';
+                                }
+                                for (var j = 0; j < (7 - productos.length); j++) {
+                                    string += '<tr><td class=\"ColMS ch\">\n\
+                                                   </td><td class=\"ColSM\">&nbsp;</td>\n\
+                                                   <td></td>\n\
+                                                   <td class=\"ColSM\"></td>\n\
+                                                   <td class=\"ColSM\"></td>\n\
+                                                   <td class=\"ColSM\"></td></tr>';
+                                }
+                                $('#data').html(string);
+                                formatoTabla('450px');
+                            },
+                            error: function () {
+                            }
+                        });
+                        formatoTabla('450px');
+                    }
+                    function getProducto(id) {
+                        $('#id').val('');
+                        $('#cod').val('');
+                        $('#desc').val('');
+                        $('#costo').val('');
+                        $('#venta').val('');
+                        $('#tope').val('');
+                        $('#cod').focus();
+                        $('#cod').select();
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/productosCRL.php',
+                            data: {action: 'get', id: id},
+                            success: function (data) {
+                                if (data != "no") {
+                                    var product = JSON.parse(data);
+                                    $('#id').val(product[0]);
+                                    $('#cod').val(product[2]);
+                                    $('#desc').val(product[1]);
+                                    $('#costo').val(product[3]);
+                                    $('#venta').val(product[4]);
+                                    $('#tope').val(product[5]);
+                                    $('#cod').focus();
+                                } else {
+                                    msgError("Error!, porfavor intentelo otra vez", "red");
+                                }
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                            }
+                        });
+                    }
+                    function getCodigo() {
+                        $.ajax({
+                            type: 'POST',
+                            url: '../crl/parametrosCRL.php',
+                            data: {action: 'get', id: 2},
+                            success: function (data) {
+                                if (data != "no") {
+                                    var param = JSON.parse(data);
+                                    var cod = param[2];
+                                    var s = cod.length;
+                                    cod = parseInt(cod) + 1;
+                                    inicio = cod;
+                                    var ncod = 'P';
+                                    for (var i = 0; i < (7 - (s + 1)); i++) {
+                                        ncod += '0';
+                                    }
+                                    cod = ncod + cod;
+                                    $('#cod').val(cod);
+                                    $('#marca').focus();
+                                } else {
+                                    msgError("Error!, porfavor intentelo otra vez", "red");
+                                }
+                            },
+                            error: function () {
+                                msgError("Error del Sistema.", "red");
+                            }
+                        });
+                    }
+                    function Limpiar() {
+                        $('#id').val('');
+                        $('#cod').val('');
+                        $('#desc').val('');
+                        $('#costo').val('');
+                        $('#venta').val('');
+                        $('#tope').val('');
+                        $('#cod').focus();
+                        $('#cod').select();
+                        getCodigo();
+                    }
+                    function guardar() {
+                        if ($('#desc').val() == "") {
+                            msgError("Ingrese el nombre del producto", "orange");
+                            $('#desc').focus();
+                        } else {
+                            if (confirm('Desea guardar?')) {
+                                if ($('#id').val() == "") {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/productosCRL.php',
+                                        data: {
+                                            action: 'insert',
+                                            cod: $('#cod').val(),
+                                            desc: $('#desc').val(),
+                                            costo: $('#costo').val(),
+                                            venta: $('#venta').val(),
+                                            tope: $('#tope').val(),
+                                            inicio: inicio
+                                        },
+                                        success: function (data) {
+                                            if (data == "OK") {
+                                                Limpiar();
+                                                msgError("Exito!, producto Registrado.", "green");
+                                                loadproductos();
+
+                                            } else {
+                                                msgError("Error!, porfavor intentelo otra vez", "red");
+                                            }
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                        }
+                                    });
+                                }
+                                else {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/productosCRL.php',
+                                        data: {
+                                            action: 'update',
+                                            idp: $('#id').val(),
+                                            cod: $('#cod').val(),
+                                            desc: $('#desc').val(),
+                                            costo: $('#costo').val(),
+                                            venta: $('#venta').val(),
+                                            tope: $('#tope').val()
+                                        },
+                                        success: function (data) {
+                                            //alert(data);
+                                            if (data == "OK") {
+                                                Limpiar()
+                                                msgError("Exito!,  Producto Actualizado.", "green");
+                                                loadproductos();
+                                            } else {
+                                                msgError("Error!, porfavor intentelo otra vez", "red");
+                                            }
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                    }
+                    $('#desc').focusout(function () {
+                        var val = $('#desc').val().toUpperCase();
+                        $('#desc').val(val);
+                    });
+                    $('.money').focusout(function () {
+                        var mon = $(this).val();
+                        if (mon != "" && mon != " " && !isNaN(mon)) {
+                            $(this).val(toDouble(mon));
+                        } else {
+                            $(this).val('0.00');
+                        }
+                    });
+                    $('#data').css('height', '185px');
+                    estoyEnUnIframe();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+        <style type="text/css">
+            .modal input {
+                //  border: none;
+            }
+            #sugerencias {
+                background: white;
+                position: absolute;
+                width:631px;
+                border:1px solid gray; 
+                display:none;
+                height: 140px;
+                overflow-y: scroll }
+            #sugerencias ul {list-style: none; margin: 0; padding: 0; font-size:.85em; }
+            #sugerencias ul li {padding: 3px; border-bottom: 1px solid silver; height: 21px}
+            #sugerencias ul li:hover {z-index: 99;color: white; background: #2979FF;text-shadow: 1px 1px 12px rgba(0,0,0,0.5);cursor: pointer}
+            .seleccionado {color: white; background: #2979FF;text-shadow: 1px 1px 12px rgba(0,0,0,0.5);}
+            .venta{
+                width: 810px;
+            }
+            .caja{
+                padding: 10px 20px;
+                height: 471px;
+                background: #F2F2F2;
+                position: absolute;
+                top: 18px;
+                width: 300px;
+                right: 16px;
+                border-radius: 10px;
+                border: 1px solid gray !important;
+                box-shadow: 0px 0px 18px 2px rgba(0,0,0,0.5);
+            }
+            .pagar{
+                width: 92px;
+                color:  #FF5722 !important;
+                margin-top: 20px;
+            }
+            .pagarB{
+                width: 191px !important;
+                font-size: 56px !important;
+                border: none  !important;
+                background: transparent;
+                border-bottom: 2px solid  #FF5722  !important;
+                display: block;
+                text-align: right;
+                padding: 0 10px  !important;
+                font-weight: 600;
+                color:  #FF5722;
+                margin-top: 20px;
+            }
+            .entrego{
+                width: 92px;
+                color:  #00BCD4 !important;
+                margin-top: 30px;
+            }
+            .entregoB{
+                width: 191px !important;
+                font-size: 33px !important;
+                border: none  !important;
+                background: transparent;
+                border-bottom: 2px solid #00BCD4  !important;
+                display: block;
+                text-align: right;
+                padding: 0 10px  !important;
+                font-weight: 600;
+                color:  #00BCD4;
+                margin-top: 30px;
+            }
+            .vuelto{
+                width: 92px;
+                color:   #AFB42B !important;
+                margin-top: 30px;
+            }
+            .vueltoB{
+                width: 191px !important;
+                font-size: 33px !important;
+                border: none  !important;
+                background: transparent;
+                border-bottom: 2px solid  #AFB42B  !important;
+                display: block;
+                text-align: right;
+                padding: 0 10px  !important;
+                font-weight: 600;
+                color:   #AFB42B;
+                margin-top: 30px;
+            }
+            .botonesC{
+                width: 323px;
+                margin-left: -8px;
+                position: absolute;
+                bottom: 20px;
+            }
+            .botonesC button{
+                width: 98px;
+            }
+            .botonesC button:before{
+                margin: 0 5px 0 5px;
+            }
+            .form-venta table{
+                width: 100% !important;
+            }
+            .panelDock{
+                display: none;
+                position: absolute;
+                top:0px;
+                right: 0px;
+                height: 100%;
+                width: 357px;
+                background:#FFAB00;
+                z-index: 999
+            }
+            #addMontura{
+                position: absolute;
+                right: -8px;
+            }
+        </style>
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="venta">
+            <div class="formulario">
+                <div> <!--class="header-venta"-->
+                    <div> <!--class="form-venta"-->
+                        <table >
+                            <tr>
+                                <td style="width: 30%;">
+                                    <label for="doc">DNI o RUC</label>
+                                    <input id="idClie" type="hidden">
+                                    <input type="text" id="doc" maxlength="11" autocomplete="off" >
+                                </td>
+                                <td>
+                                    <label for="clie">Cliente</label>
+                                    <input type="text" id="clie" name="clie" autocomplete="off" tabindex="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 30%;">
+                                    <label for="tel">Telefono</label>
+                                    <input type="text" id="tel" name="tel" autocomplete="off" tabindex="1"/>
+                                </td>
+                                <td>
+                                    <label for="dir">Direccion</label>
+                                    <input type="text" id="dir" name="dir" autocomplete="off" tabindex="1"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="botones">
+                <div class="msg">Este es un mensaje de prueba</div>
+                <button id="add" class="icon-agregar" onclick=" $('#pdl').toggle(300);">Lunas</button>
+                <button id="add" class="icon-agregar" onclick=" $('#pdm').toggle(300);">Monturas</button>
+            </div>
+            <div class="tabla">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <td class="ColWC">Cant.</td>
+                            <td >Descripción</td>
+                            <td class="ColWP">Precio</td>
+                            <td class="ColWI">Importe</td>  
+                            <td class="ColWA">*</td>
+                        </tr>
+                    </thead>
+                    <tbody id="data">
+
+                    </tbody>
+                </table>
+            </div>     
+        </div>
+        <div class="caja">
+            <table>
+                <tbody><tr>
+                        <td>
+                            <label for="apg" class="pagar" style="width: 140px">Total a Pagar</label>
+                        </td>
+                        <td>
+                            <input type="hidden" id="apgd" name="apgd">
+                            <input type="text" id="apg" name="apg" class="input-caja pagarB" disabled="" value="0.00" style="width: 371px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="ef">Efectivo</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ef" name="ef" class="input-caja money" tabindex="1" value="0.00" style="width: 371px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="tr">Tarjeta</label>
+                        </td>
+                        <td>
+                            <div class="select-triangulo">
+                                <select id="tipt" style="width: 150px;height: 38px;">
+                                    <option value="Visa">Visa</option>
+                                    <option value="Master Card">Master Card</option>
+                                    <option value="American Express">American Express</option>
+                                </select>
+                            </div>
+                            <input type="text" id="tr" name="tr" class="input-caja money" tabindex="2" value="0.00" style="width: 219px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="en">Entrego S/.</label>
+                        </td>
+                        <td>
+                            <input type="text" id="en" name="en" class="input-caja money" tabindex="3" value="0.00" style="width: 371px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="vuelto" class="vuelto">Vuelto</label>
+                        </td>
+                        <td>
+                            <input type="text" id="vuelto" name="vuelto" class="input-caja vueltoB money" tabindex="4" readonly="" value="0.00" style="width: 371px;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="botonesC">
+                <button class="icon-imprimir" onclick="imprimir();">Recibo</button>
+                <button class="icon-imprimir" onclick="imprimir();">Boleta</button>
+                <button class="icon-guardar"  onclick="vender();" tabindex="7" style="width: 103px">Guardar</button>
+            </div>
+        </div>
+        <div class="panelDock" id="pdl">
+            <div style="width: 320px;margin: 0 auto;">
+                <label style="color: white; font-size: 25px;" >Dioptrias</label>
+                <ul style="width: 320px;list-style: none">
+                    <li>
+                        <div style="background:#FFCB7F;padding: 10px 20px 20px;border-radius: 12px">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <label for="tipoD">Tipo</label>
+                                        <div class="select-triangulo">
+                                            <select id="tipoD" name="tipoD">
+                                                <option></option>
+                                                <option>MONOFOCALES</option>
+                                                <option>BIFOCALES</option>
+                                                <option>PROGRESIVOS</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <label for="materialD">Material</label>
+                                        <input type="text" id="materialD" name="materialD" list="lstMaterial">
+                                        <datalist id="lstMaterial">
+                                            <option value="CRISTAL">
+                                            <option value="POLICARBONATO">
+                                            <option value="RESINA">
+                                            <option value="CRISTAL PHOTOGRAY">
+                                            <option value="CRISTAL PHOTOBROWN">
+                                        </datalist>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <label for="subTipo">Sub Tipo Material</label>
+                                        <input type="text" id="subTipo" name="subTipo" list="lstvar">
+                                        <datalist id="lstvar">
+                                            <option value="FLAT TOP">
+                                            <option value="ULTRA VIEW HD">
+                                            <option value="RESINA">
+                                            <option value="TOP HD">
+                                            <option value="ALTO INDICE">
+                                            <option value="REDUCCION DIAMETRO">
+                                            <option value="ULTRA LITE 1.67 HD">
+                                            <option value="COLOR">
+                                            <option value="TRANSITION">
+                                            <option value="TALENT">
+                                            <option value="DESCENTRADO">
+                                            <option value="OVATION">
+                                            <option value="SHORT 2 HD">
+                                            <option value="DURAQUARZ">
+                                            <option value="INVISIBLE">
+                                            <option value="CON COLOR">
+                                        </datalist>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ptrat">1er Tratamiento</label>
+                                        <input type="text" id="ptrat" name="ptrat" list="lstrat">
+                                        <datalist id="lstrat">
+                                            <option value="ANTIREFLEX">
+                                            <option value="COLOR-UV">
+                                            <option value="COLOR">
+                                            <option value="UV">
+                                            <option value="FOTOMATIC GRIS">
+                                            <option value="REDUCCION">
+                                            <option value="DURAQUARZ">
+                                            <option value="TRANSITION">
+                                        </datalist>
+                                    </td>
+                                    <td>
+                                        <label for="strat">2do Tratamiento</label>
+                                        <input type="text" id="strat" name="strat" list="lstrat">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div> 
+                    </li>
+                    <li>
+                        <label for="tipoV">Tipo Vision</label>
+                        <div class="select-triangulo">
+                            <select id="tipoV" name="tipoV">
+                                <option></option>
+                                <option>CERCA</option>
+                                <option>LEJOS</option>
+                                <option>LEJOS Y CERCA</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li style="border-bottom: 3px solid white;  margin-top: 10px;margin-bottom: 5px;">
+                    </li>
+                    <li>
+                        <table>
+                            <tr>
+                                <td>
+                                    <label for="od">&nbsp;</label>
+                                    <label id="od">OD :</label>
+                                </td>
+                                <td style="width: 30%">
+                                    <label for="esfd" style="text-align: center">Esf.</label>
+                                    <input id="esfd" name="esfd" type="text">
+                                </td>
+                                <td style="width: 30%">
+                                    <label for="cild" style="text-align: center">Cil.</label>
+                                    <input id="cild" name="cild" type="text">
+                                </td>
+                                <td style="width: 30%">
+                                    <label for="ejed" style="text-align: center">Eje</label>
+                                    <input id="ejed" name="ejed" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="oi">&nbsp;</label>
+                                    <label id="oi">OI :</label>
+                                </td>
+                                <td style="width: 30%">
+                                    <label for="esfi" style="text-align: center">Esf.</label>
+                                    <input id="esfi" name="esfi" type="text">
+                                </td>
+                                <td style="width: 30%">
+                                    <label for="cili" style="text-align: center">Cil.</label>
+                                    <input id="cili" name="cili" type="text">
+                                </td>
+                                <td style="width: 30%">
+                                    <label for="ejei" style="text-align: center">Eje</label>
+                                    <input id="ejei" name="ejei" type="text">
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                    <li style="margin-top: 15px;">
+                    </li>
+                    <li>
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <label for="dip" style="text-align: center">DIP</label>
+                                    <input id="dip" name="dip" type="text">
+                                </td>
+                                <td colspan="2">
+                                    <label for="oadd" style="text-align: center">ADD</label>
+                                    <input id="oadd" name="oadd" type="text">
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                    <li style="border-bottom: 3px solid white;  margin-top: 15px;margin-bottom: 15px;">
+                    </li>
+                    <li>
+                        <table>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <label id="dod">OD :</label>
+                                </td>
+                                <td style="width: 41%">
+                                    <input id="precD" name="precD" type="text">
+                                </td>
+                                <td style="text-align: center;">
+                                    <label id="doi">OI :</label>
+                                </td>
+                                <td style="width: 41%">
+                                    <input id="precI" name="precI" type="text">
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                    <li style="position: relative">
+                        <button type="button" class="icon-agregar" id="addMontura" onclick="agregarMontura()">Agregar</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panelDock" id="pdm">
+            <div style="width: 290px;margin: 0 auto;">
+                <label style="color: white; font-size: 25px;" >Monturas</label>
+                <ul style="width: 285px;list-style: none">
+                    <li>
+                        <input type="hidden" id="editM">
+                        <input type="hidden" id="idM">
+                        <input type="text" id="buscar" name="buscar" autocomplete="off" style="border: none !important;padding: 10px;display: inline-block;width: 228px;vertical-align: middle" placeholder="Codigo">
+                        <div style="display: inline-block;height: 38px;width: 38px;background:  #FF5722;vertical-align: middle;margin-left: -5px;">
+                            <label class="icon-buscar" style="margin-left: 10px;margin-top: 5px;color: white"></label>
+                        </div>
+                    </li>
+                    <li style="border-bottom: 3px solid white;  margin-top: 18px;margin-bottom: 18px;">
+                    </li>
+                    <li style="position: relative">
+                        <label for="marca" style="color: white;display: inline-block;">Marca</label>
+                        <label style="display: inline-block;position: absolute;right: 0px;" id="estado"></label>
+                        <input type="text" id="marca" disabled="" style="border: none;padding: 10px;">
+                    </li>
+                    <li >
+                        <label for="modelo" style="color: white">Modelo</label>
+                        <input type="text" id="modelo" disabled="" style="border: none;padding: 10px;">
+                    </li>
+                    <li >
+                        <label for="tipo" style="color: white">Tipo</label>
+                        <input type="text" id="tipo" disabled="" style="border: none;padding: 10px;">
+                    </li>
+                    <li >
+                        <label for="color" style="color: white">Color</label>
+                        <input type="text" id="color" disabled="" style="border: none;padding: 10px;">
+                    </li>
+                    <li>
+                        <label for="tope" style="color: #FF5722;">Descuento Mínimo</label>
+                        <input type="text" id="tope" disabled="" name="tope" style="border-color: #FF5722;padding: 10px"  class="money"/>
+                    </li>
+                    <li>
+                        <label for="precio" style="color: #2979FF;">Precio Venta</label>
+                        <input type="text" id="precio" name="precio" style="border-color:#2979FF;padding: 10px" class="money" />
+                    </li>
+                    <li style="position: relative">
+                        <button type="button" class="icon-agregar" id="addMontura" onclick="agregarMontura()">Agregar</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                            function imprimir() {
+                                alert('no se detecto la impresora por favor conecte una.!!')
+                            }
+                            $('#cant').focusout(function () {
+                                if ($('#cant').val() == "") {
+                                }
+                                else {
+                                    $('#cant').val(toInt($('#cant').val()));
+                                }
+                            });
+                            var venta = $_GET('idventa');
+                            var listaProductos = [];
+                            var elementoSeleccionado = -1;
+                            var sugerencias = [];
+                            var cacheSugerencias = [];
+                            $('#tc').attr('style', 'border:none !important;height: 31px;');
+                            $('.point').css('display', 'none');
+                            $('#clie').focus();
+                            $('#fec').val(fechaG());
+                            function vDocumento() {
+                                var tc = $('#tc').val();
+                                //$('#tc').attr('disabled', '');
+                                if (tc == 'Mayorista') {
+                                    $('#tddoc').css('visibility', 'visible');
+                                } else {
+                                    $('#tddoc').css('visibility', 'hidden');
+                                }
+                                $('#tc').attr('style', 'border:none !important;height: 31px;');
+                                $('.point').css('display', 'none');
+                                //$('#tc').css('border-radius', '0px');
+                            }
+                            listarProductos();
+                            $("#cod").focusin(function () {
+                                $('#edit').val('');
+                                $('#cod').val('');
+                                $('#idp').val('');
+                                $('#prod').val('');
+                                $('#cant').val('');
+                                $('#prec').val('');
+                                $('#stock').val('');
+                                $('#tope').val('');
+                                $('#lpro').text('Producto');
+                            });
+                            $('#doc').keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    var doc = $('#doc').val();
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/clienteCRL.php',
+                                        data: {action: 'find', doc: doc},
+                                        success: function (data) {
+                                            if (data != 'no') {
+                                                var cliente = JSON.parse(data);
+                                                $('#idClie').val(cliente[0]);
+                                                $('#clie').val(cliente[2]);
+                                                $('#cod').focus();
+                                            } else {
+                                                msgError("Cliente no encontrado.", "orange");
+                                                $('#doc').val('');
+                                                $('#doc').focus();
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            });
+                            $("#cod").keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    if ($('#tc').val() == '0') {
+                                        msgError("Seleccione un tipo de cliente.", "orange");
+                                        $('#tc').focus();
+                                    } else {
+                                        $('#tc').attr('disabled', '');
+                                        var cod = $("#cod").val();
+                                        if (!isNaN(cod)) {
+                                            var s = cod.length;
+                                            var ncod = 'P';
+                                            for (var i = 0; i < (8 - (s + 1)); i++) {
+                                                ncod += '0';
+                                            }
+                                            cod = ncod + cod;
+                                        }
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '../crl/productosCRL.php',
+                                            data: {action: 'getProductoCod', cod: cod},
+                                            success: function (data) {
+                                                if (data != "null") {
+                                                    var producto = JSON.parse(data);
+                                                    var edit = $('#edit').val();
+                                                    var stock = producto[16];
+                                                    var tc = $('#tc').val();
+                                                    $('#cod').val(producto[2]);
+                                                    $('#idp').val(producto[0]);
+                                                    $('#prod').val(producto[1]);
+                                                    for (var i = 0; i < listaProductos.length; i++) {
+                                                        if (listaProductos[i][0] == cod) {
+                                                            if (edit == "") {
+                                                                stock = parseInt(producto[16]) - parseInt(listaProductos[i][3]);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (tc == 'Publico') {
+                                                        $('#prec').val(producto[14]);
+                                                    } else if (tc == 'Punto') {
+                                                        $('#prec').val(producto[13]);
+                                                    } else if (tc == 'Mayorista') {
+                                                        $('#prec').val(producto[12]);
+                                                    }
+                                                    $('#tope').val(producto[15]);
+                                                    $('#lpro').text('Producto TD: ' + producto[15]);
+                                                    $('#stock').val(stock);
+                                                    $('#cant').val('1');
+                                                    $('#prec').focus();
+                                                    $('#prec').select();
+
+                                                } else {
+                                                    msgError("Producto no encontrado!.", "orange");
+                                                }
+                                            },
+                                            error: function () {
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            $('#cant').keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    agregar();
+                                }
+                            });
+                            $('#add').click(function () {
+                                agregar();
+                            });
+                            function removeList(num) {
+                                if (confirm('Desea retirar el producto de la lista?')) {
+                                    listaProductos.splice(num, 1);
+                                    listarProductos();
+                                }
+                            }//ya
+                            function listarProductos() {
+                                var aux = listaProductos;
+                                var string = '';
+                                for (var i = 0; i < aux.length; i++) {
+                                    if (venta != undefined) {
+                                        string += '<tr><td class=\"ColWC atr\">' + aux[i][3] + '</td><td>' + aux[i][2] + '</td><td class=\"ColWP atr\">' + aux[i][4] + '</td><td class=\"ColWI atr\">' + aux[i][5] + '</td><td class=\"ColWA\"></td></tr>';
+                                    }
+                                    else {
+                                        string += '<tr onclick=\"editCant(\'' + i + '\',event);\"><td class=\"ColWC atr\">' + aux[i][3] + '</td><td>' + aux[i][2] + '</td><td class=\"ColWP atr\">' + aux[i][4] + '</td><td class=\"ColWI atr\">' + aux[i][5] + '</td><td class=\"ColWA\"><button id=\"btnAcciones\" onclick=\"removeList(' + i + ');\" class=\"icon-cerrar\"></button></td></tr>';
+                                    }
+                                }
+                                for (var i = 0; i < (7 - aux.length); i++) {
+                                    string += '<tr><td class=\"ColWC\">&nbsp;</td><td></td><td class=\"ColWP\"></td><td class=\"ColWI\"></td><td class=\"ColWA\"></td></tr>';
+                                }
+                                $('#data').html(string);
+                                formatoTabla('500px');
+                            }//falta
+                            function editCant(pos, event) {
+                                var tag;
+                                if (event.srcElement) {
+                                    tag = event.srcElement.tagName;
+                                }
+                                else if (event.target) {
+                                    tag = event.target.tagName;
+                                }
+                                if (tag != "BUTTON" || tag == undefined) {
+                                    $('#edit').val(pos);
+                                    $('#cod').val(listaProductos[pos][0]);
+                                    var press = jQuery.Event("keyup", {keyCode: 13});
+                                    $('#cod').trigger(press);
+                                    setTimeout(function () {
+                                        $('#cant').val(listaProductos[pos][3]);
+                                        $('#prec').val(listaProductos[pos][4]);
+                                        $('#cant').focus();
+                                    }, 200);
+
+                                }
+                            }//falta
+                            function limpiar() {
+                                $('#edit').val('');
+                                $('#cod').val('');
+                                $('#idp').val('');
+                                $('#prod').val('');
+                                $('#cant').val('');
+                                $('#prec').val('');
+                                $('#stock').val('');
+                                $('#tope').val('');
+                                $('#lpro').text('Producto');
+                                $('#prod').focus();
+                            }
+                            function agregar() {
+                                var tope = $('#tope').val();
+                                var stock = $('#stock').val();
+                                var edit = $('#edit').val();
+                                var cod = $('#cod').val();
+                                var id = $('#idp').val();
+                                var prod = $('#prod').val();
+                                var precio = $('#prec').val();
+                                var cant = $('#cant').val();
+                                cant = toInt(cant);
+                                var importe = 0;
+                                if (prod == "") {
+                                    msgError("Debe buscar un producto!!", "orange");
+                                    $('#cod').focus();
+                                } else if (isNaN(cant)) {
+                                    msgError("Debe ingresar números!!", "orange");
+                                    $('#cant').val('');
+                                    $('#cant').focus();
+                                } else if (isNaN(precio)) {
+                                    msgError("Debe ingresar números!!", "orange");
+                                    $('#prec').val('');
+                                    $('#prec').focus();
+                                } else if (precio <= 0) {
+                                    msgError("Debe ingresar valores mayores a 0!!", "orange");
+                                    $('#prec').val('');
+                                    $('#prec').focus();
+                                } else if (cant <= 0) {
+                                    msgError("Debe ingresar valores mayores a 0!!", "orange");
+                                    $('#cant').val('');
+                                    $('#cant').focus();
+                                } else if (parseFloat(precio) < parseFloat(tope)) {
+                                    msgError("El precio ingresado es menor al tope de descuento", "orange");
+                                    $('#prec').focus();
+                                } else if (parseInt(cant) > parseInt(stock)) {
+                                    msgError("stock insuficiente!!", "orange");
+                                    $('#cant').val('');
+                                    $('#cant').focus();
+                                } else if (cant == "") {
+                                    msgError("Debe agregar una cantidad", "orange");
+                                    $('#cant').focus();
+                                } else {
+                                    if (edit === "") {
+                                        for (var i = 0; i < listaProductos.length; i++) {
+                                            if (listaProductos[i][0] == cod) {
+                                                if (confirm('Producto ya agregado desea agregar mas?')) {
+                                                    if (edit == "") {
+                                                        cant = parseInt(cant) + parseInt(listaProductos[i][3]);
+                                                    }
+                                                    edit = i;
+                                                } else {
+                                                    edit = '/';
+                                                }
+                                            }
+                                        }
+                                    }
+                                    importe = cant * precio;
+                                    var temp = [cod, id, prod, cant, precio, toDouble(importe)];
+                                    if (edit === "/") {
+
+                                    } else if (edit !== "") {
+                                        listaProductos[edit] = temp;
+                                    } else {
+                                        listaProductos.push(temp);
+                                    }
+                                    var total = 0;
+                                    for (var i = 0; i < listaProductos.length; i++) {
+                                        total = total + parseFloat(listaProductos[i][5]);
+                                    }
+                                    $('#tot').val(toDouble(total));
+                                    listarProductos();
+                                    limpiar();
+                                }
+                            }
+                            function vender() {
+                                alert($('#hora').val(););
+                                var nombre = $('#').val();
+                                var apellido = $('#').val();
+                                var direccion = $('#').val();
+                                var telefono = $('#').val();
+                                var fv = $('#').val();
+                                var hv = hora();
+                                var fe = $('#').val();
+                                var he = $('#').val();
+                                var total = $('#').val();
+                                var estado = $('#').val();
+                                var documento = $('#').val();
+                                var numDoc = $('#').val();
+                                var refraccion = $('#').val();
+                                var observacion = $('#').val();
+                                var fc = $('#').val();
+                                var anulado = $('#').val();
+                                var descAnulado = $('#').val();
+
+                                var fec = toFecha($('#fec').val());
+                                var horas = hora();
+                                var tc = $('#tc').val();
+                                var idclie = $('#idClie').val();
+                                var doc = $('#doc').val();
+                                var clie = $('#clie').val();
+                                var tot = $('#tot').val();
+                                var productos = JSON.stringify(listaProductos);
+                                if (idclie == "" && doc == "") {
+                                    var idclie = '--';
+                                    var doc = '--';
+                                }
+                                if (fec == '' || tc == '0' || clie == '' || listaProductos.length <= 0) {
+                                    msgError("Complete todos los datos", "orange");
+                                    $('#clie').focus();
+                                } else {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/ventaCRLh.php',
+                                        data: {action: 'insertC', fecha: fec, hora: horas, tc: tc, idclie: idclie, doc: doc, cliente: clie, total: tot, productos: productos},
+                                        success: function (data) {
+                                            alert('Venta completada con exito!!');
+                                            location.href = 'ventasCaja.html';
+                                            //window.parent.closeModal();
+                                            //location.href = 'movimiento.html?alta=true';
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            }
+                            $('.money').focusout(function () {
+                                var mon = $(this).val();
+                                if (mon != "" && mon != " " && !isNaN(mon)) {
+                                    $(this).val(toDouble(mon));
+                                } else {
+                                    $(this).val('0.00');
+                                }
+                            });
+                            function formateaLista(arrayL) {
+                                var codigoHtml = "";
+                                codigoHtml = "<ul>";
+                                for (var i = 0; i < arrayL.length; i++) {
+                                    if (i == elementoSeleccionado) {
+                                        codigoHtml += "<li class=\"seleccionado\" onclick=\"seleccionarL(" + i + ")\">" + arrayL[i] + "</li>";
+                                    }
+                                    else {
+                                        codigoHtml += "<li onclick=\"seleccionarL(" + i + ")\">" + arrayL[i] + "</li>";
+                                    }
+                                }
+                                codigoHtml += "</ul>";
+                                return codigoHtml;
+                            }
+                            function seleccionarL(indice) {
+                                elementoSeleccionado = indice;
+                                seleccionaElemento();
+                            }
+                            $("#prod").keyup(function (e) {
+                                var tecla = e.keyCode;
+
+                                if (tecla == 40) { // Flecha Abajo
+                                    if (elementoSeleccionado + 1 < sugerencias.length) {
+                                        elementoSeleccionado++;
+                                    }
+                                    muestraSugerencias();
+                                    if ((Math.round($('#sugerencias').scrollTop() / 28) + 5) == elementoSeleccionado) {
+                                        $('#sugerencias').scrollTop($('#sugerencias').scrollTop() + 28);
+                                    }
+                                }
+                                else if (tecla == 38) { // Flecha Arriba
+                                    if (elementoSeleccionado > 0) {
+                                        elementoSeleccionado--;
+                                    }
+                                    muestraSugerencias();
+                                    if ((Math.round($('#sugerencias').scrollTop() / 28) - 1) == elementoSeleccionado) {
+                                        $('#sugerencias').scrollTop($('#sugerencias').scrollTop() - 28);
+                                    }
+                                }
+                                else if (tecla == 13) { // ENTER o Intro
+                                    seleccionaElemento();
+                                }
+                                else {
+                                    var texto = $('#prod').val();
+                                    // Si es la tecla de borrado y el texto es vacío, ocultar la lista
+                                    if (tecla == 8 && texto == "") {
+                                        borraLista();
+                                        return;
+                                    }
+
+                                    if (cacheSugerencias[texto] == null || tecla == 8) {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '../crl/productosCRL.php',
+                                            data: {action: 'find', parametros: texto},
+                                            success: function (data) {
+                                                if (data != 'no') {
+                                                    var auxProd = JSON.parse(data);
+                                                    if (auxProd.length < 5) {
+                                                        $('#sugerencias').css('overflow-y', 'auto');
+                                                        $('#sugerencias').css('height', 'auto');
+                                                    } else {
+                                                        $('#sugerencias').css('overflow-y', 'scroll');
+                                                        $('#sugerencias').css('height', '140px');
+                                                    }
+                                                    sugerencias.length = 0;
+                                                    for (var j = 0; j < auxProd.length; j++) {
+                                                        sugerencias.push(auxProd[j][0]);
+                                                    }
+                                                    //alert(sugerencias[0]);
+                                                    if (sugerencias.length == 0) {
+                                                        sinResultados();
+                                                    }
+                                                    else {
+                                                        cacheSugerencias[texto] = sugerencias;
+                                                        actualizaSugerencias();
+                                                    }
+                                                } else {
+                                                }
+                                            },
+                                            error: function (data) {
+                                                alert(data);
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        sugerencias = cacheSugerencias[texto];
+                                        actualizaSugerencias();
+                                    }
+                                }
+                            });
+                            function sinResultados() {
+                                $('#sugerencias').html('No hay Datos.');
+                                $('#sugerencias').css('display', 'block');
+                            }
+                            function actualizaSugerencias() {
+                                elementoSeleccionado = -1;
+                                muestraSugerencias();
+                            }
+                            function seleccionaElemento() {
+                                if (sugerencias[elementoSeleccionado]) {
+                                    $('#prod').val(sugerencias[elementoSeleccionado]);
+                                    borraLista();
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/productosCRL.php',
+                                        data: {action: 'getproductoxp', prod: sugerencias[elementoSeleccionado]},
+                                        success: function (data) {
+                                            if (data != "null") {
+                                                var producto = JSON.parse(data);
+                                                var edit = $('#edit').val();
+                                                var stock = producto[16];
+                                                var tc = $('#tc').val();
+                                                $('#cod').val(producto[2]);
+                                                $('#idp').val(producto[0]);
+                                                $('#prod').val(producto[1]);
+                                                for (var i = 0; i < listaProductos.length; i++) {
+                                                    if (listaProductos[i][0] == cod) {
+                                                        if (edit == "") {
+                                                            stock = parseInt(producto[16]) - parseInt(listaProductos[i][3]);
+                                                        }
+                                                    }
+                                                }
+
+                                                if (tc == 'Publico') {
+                                                    $('#prec').val(producto[14]);
+                                                } else if (tc == 'Punto') {
+                                                    $('#prec').val(producto[13]);
+                                                } else if (tc == 'Mayorista') {
+                                                    $('#prec').val(producto[12]);
+                                                }
+                                                $('#tope').val(producto[15]);
+                                                $('#lpro').text('Producto TD: ' + producto[15]);
+                                                $('#stock').val(stock);
+                                                $('#cant').val('1');
+                                                $('#prec').focus();
+                                                $('#prec').select();
+
+                                            } else {
+                                                msgError("Producto no encontrado!.", "orange");
+                                            }
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                }
+                            }
+                            function muestraSugerencias() {
+                                $('#sugerencias').html(formateaLista(sugerencias));
+                                $('#sugerencias').css('display', 'block');
+                            }
+                            function borraLista() {
+                                $('#sugerencias').html('');
+                                $('#sugerencias').css('display', 'none');
+                            }
+                            $("#prod").focusin(function () {
+                                borraLista();
+                                $('#edit').val('');
+                                $('#cod').val('');
+                                $('#idp').val('');
+                                $('#prod').val('');
+                                $('#cant').val('');
+                                $('#prec').val('');
+                                $('#stock').val('');
+                                $('#tope').val('');
+                                $('#lpro').text('Producto');
+                            });
+                            function calcular() {
+                                var ef = $('#tot').val();
+                                var en = $('#en').val();
+                                if (isNaN(ef)) {
+                                    ef = '0.00';
+                                }
+                                if (isNaN(en) || en == '') {
+                                    en = '0.00';
+                                }
+                                var vuelto = parseFloat(en) - parseFloat(ef);
+                                $('#vuelto').val(toDouble(vuelto));
+                            }
+                            $('#en').focusin(function () {
+                                $('#en').select();
+                            });
+                            //------------------------------------------------
+                            $('#buscar').keyup(function (e) {
+                                if (e.keyCode == 13) {
+                                    var cod = $("#buscar").val();
+                                    if (!isNaN(cod)) {
+                                        var s = cod.length;
+                                        var ncod = 'M';
+                                        for (var i = 0; i < (7 - (s + 1)); i++) {
+                                            ncod += '0';
+                                        }
+                                        cod = ncod + cod;
+                                    }
+                                    $('#buscar').val(cod);
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/monturasCRL.php',
+                                        data: {action: 'get', codigo: cod},
+                                        success: function (data) {
+                                            if (data != "null") {
+                                                var montura = JSON.parse(data);
+                                                $('#buscar').val(montura[0]);
+                                                $('#marca').val(montura[1]);
+                                                $('#modelo').val(montura[2]);
+                                                $('#tipo').val(montura[3]);
+                                                $('#color').val(montura[8]);
+                                                $('#tope').val(montura[16]);
+                                                $('#precio').val(montura[12]);
+                                                if (montura[15] + "" != "null") {
+                                                    // $('#tope').attr("disabled", "");
+                                                    $('#precio').attr("disabled", "");
+                                                    $('#addMontura').attr("disabled", "");
+                                                    $('#addMontura').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                                    $('#estado').text('En movimiento');
+                                                }
+                                                else if (montura[13] + "" != "null") {
+                                                    //$('#tope').attr("disabled", "");
+                                                    $('#precio').attr("disabled", "");
+                                                    $('#addMontura').attr("disabled", "");
+                                                    $('#addMontura').attr("style", "background:#BCBCBC;color:white;border-bottom: 5px solid #A9A9A9;");
+                                                    $('#estado').text('Vendido');
+                                                }
+                                                $('#precio').focus();
+                                            } else {
+                                                $('#estado').text('No se encuentra');
+                                                $('#buscar').blur();
+                                            }
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                        }
+                                    });
+                                }
+                            });
+                            function LimpiarMontura() {
+                                //$('#tope').removeAttr("disabled");
+                                $('#precio').removeAttr("disabled");
+                                $('#addMontura').removeAttr("disabled");
+                                $('#addMontura').removeAttr('style');
+                                $('#estado').text('');
+                                //$('#action').val('');
+                                $('#buscar').val('');
+                                $('#marca').val('');
+                                $('#modelo').val('');
+                                $('#tipo').val('');
+                                $('#color').val('');
+                                $('#tope').val('');
+                                $('#precio').val('');
+                            }
+                            $('#buscar').focusin(function () {
+                                LimpiarMontura();
+                            });
+                            function agregarMontura() {
+                                //var id = $('#idM').val();
+                                var cod = $('#buscar').val();
+                                var tipo = "M";
+                                var prod = "COD: " + $('#buscar').val() + "-" + $('#marca').val();
+                                var cant = 1;
+                                var precio = $('#precio').val();
+                                var tope = $('#tope').val();
+                                var importe = 0;
+                                var edit = $('#editM').val();
+                                if (isNaN(precio)) {
+                                    msgError("Debe ingresar números!!", "orange");
+                                    $('#prec').val('');
+                                    $('#prec').focus();
+                                } else if (precio <= 0) {
+                                    msgError("Debe ingresar valores mayores a 0!!", "orange");
+                                    $('#prec').val('');
+                                    $('#prec').focus();
+                                } else if (parseFloat(precio) < parseFloat(tope)) {
+                                    msgError("El precio ingresado es menor al tope de descuento", "orange");
+                                    $('#prec').focus();
+                                } else {
+                                    if (edit === "") {
+                                        for (var i = 0; i < listaProductos.length; i++) {
+                                            if (listaProductos[i][0] == cod) {
+                                                alert('Producto ya agregado');
+                                                edit = '/';
+                                            }
+                                        }
+                                    }
+                                    importe = cant * precio;
+                                    var temp = [cod, tipo, prod, cant, precio, toDouble(importe)];
+                                    if (edit === "/") {
+                                    } else if (edit !== "") {
+                                        listaProductos[edit] = temp;
+                                    } else {
+                                        listaProductos.push(temp);
+                                    }
+                                    var total = 0;
+                                    for (var i = 0; i < listaProductos.length; i++) {
+                                        total = total + parseFloat(listaProductos[i][5]);
+                                    }
+                                    $('#tot').val(toDouble(total));
+                                    listarProductos();
+                                    LimpiarMontura();
+                                    $('.panelDock').toggle();
+                                }
+                            }
+
+
+                            $('#data').css('height', '194px');
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/app.css?v=2">
+    </head>
+    <body class="modal" onload="cargando();">
+        <div class="preload">
+            <img src="../img/cargando.gif" class="preload-img">
+        </div>
+        <div class="formulario">
+            <form id="frmUser">
+                <input type="hidden" value="" name="action" id="action">
+                <input type="hidden" id="id" name="id" />
+                <table>
+                    <tr>
+                        <td class="ColM">
+                            <label for="doc">DNI o RUC</label>
+                            <input type="text" id="doc" name="doc" maxlength="11" >
+                        </td>
+                        <td>
+                            <label for="clie">Cliente</label>
+                            <input type="text" id="clie" name="clie" />
+                        </td>
+                    </tr>
+                </table>
+                <div class="botones">
+                    <div class="msg">mensaje</div>
+                    <button onclick="Limpiar();" type="button" class="icon-nuevo">Nuevo</button>
+                    <button type="submit" class="icon-guardar">Guardar</button>
+                    <button onclick="Eliminar();" type="button" class="icon-eliminar">Eliminar</button>
+                </div>
+            </form>
+        </div>
+        <div class="tabla">
+            <table class="datatable">
+                <thead>
+                    <tr>
+                        <td class="ColMS">Item</td>
+                        <td class="ColM">DNI o RUC</td>
+                        <td>Nombre</td>
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/jquery-2.1.1.min.js"></script>
+        <script src="../js/app.js"></script>
+        <script>
+                        loadCliente();
+                        function loadCliente() {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/clienteCRL.php',
+                                data: {action: 'list'},
+                                success: function (data) {
+                                    var client = JSON.parse(data);
+                                    var string = '';
+                                    for (var i = 0; i < client.length; i++) {
+                                        string += '<tr onclick=\"getClie(\'' + client[i][0] + '\');\"><td class=\"ColMS atr ch\">' + (i + 1) + '</td><td class=\"ColM\">' + client[i][1] + '</td><td>' + client[i][2] + '</td></tr>';
+                                    }
+                                    for (var i = 0; i < (7 - client.length); i++) {
+                                        string += '<tr><td class=\"ColMS ch\"></td><td class=\"ColM\">&nbsp;</td><td></td></tr>';
+                                    }
+                                    $('#data').html(string);
+                                    formatoTabla('475px');
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema.", "red");
+                                }
+                            });
+                            formatoTabla('475px');
+                        }
+                        function getClie(id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '../crl/clienteCRL.php',
+                                data: {action: 'get', id: id},
+                                success: function (data) {
+                                    if (data != "no") {
+                                        Limpiar();
+                                        var users = JSON.parse(data);
+                                        $('#id').val(users[0]);
+                                        $('#doc').val(users[1]);
+                                        $('#clie').val(users[2]);
+                                    } else {
+                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                    }
+                                },
+                                error: function () {
+                                    msgError("Error del Sistema.", "red");
+                                }
+                            });
+                        }
+                        function Limpiar() {
+                            $('#id').val('');
+                            $('#doc').val('');
+                            $('#clie').val('');
+                            $('#doc').focus();
+                        }
+                        function Eliminar() {
+                            if ($('#id').val() != "") {
+                                if (confirm('Desea Eliminar?')) {
+                                    var id = $('#id').val();
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '../crl/clienteCRL.php',
+                                        data: {id: id, action: "del"},
+                                        success: function (data) {
+                                            if (data == "OK") {
+                                                msgError("Exito!, Cliente eliminado.", "green");
+                                                $('#id').val('');
+                                                $('#doc').val('');
+                                                $('#clie').val('');
+                                                loadCliente();
+                                            }
+                                            else {
+                                                msgError("Error!, porfavor intentelo otra vez", "red");
+                                            }
+                                        },
+                                        error: function () {
+                                            msgError("Error del Sistema.", "red");
+                                        }
+                                    });
+                                }
+                            } else {
+                                msgError("Error!, Seleccione un Cliente.", "red");
+                            }
+
+                        }
+                        $(function () {
+                            $('#frmUser').submit(function (event) {
+                                event.preventDefault();
+                                if ($('#doc').val() == "" || $('#clie').val() == "") {
+                                    msgError("Complete todos los datos", "orange");
+                                    $('#doc').focus();
+                                } else {
+                                    if (confirm('Desea guardar?')) {
+                                        if ($('#id').val() == "") {
+                                            $('#action').val('insert');
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '../crl/clienteCRL.php',
+                                                data: $('#frmUser').serialize(),
+                                                success: function (data) {
+                                                    if (data == "OK") {
+                                                        msgError("Exito!, Cliente creado.", "green");
+                                                        $('#id').val('');
+                                                        $('#doc').val('');
+                                                        $('#clie').val('');
+                                                        loadCliente();
+
+                                                    } else {
+                                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                                    }
+                                                },
+                                                error: function () {
+                                                    msgError("Error del Sistema.", "red");
+                                                }
+                                            });
+
+                                        } else {
+                                            $('#action').val('update');
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '../crl/clienteCRL.php',
+                                                data: $('#frmUser').serialize(),
+                                                success: function (data) {
+                                                    if (data == "OK") {
+                                                        msgError("Exito!, Cliente Actualizado.", "green");
+                                                        $('#id').val('');
+                                                        $('#doc').val('');
+                                                        $('#clie').val('');
+                                                        loadCliente();
+                                                    } else {
+                                                        msgError("Error!, porfavor intentelo otra vez", "red");
+                                                    }
+                                                },
+                                                error: function () {
+                                                    msgError("Error del Sistema.", "red");
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                        $('#data').css('height', '194px');
+                        estoyEnUnIframe();
+        </script>
+    </body>
+</html>
